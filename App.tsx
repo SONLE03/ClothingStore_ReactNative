@@ -19,18 +19,19 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import { t } from 'react-native-tailwindcss';
+import TabNavigator from './src/navigations/TabNavigator';
+import { NavigationContainer } from '@react-navigation/native';
 
 const App = () => {
   
 
   return (
-    <SafeAreaView> 
-      <ScrollView>
-        <View style={[t.absolute, t.inset0, t.p4, t.bgBlue500]}>
-          <Text>Demo tailwind css</Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    
+    <NavigationContainer>
+      <TabNavigator />
+
+    </NavigationContainer>
+      
   );
 }
 

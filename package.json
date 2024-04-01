@@ -10,11 +10,21 @@
     "test": "jest"
   },
   "dependencies": {
+    "@firebase/util": "^1.9.5",
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-navigation/bottom-tabs": "^6.5.20",
+    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/stack": "^6.3.29",
+    "firebase": "^10.10.0",
     "nativewind": "^4.0.1",
     "react": "^18.2.0",
     "react-native": "0.73.6",
+    "react-native-gesture-handler": "^2.16.0",
+    "react-native-navigation": "^7.38.4",
     "react-native-reanimated": "^3.8.1",
+    "react-native-screen": "^1.0.1",
     "react-native-tailwindcss": "^1.1.11",
+    "react-native-vector-icons": "^10.0.3",
     "tailwindcss": "^3.4.3"
   },
   "devDependencies": {
