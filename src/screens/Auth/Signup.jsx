@@ -14,14 +14,15 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomButton from '../../components/CustomButton';
-import { supabase } from '../../service/supabase';
 import { signup } from '../../service/UserService';
+import { useNavigation } from '@react-navigation/native';
 const SignupScreen = () => {
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const navigation = useNavigation();
     useEffect(() => {
         setPassword('');
         setEmail('');
@@ -34,10 +35,13 @@ const SignupScreen = () => {
       if(!result){
         Alert.alert(errorMessage);
       }else{
-        const data = signup({email, password, name, phone})
-        // if(!data){
-        //   Alert.alert("Signin successfully")
-        // }
+        const SignUpResult = signup({email, password, name, phone})
+        if(!SignUpResult){
+          Alert.alert("Unable to register account")
+        }else{
+          Alert.alert("Please check your email and confirm account activation");
+          navigation.navigate("LoginScreen");
+        }
       }
     };
 

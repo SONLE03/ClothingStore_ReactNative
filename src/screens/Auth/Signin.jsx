@@ -7,7 +7,6 @@ import InputField from '../../components/InputField';
 import PasswordInput from "../../components/PasswordInput";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-// import React from 'react';
 import {
   Image,
   SafeAreaView,
@@ -17,6 +16,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { signin } from "../../service/UserService";
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
@@ -33,7 +33,18 @@ const LoginScreen = () => {
 
   const handleLogin = () => {
     // Hiển thị thông báo chứa email và password đã được cập nhật từ state
-    Alert.alert('Thông tin đăng nhập', `Email: ${email}\nPassword: ${password}`);
+    // Alert.alert('Thông tin đăng nhập', `Email: ${email}\nPassword: ${password}`);
+    if(email === '' || password === ''){
+      Alert.alert("Lack of information")
+    }else{
+      const SignInResult = signin({email, password});
+      if(!SignInResult){
+        Alert.alert("Đăng nhập không thành công")
+      }else{
+        Alert.alert("Đăng nhập thành công")
+      }
+    }
+    
   };
 
   return ( 
@@ -101,7 +112,11 @@ const LoginScreen = () => {
               paddingHorizontal: 30,
               paddingVertical: 10,
             }}>
-           {/* <Image source={require('../../assets/images/misc/google.svg')} /> */}
+              {/* <Ionicons
+                name="logo-apple"
+                color={Colors.text}
+                size={Spacing * 2}
+              /> */}
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {}}
@@ -112,7 +127,11 @@ const LoginScreen = () => {
               paddingHorizontal: 30,
               paddingVertical: 10,
             }}>
-            {/* <Image source={require('../../assets/images/misc/google.svg')} /> */}
+              {/* <Ionicons
+                name="logo-google"
+                color={Colors.text}
+                size={Spacing * 2}
+              /> */}
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {}}
@@ -123,7 +142,11 @@ const LoginScreen = () => {
               paddingHorizontal: 30,
               paddingVertical: 10,
             }}>
-            {/* <Image source={require('../../assets/images/misc/google.svg')} /> */}
+              {/* <Ionicons
+                name="logo-facebook"
+                color={Colors.text}
+                size={Spacing * 2}
+              /> */}
           </TouchableOpacity>
         </View>
 
