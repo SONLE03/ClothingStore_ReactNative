@@ -8,6 +8,7 @@ import HeaderBar from '../components/Headerbar';
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TextInput } from 'react-native';
 import Spacing from '../consts/Spacing';
+import ClothesCard from '../components/ClothesCard';
 
 const getCategoriesFromData = (data: any) => {
   let temp: any = {};
@@ -128,10 +129,24 @@ const HomeScreen = () => {
         <FlatList horizontal
           showsHorizontalScrollIndicator={false}
           data={sortedClothes}
-          contentContainerStyle={styles.FlatListContainer}
+          contentContainerStyle={[styles.FlatListContainer, {marginBottom: tabBarHeight},]}
           keyExtractor={item => item.id}
           renderItem={({item}) => {
-            return <TouchableOpacity></TouchableOpacity>
+            return <TouchableOpacity onPress={() => {}}>
+              <ClothesCard 
+                id={item.id}
+                index={item.index}
+                type={item.type}
+                roasted={item.roasted}
+                imagelink_square={item.imagelink_square}
+                name={item.name}
+                special_ingredient={item.special_ingredient}
+                average_rating={item.average_rating}
+                price={item.prices[2]}
+                buttonPressHandler={() => {}}
+              
+              />
+            </TouchableOpacity>
           }}
         />
 
@@ -210,7 +225,7 @@ const styles = StyleSheet.create({
     gap: SPACING.space_20,
     paddingVertical: SPACING.space_20,
     paddingHorizontal: SPACING.space_30,
-    
+
   },
 })
 
