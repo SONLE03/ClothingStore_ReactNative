@@ -10,8 +10,9 @@ import {
 } from "react-native";
 import Spacing from "../../consts/Spacing";
 import FontSize from "../../consts/FontSize";
-import Colors from "../../consts/Colors";
+//import Colors from "../../consts/Colors";
 import Font from "../../consts/Font";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const { height } = Dimensions.get("window");
 
@@ -21,10 +22,10 @@ const WelcomeScreen = ({ navigation: { navigate } }) => {
       <View style={{paddingHorizontal: 25}}>
         <ImageBackground
           style={{
-            height: height / 2,
+            height: height/2,
           }}
           resizeMode="contain"
-          source={require("../../assets/images/welcome-img.png")}
+          source={require("../../assets/images/wl.jpg")}
         />
         <View
           style={{
@@ -63,10 +64,10 @@ const WelcomeScreen = ({ navigation: { navigate } }) => {
             flexDirection: "row",
           }}
         >
-          <TouchableOpacity
+          <TouchableOpacity 
             onPress={() => navigate("LoginScreen")}
             style={{
-              backgroundColor: Colors.primary,
+              backgroundColor: "#0066FF",
               paddingVertical: Spacing * 1.5,
               paddingHorizontal: Spacing * 2,
               width: "48%",
@@ -83,7 +84,7 @@ const WelcomeScreen = ({ navigation: { navigate } }) => {
             <Text
               style={{
                 fontFamily: Font["poppins-bold"],
-                color: Colors.onPrimary,
+                color: "#fff",
                 fontSize: FontSize.large,
                 textAlign: "center",
               }}
