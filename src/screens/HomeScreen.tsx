@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FlatList, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { FlatList, ScrollView, StatusBar, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native';
 
 import { useStore } from '../store/store';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -9,6 +9,8 @@ import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIc
 import { TextInput } from 'react-native';
 import Spacing from '../consts/Spacing';
 import ClothesCard from '../components/ClothesCard';
+import CustomIcon from '../components/CustomIcon';
+import {Dimensions} from 'react-native';
 
 const getCategoriesFromData = (data: any) => {
   let temp: any = {};
@@ -39,6 +41,10 @@ const HomeScreen = () => {
   const ClothesList = useStore((state: any) => state.ClothesList);
   //console.log("Clothes = ", ClothesList.length);
   const BeanList = useStore((state: any) => state.BeanList);
+  const addToCart = useStore((state: any) => state.addToCart);
+  const calculateCartPrice = useStore((state: any) => state.calculateCartPrice);
+
+
   const [categories, setCategories] = useState(
     getCategoriesFromData(ClothesList),
   );
@@ -51,10 +57,65 @@ const HomeScreen = () => {
     getClothesList(categoryIndex.category, ClothesList),
   );
 
+
+  const ListRef: any = useRef<FlatList>();
   const tabBarHeight = useBottomTabBarHeight();
 
   //console.log('categories = ', categories);
   console.log('sorted clothes: ', sortedClothes);
+
+  const searchClothes = (search: string) => {
+    if (search != '') {
+      ListRef?.current?.scrollToOffset({
+        animated: true,
+        offset: 0,
+      });
+      setCategoryIndex({index: 0, category: categories[0]});
+      setSortedClothes([
+        ...ClothesList.filter((item: any) =>
+          item.name.toLowerCase().includes(search.toLowerCase()),
+        ),
+      ]);
+    }
+  };
+
+  const resetSearchClothes = () => {
+    ListRef?.current?.scrollToOffset({
+      animated: true,
+      offset: 0,
+    });
+    setCategoryIndex({index: 0, category: categories[0]});
+    setSortedClothes([...ClothesList]);
+    setSearchText('');
+  };
+
+  const ClothesCardAddToCart = ({
+    id,
+    index,
+    name,
+    roasted,
+    imagelink_square,
+    special_ingredient,
+    type,
+    prices,
+  }: any) => {
+    addToCart({
+      id,
+      index,
+      name,
+      roasted,
+      imagelink_square,
+      special_ingredient,
+      type,
+      prices,
+    });
+    calculateCartPrice();
+    ToastAndroid.showWithGravity(
+      `${name} is Added to Cart`,
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER,
+    );
+  };
 
   return (
     <View style={styles.ScreenContainer}>
@@ -68,7 +129,9 @@ const HomeScreen = () => {
 
         <View style={styles.InputContainerComponent}>
           <TouchableOpacity  
-          onPress={() => {}}>
+          onPress={() => {
+            searchClothes(searchText);
+          }}>
             <MaterialComunityIcons
                   name="home-search"
                   size={25}
@@ -79,11 +142,31 @@ const HomeScreen = () => {
 
           <TextInput placeholder='Find your clothes here...' 
             value={searchText}
-            onChangeText={text => setSearchText(text)}
+            onChangeText={text => {
+              setSearchText(text);
+              searchClothes(text);
+            }}
             placeholderTextColor={COLORS.primaryLightGreyHex}
             style={styles.TextInputContainer}
 
            />
+
+            {searchText.length > 0 ? (
+            <TouchableOpacity
+              onPress={() => {
+                resetSearchClothes();
+              }}>
+              <CustomIcon
+                style={styles.InputIcon}
+                name="close"
+                size={FONTSIZE.size_16}
+                color={COLORS.primaryLightGreyHex}
+              />
+            </TouchableOpacity>
+            ) : (
+            <></>
+            )}
+
         </View>
 
         {/* Category scroller */}
@@ -97,6 +180,11 @@ const HomeScreen = () => {
               <TouchableOpacity 
                 style={styles.CategoryScrollViewItem}
                 onPress={() => {
+                  ListRef?.current?.scrollToOffset({
+                    animated: true,
+                    offset: 0,
+                  });
+
                 setCategoryIndex({index: index, category: categories[index]});
                 setSortedClothes(
                   [...getClothesList(categories[index], ClothesList),]
@@ -126,7 +214,14 @@ const HomeScreen = () => {
 
         {/* Clothes Flatlist */}
 
-        <FlatList horizontal
+        <FlatList 
+          ref={ListRef}
+          horizontal
+          ListEmptyComponent={
+            <View style={styles.EmptyListContainer}>
+              <Text style={styles.TextCategory}>No Coffee Available</Text>
+            </View>
+          }
           showsHorizontalScrollIndicator={false}
           data={sortedClothes}
           contentContainerStyle={[styles.FlatListContainer, {marginBottom: tabBarHeight},]}
@@ -143,7 +238,7 @@ const HomeScreen = () => {
                 special_ingredient={item.special_ingredient}
                 average_rating={item.average_rating}
                 price={item.prices[2]}
-                buttonPressHandler={() => {}}
+                buttonPressHandler={ClothesCardAddToCart}
               
               />
             </TouchableOpacity>
@@ -227,6 +322,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.space_30,
 
   },
+
+  EmptyListContainer: {
+    width: Dimensions.get('window').width - SPACING.space_30 * 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: SPACING.space_36 * 3.6,
+  },
+
+
 })
 
 export default HomeScreen;
