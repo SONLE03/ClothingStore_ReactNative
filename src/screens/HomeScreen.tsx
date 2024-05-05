@@ -109,6 +109,7 @@ const HomeScreen = () => {
       type,
       prices,
     });
+    
     calculateCartPrice();
     ToastAndroid.showWithGravity(
       `${name} is Added to Cart`,
