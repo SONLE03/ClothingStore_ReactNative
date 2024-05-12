@@ -1,10 +1,11 @@
-import { AppState } from 'react-native'
-import 'react-native-url-polyfill/auto'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { createClient } from '@supabase/supabase-js'
+import {AppState} from 'react-native';
+import 'react-native-url-polyfill/auto';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createClient} from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://hihfpwucrcvzwsbredws.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpaGZwd3VjcmN2endzYnJlZHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMyNTA0MjUsImV4cCI6MjAyODgyNjQyNX0.krM_DCAtCHKkd2XVUrbMsWTufHV8Dds6HtU-smM-BMM'
+const supabaseUrl = 'https://hihfpwucrcvzwsbredws.supabase.co';
+const supabaseAnonKey =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpaGZwd3VjcmN2endzYnJlZHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMyNTA0MjUsImV4cCI6MjAyODgyNjQyNX0.krM_DCAtCHKkd2XVUrbMsWTufHV8Dds6HtU-smM-BMM';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -13,17 +14,35 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     detectSessionInUrl: false,
   },
-})
+});
 
 // Tells Supabase Auth to continuously refresh the session automatically
 // if the app is in the foreground. When this is added, you will continue
 // to receive `onAuthStateChange` events with the `TOKEN_REFRESHED` or
 // `SIGNED_OUT` event if the user's session is terminated. This should
 // only be registered once.
-AppState.addEventListener('change', (state) => {
+AppState.addEventListener('change', state => {
   if (state === 'active') {
-    supabase.auth.startAutoRefresh()
+    supabase.auth.startAutoRefresh();
   } else {
-    supabase.auth.stopAutoRefresh()
+    supabase.auth.stopAutoRefresh();
   }
-})
+});
+
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request));
+});
+
+async function handleRequest(request) {
+  // Lấy phản hồi từ máy chủ gốc
+  const response = await fetch(request);
+
+  // Tạo một bản sao của phản hồi
+  const newResponse = new Response(response.body, response);
+
+  // Thêm header X-Hello-World vào phản hồi
+  newResponse.headers.set('X-Hello-World', 'This is an edge function!');
+
+  // Trả về phản hồi đã được chỉnh sửa
+  return newResponse;
+}
