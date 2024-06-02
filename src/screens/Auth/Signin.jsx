@@ -15,11 +15,13 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../../util/AuthContext";
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { authEmitter } = useAuth();
   const handleRegister = () => {
     navigation.navigate('SignupScreen'); // Chuyển sang màn hình RegisterScreen
   };
@@ -46,6 +48,7 @@ const LoginScreen = () => {
           await AsyncStorage.setItem('user_id', JSON.stringify(data.id));
           await AsyncStorage.setItem('role', JSON.stringify(data.role));
           Alert.alert("Đăng nhập thành công");
+          authEmitter.emit('loginStatusChanged');
         } catch (error) {
           console.log('Error storing data: ', error);
         }

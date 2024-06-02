@@ -13,6 +13,9 @@ import { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomButton from '../../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../../util/AuthContext';
+import { AsyncLocalStorage } from 'async_hooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const SignupScreen = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -20,6 +23,9 @@ const SignupScreen = () => {
   const [phone, setPhone] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigation = useNavigation();
+  // test logout
+  const { authEmitter } = useAuth();
+
   useEffect(() => {
       setPassword('');
       setEmail('');
@@ -28,18 +34,20 @@ const SignupScreen = () => {
       }, []);
   
   const handleSignup = async () => {
-    const result = isValidForm(email, password, name, phone);
-    if (!result) {
-      Alert.alert(errorMessage);
-    } else {
-        const signUpResult = await signup({ email, password, name, phone });
-        if (signUpResult instanceof Error) {
-            Alert.alert("Error", signUpResult.message);
-        } else {
-            Alert.alert("Please check your email and confirm account activation");
-            navigation.navigate("LoginScreen");
-        }
-    }
+    // const result = isValidForm(email, password, name, phone);
+    // if (!result) {
+    //   Alert.alert(errorMessage);
+    // } else {
+    //     const signUpResult = await signup({ email, password, name, phone });
+    //     if (signUpResult instanceof Error) {
+    //         Alert.alert("Error", signUpResult.message);
+    //     } else {
+    //         Alert.alert("Please check your email and confirm account activation");
+    //         navigation.navigate("LoginScreen");
+    //     }
+    // }
+    await AsyncStorage.clear();
+    authEmitter.emit('loginStatusChanged');
   };
     
 

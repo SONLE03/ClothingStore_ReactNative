@@ -1,32 +1,22 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from "react";
+import { useAuth } from "./src/util/AuthContext";
+import { AuthProvider } from "./src/util/AuthContext";
 import HomeNavigator from "./src/navigation/HomeNavigator";
 import AuthNavigator from "./src/navigation/AuthNavigator";
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  return (
+    <AuthProvider>
+      <AuthContainer />
+    </AuthProvider>
+  );
+};
 
-  useEffect(() => {
-    checkLoginStatus();
-  }, []);
-
-  const checkLoginStatus = async () => {
-    try {
-      const access_token = await AsyncStorage.getItem('access_token');
-      if (access_token) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-    } catch (error) {
-      console.log('Error retrieving access_token: ', error);
-    }
-  };
+const AuthContainer = () => {
+  const { isLoggedIn } = useAuth();
 
   return (
-    
     <NavigationContainer>
       {isLoggedIn ? <HomeNavigator /> : <AuthNavigator />}
     </NavigationContainer>
