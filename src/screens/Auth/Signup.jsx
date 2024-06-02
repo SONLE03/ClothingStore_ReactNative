@@ -1,12 +1,10 @@
 import React from 'react'
 import {
-    Image,
     SafeAreaView,
     View,
     Text,
-    TextInput,
-    TouchableOpacity,
     Alert,
+    TouchableOpacity,
   } from 'react-native';
 import InputField from '../../components/InputField';
 import PasswordInput from '../../components/PasswordInput';
@@ -14,65 +12,78 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomButton from '../../components/CustomButton';
-import { signup } from '../../service/UserService';
 import { useNavigation } from '@react-navigation/native';
 const SignupScreen = () => {
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const navigation = useNavigation();
-    useEffect(() => {
-        setPassword('');
-        setEmail('');
-        setName('');
-        setPhone('');
-        }, []);
-    
-    const handleSignup = async() => {
-      const result = isValidForm(email, password, name, phone)
-      if(!result){
-        Alert.alert(errorMessage);
-      }else{
-        const SignUpResult = signup({email, password, name, phone})
-        if(!SignUpResult){
-          Alert.alert("Unable to register account")
-        }else{
-          Alert.alert("Please check your email and confirm account activation");
-          navigation.navigate("LoginScreen");
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigation = useNavigation();
+  useEffect(() => {
+      setPassword('');
+      setEmail('');
+      setName('');
+      setPhone('');
+      }, []);
+  
+  const handleSignup = async () => {
+    const result = isValidForm(email, password, name, phone);
+    if (!result) {
+      Alert.alert(errorMessage);
+    } else {
+        const signUpResult = await signup({ email, password, name, phone });
+        if (signUpResult instanceof Error) {
+            Alert.alert("Error", signUpResult.message);
+        } else {
+            Alert.alert("Please check your email and confirm account activation");
+            navigation.navigate("LoginScreen");
         }
-      }
-    };
-
-    const isValidEmail = email => {
-      const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      return emailRegex.test(email);
-    };
-
-    const isValidPassword = password => {
-      return password.length >= 8;
-    };
+    }
+  };
     
-    const isValidPhone= phone => {
-      return phone.length === 10;
-    };
 
-    const isValidForm = (email, password, fullname, phone) => {
-      if(!isValidEmail(email) || !isValidPassword(password) || !isValidPhone(phone)){
-        setErrorMessage('Input is malformed');
-        return false;
-      }
-      
-      if(email === '' || password === '' || fullname === '' || phone === ''){
+  const isValidGmailAddress = email => {
+    const gmailRegex = /@gmail\.com$/;
+    return gmailRegex.test(email);
+  };
+  const isValidPassword = password => {
+    return password.length >= 8;
+  };
+  
+  const isValidPhone= phone => {
+    return phone.length === 10;
+  };
+
+  const isValidForm = (email, password, fullname, phone) => {
+    if (email === '' || password === '' || fullname === '' || phone === '') {
         setErrorMessage('Lack of information!');
         return false;
-      }
-      return true;
-    };
+    }
+
+    if (!isValidGmailAddress(email)) {
+        setErrorMessage('Invalid email format');
+        return false;
+    }
+
+    if (!isValidPassword(password)) {
+        setErrorMessage('Password must be at least 8 characters long');
+        return false;
+    }
+
+    if (!isValidPhone(phone)) {
+        setErrorMessage('Invalid phone number');
+        return false;
+    }
+
+    return true;
+  };
 
     return (
         <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+            <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')} style={{position: 'absolute', top: 20, left: 20}}>
+                    <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
             <View style={{paddingHorizontal: 25}}>
                 <Text
                 style={{
@@ -116,7 +127,7 @@ const SignupScreen = () => {
                 label={'Full name'}
                 icon={
                     <MaterialIcons
-                    name="alternate-email"
+                    name="face"
                     size={20}
                     color="#666"
                     style={{marginRight: 5}}
@@ -139,7 +150,7 @@ const SignupScreen = () => {
                 marginBottom={30}
                 onChangeText={password => setPassword(password)}
                 />
-                <CustomButton label={"Sign in"} onPress={handleSignup}/>
+                <CustomButton label={"Register"} onPress={handleSignup}/>
             </View>
 
         </SafeAreaView>
@@ -147,4 +158,3 @@ const SignupScreen = () => {
 }
 
 export default SignupScreen
-

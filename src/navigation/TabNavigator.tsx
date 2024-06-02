@@ -61,7 +61,7 @@ const TabNavigator = () => {
             )
         }}
         ></Tab.Screen>
-        <Tab.Screen name="History" component={OrderHistoryScreen} options={{
+        {/* <Tab.Screen name="History" component={OrderHistoryScreen} options={{
             tabBarIcon: ({focused, color, size}) => (
                 <MaterialComunityIcons
                 name="bell"
@@ -71,7 +71,7 @@ const TabNavigator = () => {
                 />
             )
         }}
-        ></Tab.Screen>
+        ></Tab.Screen> */}
     </Tab.Navigator>
   )
 }

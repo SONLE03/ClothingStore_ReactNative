@@ -1,25 +1,23 @@
 import React from "react";
-import FontAwesome from "react-native-vector-icons/FontAwesome5"
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import CustomButton from '../../components/CustomButton';
-import InputField from '../../components/InputField';
+import CustomButton from "../../components/CustomButton";
+import InputField from "../../components/InputField";
 import PasswordInput from "../../components/PasswordInput";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import loginUser from "../../api/auth/login";
 import {
-  Image,
   SafeAreaView,
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { signin } from "../../service/UserService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('');
+  const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const handleRegister = () => {
@@ -27,28 +25,35 @@ const LoginScreen = () => {
   };
 
   useEffect(() => {
-    setEmail('');
+    setUserName('');
     setPassword('');
   }, []);
 
-  const handleLogin = () => {
-    // Hiển thị thông báo chứa email và password đã được cập nhật từ state
-    // Alert.alert('Thông tin đăng nhập', `Email: ${email}\nPassword: ${password}`);
-    if(email === '' || password === ''){
+  const handleForgotPassword = () => {
+    navigation.navigate('ForgotPassword');
+  }
+  const handleLogin = async() => {
+    if(username === '' || password === ''){
       Alert.alert("Lack of information")
     }else{
-      const SignInResult = signin({email, password});
-      if(!SignInResult){
+      const data = await loginUser(username, password);
+      if(!data){
         Alert.alert("Đăng nhập không thành công")
       }else{
-        Alert.alert("Đăng nhập thành công")
+        try {
+          await AsyncStorage.setItem('access_token', JSON.stringify(data.access));
+          await AsyncStorage.setItem('refresh_token', JSON.stringify(data.refresh));
+          await AsyncStorage.setItem('user_id', JSON.stringify(data.id));
+          await AsyncStorage.setItem('role', JSON.stringify(data.role));
+          Alert.alert("Đăng nhập thành công");
+        } catch (error) {
+          console.log('Error storing data: ', error);
+        }
       }
     }
-    
   };
 
   return ( 
-        // return (
     <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
       <View style={{paddingHorizontal: 25}}>
         <Text
@@ -63,7 +68,7 @@ const LoginScreen = () => {
         </Text>
 
         <InputField
-          label={'Email ID'}
+          label={'Email'}
           icon={
             <MaterialIcons
             name="alternate-email"
@@ -74,7 +79,7 @@ const LoginScreen = () => {
           }
           marginBottom={30}
           keyboardType="email-address"
-          onChangeText={email => setEmail(email)}
+          onChangeText={email => setUserName(email)}
         />
 
         <PasswordInput
@@ -90,7 +95,10 @@ const LoginScreen = () => {
           marginBottom={30}
           onChangeText={password => setPassword(password)}
         />
-        
+        <TouchableOpacity onPress={handleForgotPassword} style={{alignSelf: 'flex-end'}}>
+          <Text style={{color: '#AD40AF', fontWeight: '700'}}>Forgot Password?</Text>
+        </TouchableOpacity>
+          
         <CustomButton label={"Login"} onPress={handleLogin}/>
 
         <Text style={{textAlign: 'center', color: '#666', marginBottom: 30}}>
@@ -156,7 +164,7 @@ const LoginScreen = () => {
             justifyContent: 'center',
             marginBottom: 30,
           }}>
-          <Text>New to the app?</Text>
+          <Text style={{color: '#000000'}}>New to the app?</Text>
           <TouchableOpacity onPress={handleRegister}>
             <Text style={{color: '#AD40AF', fontWeight: '700'}}> Register</Text>
           </TouchableOpacity>
@@ -169,4 +177,3 @@ const LoginScreen = () => {
 };
 
 export default LoginScreen;
-

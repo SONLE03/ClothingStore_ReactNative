@@ -1,46 +1,36 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-
-//Navigators
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import TabNavigator from "./src/navigation/TabNavigator";
-
-//Auth Screen
-import LoginScreen from "./src/screens/Auth/Signin";
-import IntroductionAnimationScreen from "./src/screens/Auth/IntroductionAnimationScreen";
-import SignupScreen from "./src/screens/Auth/Signup";
-import WelcomeScreen from "./src/screens/Auth/Welcome";
-import CustomIcon from "./src/components/CustomIcon";
-
-// import SignupScreen from "./src/screens/Auth/Signup";
-// import LoginScreen from "./src/screens/LoginScreen";
-
-//Main Screen
-import HomeScreen from "./src/screens/HomeScreen";
-import DetailsScreen from "./src/screens/DetailsScreen";
-import PaymentScreen from "./src/screens/PaymentScreen";
-
-const Stack = createNativeStackNavigator();
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from "react";
+import HomeNavigator from "./src/navigation/HomeNavigator";
+import AuthNavigator from "./src/navigation/AuthNavigator";
 
 const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  const checkLoginStatus = async () => {
+    try {
+      const access_token = await AsyncStorage.getItem('access_token');
+      if (access_token) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    } catch (error) {
+      console.log('Error retrieving access_token: ', error);
+    }
+  };
+
   return (
+    
     <NavigationContainer>
-
-      <Stack.Navigator screenOptions={{ headerShown:false }}>
-        {/* <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} /> */}
-        {/* <Stack.Screen name="IntroductionAnimationScreen" component={IntroductionAnimationScreen} /> */}
-        {/* <Stack.Screen name="LoginScreen" component={LoginScreen} /> */}
-        {/* <Stack.Screen name="SignupScreen" component={SignupScreen} /> */}
-        <Stack.Screen name="Tab" component={TabNavigator} options={{animation: 'slide_from_bottom'}}></Stack.Screen>
-        <Stack.Screen name="Details" component={DetailsScreen} options={{animation: 'slide_from_bottom'}}></Stack.Screen>
-        <Stack.Screen name="Payment" component={PaymentScreen} options={{animation: 'slide_from_bottom'}} ></Stack.Screen>
-      </Stack.Navigator>
-
+      {isLoggedIn ? <HomeNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 };
 
 export default App;
-
-const styles = StyleSheet.create({});
