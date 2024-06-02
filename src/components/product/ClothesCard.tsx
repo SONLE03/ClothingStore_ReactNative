@@ -15,9 +15,9 @@ import {
   FONTFAMILY,
   FONTSIZE,
   SPACING,
-} from '../theme/theme';
-import CustomIcon from './CustomIcon';
-import BGIcon from './BGIcon';
+} from '../../theme/theme';
+import CustomIcon from '../customUIs/CustomIcon';
+import BGIcon from '../customUIs/BGIcon';
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 

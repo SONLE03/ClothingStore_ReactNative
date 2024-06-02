@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity } from 'react-native';
+import { View, TextInput, TouchableOpacity, GestureResponderEvent } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 
-const PasswordInput = ({
+type PasswordInputProps = {
+  label: string;
+  icon?: React.ReactNode;
+  onChangeText: (text: string) => void;
+  marginBottom?: number;
+  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad' | 'number-pad' | 'decimal-pad' | 'visible-password' | 'ascii-capable' | 'numbers-and-punctuation' | 'url' | 'name-phone-pad' | 'twitter' | 'web-search';
+};
+
+const PasswordInput: React.FC<PasswordInputProps> = ({
   label,
   icon,
   onChangeText,
   marginBottom,
   keyboardType,
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
     <View
@@ -25,7 +33,7 @@ const PasswordInput = ({
       <TextInput
         placeholder={label}
         keyboardType={keyboardType}
-        style={{ flex: 1, paddingVertical: 0, color: '#000000'}}
+        style={{ flex: 1, paddingVertical: 0, color: '#000000' }}
         secureTextEntry={!showPassword}
         onChangeText={onChangeText}
         placeholderTextColor="#000000"

@@ -10,9 +10,9 @@ import {
 import {useStore} from '../store/store';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {COLORS, SPACING} from '../theme/theme';
-import HeaderBar from '../components/Headerbar';
-import EmptyListAnimation from '../components/EmptyListAnimation';
-import FavoritesItemCard from '../components/FavoritesItemCard';
+import HeaderBar from '../components/customUIs/Headerbar';
+import EmptyListAnimation from '../components/animation/EmptyListAnimation';
+import FavoritesItemCard from '../components/favourite/FavoritesItemCard';
 
 const FavoritesScreen = ({navigation}: any) => {
   const FavoritesList = useStore((state: any) => state.FavoritesList);

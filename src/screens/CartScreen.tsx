@@ -10,12 +10,14 @@ import {
 import {useStore} from '../store/store';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {COLORS, SPACING} from '../theme/theme';
-import HeaderBar from '../components/Headerbar';
-import EmptyListAnimation from '../components/EmptyListAnimation';
-import PaymentFooter from '../components/PaymentFooter';
-import CartItem from '../components/CartItem';
+import HeaderBar from '../components/customUIs/Headerbar';
+import EmptyListAnimation from '../components/animation/EmptyListAnimation';
+import PaymentFooter from '../components/payment/PaymentFooter';
+import CartItem from '../components/cart/CartItem';
+import { useNavigation } from '@react-navigation/native';
 
 const CartScreen = ({navigation, route}: any) => {
+  const navigations = useNavigation();
   const CartList = useStore((state: any) => state.CartList);
   const CartPrice = useStore((state: any) => state.CartPrice);
   const incrementCartItemQuantity = useStore(

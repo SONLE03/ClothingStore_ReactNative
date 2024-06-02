@@ -7,7 +7,7 @@ import {
   FONTFAMILY,
   FONTSIZE,
   SPACING,
-} from '../theme/theme';
+} from '../../theme/theme';
 
 interface OrderItemCardProps {
   type: string;

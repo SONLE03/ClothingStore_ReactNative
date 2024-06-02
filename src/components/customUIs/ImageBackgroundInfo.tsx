@@ -14,7 +14,7 @@ import {
   FONTFAMILY,
   FONTSIZE,
   SPACING,
-} from '../theme/theme';
+} from '../../theme/theme';
 import CustomIcon from './CustomIcon';
 
 interface ImageBackgroundInfoProps {

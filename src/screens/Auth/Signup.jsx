@@ -6,12 +6,12 @@ import {
     Alert,
     TouchableOpacity,
   } from 'react-native';
-import InputField from '../../components/InputField';
-import PasswordInput from '../../components/PasswordInput';
+import InputField from '../../components/customUIs/InputField';
+import PasswordInput from '../../components/customUIs/PasswordInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import CustomButton from '../../components/CustomButton';
+import CustomButton from '../../components/customUIs/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../util/AuthContext';
 import { AsyncLocalStorage } from 'async_hooks';

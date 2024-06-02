@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { BORDERRADIUS, SPACING } from '../theme/theme';
+import { BORDERRADIUS, SPACING } from '../../theme/theme';
 import CustomIcon from './CustomIcon';
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 

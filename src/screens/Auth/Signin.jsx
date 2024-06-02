@@ -1,9 +1,9 @@
 import React from "react";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import CustomButton from "../../components/CustomButton";
-import InputField from "../../components/InputField";
-import PasswordInput from "../../components/PasswordInput";
+import CustomButton from "../../components/customUIs/CustomButton";
+import InputField from "../../components/customUIs/InputField";
+import PasswordInput from "../../components/customUIs/PasswordInput";
 import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import loginUser from "../../api/auth/login";

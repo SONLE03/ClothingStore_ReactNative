@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import LottieView from 'lottie-react-native';
-import {COLORS} from '../theme/theme';
+import {COLORS} from '../../theme/theme';
 
 interface PopUpAnimationProps {
   style: any;

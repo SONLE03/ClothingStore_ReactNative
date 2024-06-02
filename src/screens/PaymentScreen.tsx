@@ -14,12 +14,12 @@ import {
   SPACING,
 } from '../theme/theme';
 
-import GradientBGIcon from '../components/GradientBGIcon';
-import PaymentMethod from '../components/PaymentMethod';
-import PaymentFooter from '../components/PaymentFooter';
+import GradientBGIcon from '../components/customUIs/GradientBGIcon';
+import PaymentMethod from '../components/payment/PaymentMethod';
+import PaymentFooter from '../components/payment/PaymentFooter';
 import LinearGradient from 'react-native-linear-gradient';
-import CustomIcon from '../components/CustomIcon';
-import PopUpAnimation from '../components/PopUpAnimation';
+import CustomIcon from '../components/customUIs/CustomIcon';
+import PopUpAnimation from '../components/animation/PopUpAnimation';
 import {useStore} from '../store/store';
 
 import { useState } from 'react';

@@ -16,8 +16,8 @@ import {
   FONTSIZE,
   SPACING,
 } from '../theme/theme';
-import ImageBackgroundInfo from '../components/ImageBackgroundInfo';
-import PaymentFooter from '../components/PaymentFooter';
+import ImageBackgroundInfo from '../components/customUIs/ImageBackgroundInfo';
+import PaymentFooter from '../components/payment/PaymentFooter';
 
 const DetailsScreen = ({navigation, route}: any) => {
   const ItemOfIndex = useStore((state: any) =>

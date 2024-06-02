@@ -4,12 +4,12 @@ import { FlatList, ScrollView, StatusBar, StyleSheet, Text, ToastAndroid, Toucha
 import { useStore } from '../store/store';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
-import HeaderBar from '../components/Headerbar';
+import HeaderBar from '../components/customUIs/Headerbar';
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TextInput } from 'react-native';
 import Spacing from '../consts/Spacing';
-import ClothesCard from '../components/ClothesCard';
-import CustomIcon from '../components/CustomIcon';
+import ClothesCard from '../components/product/ClothesCard';
+import CustomIcon from '../components/customUIs/CustomIcon';
 import {Dimensions} from 'react-native';
 
 const getCategoriesFromData = (data: any) => {
