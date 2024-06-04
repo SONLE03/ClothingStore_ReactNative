@@ -1,5 +1,4 @@
 const loginUser = async (username: string, password: string) => {
-    console.log(username, password);
     const envLogin = "http://10.0.2.2:8080/api/v1/auth/login"
     try {
       const response = await fetch(envLogin, {
@@ -19,4 +18,4 @@ const loginUser = async (username: string, password: string) => {
     }
   };
   
-  export default loginUser;
+export default loginUser;
