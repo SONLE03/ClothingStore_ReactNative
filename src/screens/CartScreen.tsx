@@ -17,7 +17,7 @@ import CartItem from '../components/cart/CartItem';
 import { useNavigation } from '@react-navigation/native';
 
 const CartScreen = ({navigation, route}: any) => {
-  const navigations = useNavigation();
+  //const navigations = useNavigation();
   const CartList = useStore((state: any) => state.CartList);
   const CartPrice = useStore((state: any) => state.CartPrice);
   const incrementCartItemQuantity = useStore(
@@ -107,7 +107,7 @@ const CartScreen = ({navigation, route}: any) => {
 const styles = StyleSheet.create({
   ScreenContainer: {
     flex: 1,
-    backgroundColor: COLORS.primaryBlackHex,
+    backgroundColor: COLORS.primaryWhiteHex,
   },
   ScrollViewFlex: {
     flexGrow: 1,

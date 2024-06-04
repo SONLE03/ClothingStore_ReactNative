@@ -2,98 +2,88 @@ import React from 'react';
 import {
   Dimensions,
   ImageBackground,
-  ImageProps,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  ImageSourcePropType,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {
-  BORDERRADIUS,
-  COLORS,
-  FONTFAMILY,
-  FONTSIZE,
-  SPACING,
-} from '../../theme/theme';
-import CustomIcon from '../customUIs/CustomIcon';
-import BGIcon from '../customUIs/BGIcon';
-import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-
+import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.32;
 
-interface CoffeeCardProps {
+interface ClothesCardProps {
   id: string;
-  index: number;
-  type: string;
-  roasted: string;
-  imagelink_square: ImageProps;
-  name: string;
-  special_ingredient: string;
-  average_rating: number;
-  price: any;
-  buttonPressHandler: any;
+  product_Name: string;
+  description: string;
+  prices: number;
+  category: string;
+  branch: string;
+  productStatus: string;
+  image: string;
+  buttonPressHandler: (product: any) => void;
 }
 
-const CoffeeCard: React.FC<CoffeeCardProps> = ({
+const ClothesCard: React.FC<ClothesCardProps> = ({
   id,
-  index,
-  type,
-  roasted,
-  imagelink_square,
-  name,
-  special_ingredient,
-  average_rating,
-  price,
+  product_Name,
+  description,
+  prices,
+  category,
+  branch,
+  productStatus,
+  image,
   buttonPressHandler,
 }) => {
   return (
-    <LinearGradient
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 1}}
-      style={styles.CardLinearGradientContainer}
-      colors={[COLORS.primaryGreyHex, COLORS.primaryBlackHex]}>
+    <LinearGradient 
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      colors={['#FFF', '#FFF']}
+      className="border border-orange-500 p-4 rounded-xl shadow-xl"
+    >
       <ImageBackground
-        source={imagelink_square}
-        style={styles.CardImageBG}
-        resizeMode="cover">
-        <View style={styles.CardRatingContainer}>
-
+        source={{ uri: image }}
+        style={{ width: CARD_WIDTH, height: CARD_WIDTH }}
+        resizeMode="cover"
+        className="rounded-lg mb-4 overflow-hidden"
+      >
+        <View className='w-full flex justify-end items-center'>
+          <View className="flex-row bg-black bg-opacity-50 items-center justify-center gap-2 p-4 absolute top-0 right-0 rounded-bl-lg rounded-tr-lg">
             <MaterialComunityIcons
-                    name="star"
-                    size={FONTSIZE.size_16}
-                    color={COLORS.primaryOrangeHex}
-                    
+              name="star"
+              size={16}
+              color="#FFA500"
             />
-          
-          <Text style={styles.CardRatingText}>{average_rating}</Text>
+            <Text className="text-white text-base font-medium">{productStatus}</Text>
+          </View>
         </View>
       </ImageBackground>
-      <Text style={styles.CardTitle}>{name}</Text>
-      <Text style={styles.CardSubtitle}>{special_ingredient}</Text>
-      <View style={styles.CardFooterRow}>
-        <Text style={styles.CardPriceCurrency}>
-          $ <Text style={styles.CardPrice}>{price.price}</Text>
+      <Text className="text-white text-lg font-medium">{product_Name}</Text>
+      <Text className="text-white text-xs font-light">{description}</Text>
+      <View className="flex-row justify-between items-center mt-4">
+        <Text className="text-orange-500 text-lg font-semibold">
+          $<Text className="text-white">{prices}</Text>
         </Text>
-        <TouchableOpacity
+        <TouchableOpacity className='bg-orange-500 p-2 rounded-lg'
           onPress={() => {
             buttonPressHandler({
               id,
-              index,
-              type,
-              roasted,
-              imagelink_square,
-              name,
-              special_ingredient,
-              prices: [{...price, quantity: 1}],
+              product_Name,
+              description,
+              prices,
+              category,
+              branch,
+              productStatus,
+              image,
+              quantity: 1,
             });
-          }}>
-          <BGIcon
-            color={COLORS.primaryWhiteHex}
+          }}
+        >
+          <MaterialComunityIcons
+            color="#FFF"
             name={'plus'}
-            BGColor={COLORS.primaryOrangeHex}
-            size={FONTSIZE.size_10}
+            size={15}
           />
         </TouchableOpacity>
       </View>
@@ -101,61 +91,4 @@ const CoffeeCard: React.FC<CoffeeCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  CardLinearGradientContainer: {
-    padding: SPACING.space_15,
-    borderRadius: BORDERRADIUS.radius_25,
-  },
-  CardImageBG: {
-    width: CARD_WIDTH,
-    height: CARD_WIDTH,
-    borderRadius: BORDERRADIUS.radius_20,
-    marginBottom: SPACING.space_15,
-    overflow: 'hidden',
-  },
-  CardRatingContainer: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.primaryBlackRGBA,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: SPACING.space_10,
-    paddingHorizontal: SPACING.space_15,
-    position: 'absolute',
-    borderBottomLeftRadius: BORDERRADIUS.radius_20,
-    borderTopRightRadius: BORDERRADIUS.radius_20,
-    top: 0,
-    right: 0,
-  },
-  CardRatingText: {
-    fontFamily: FONTFAMILY.poppins_medium,
-    color: COLORS.primaryWhiteHex,
-    lineHeight: 22,
-    fontSize: FONTSIZE.size_14,
-  },
-  CardTitle: {
-    fontFamily: FONTFAMILY.poppins_medium,
-    color: COLORS.primaryWhiteHex,
-    fontSize: FONTSIZE.size_16,
-  },
-  CardSubtitle: {
-    fontFamily: FONTFAMILY.poppins_light,
-    color: COLORS.primaryWhiteHex,
-    fontSize: FONTSIZE.size_10,
-  },
-  CardFooterRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: SPACING.space_15,
-  },
-  CardPriceCurrency: {
-    fontFamily: FONTFAMILY.poppins_semibold,
-    color: COLORS.primaryOrangeHex,
-    fontSize: FONTSIZE.size_18,
-  },
-  CardPrice: {
-    color: COLORS.primaryWhiteHex,
-  },
-});
-
-export default CoffeeCard;
+export default ClothesCard;

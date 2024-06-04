@@ -1,27 +1,24 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   StatusBar,
-  StyleSheet,
   Text,
   View,
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
-import {useStore} from '../store/store';
-import {
-  BORDERRADIUS,
-  COLORS,
-  FONTFAMILY,
-  FONTSIZE,
-  SPACING,
-} from '../theme/theme';
+import { useStore } from '../store/store';
 import ImageBackgroundInfo from '../components/customUIs/ImageBackgroundInfo';
 import PaymentFooter from '../components/payment/PaymentFooter';
 
-const DetailsScreen = ({navigation, route}: any) => {
+interface DetailsScreenProps {
+  navigation: any;
+  route: any;
+}
+
+const DetailsScreen: React.FC<DetailsScreenProps> = ({ navigation, route }) => {
   const ItemOfIndex = useStore((state: any) =>
-    route.params.type == 'Coffee' ? state.ClothesList : state.BeanList,
+    route.params.type === 'Coffee' ? state.ClothesList : state.BeanList,
   )[route.params.index];
 
   const addToFavoriteList = useStore((state: any) => state.addToFavoriteList);
@@ -60,18 +57,18 @@ const DetailsScreen = ({navigation, route}: any) => {
       imagelink_square,
       special_ingredient,
       type,
-      prices: [{...price, quantity: 1}],
+      prices: [{ ...price, quantity: 1 }],
     });
     calculateCartPrice();
     navigation.navigate('Cart');
   };
 
   return (
-    <View style={styles.ScreenContainer}>
-      <StatusBar backgroundColor={COLORS.primaryBlackHex} />
+    <View className="flex-1 bg-black">
+      <StatusBar backgroundColor="#000" />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.ScrollViewFlex}>
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }}>
         <ImageBackgroundInfo
           EnableBackHandler={true}
           imagelink_portrait={ItemOfIndex.imagelink_portrait}
@@ -88,58 +85,32 @@ const DetailsScreen = ({navigation, route}: any) => {
           ToggleFavourite={ToggleFavourite}
         />
 
-        <View style={styles.FooterInfoArea}>
-          <Text style={styles.InfoTitle}>Description</Text>
+        <View className="p-5">
+          <Text className="font-semibold text-lg text-white mb-2">Description</Text>
           {fullDesc ? (
-            <TouchableWithoutFeedback
-              onPress={() => {
-                setFullDesc(prev => !prev);
-              }}>
-              <Text style={styles.DescriptionText}>
-                {ItemOfIndex.description}
-              </Text>
+            <TouchableWithoutFeedback onPress={() => setFullDesc((prev) => !prev)}>
+              <Text className="text-sm text-white mb-7">{ItemOfIndex.description}</Text>
             </TouchableWithoutFeedback>
           ) : (
-            <TouchableWithoutFeedback
-              onPress={() => {
-                setFullDesc(prev => !prev);
-              }}>
-              <Text numberOfLines={3} style={styles.DescriptionText}>
+            <TouchableWithoutFeedback onPress={() => setFullDesc((prev) => !prev)}>
+              <Text numberOfLines={3} className="text-sm text-white mb-7">
                 {ItemOfIndex.description}
               </Text>
             </TouchableWithoutFeedback>
           )}
-          <Text style={styles.InfoTitle}>Size</Text>
-          <View style={styles.SizeOuterContainer}>
+          <Text className="font-semibold text-lg text-white mb-2">Size</Text>
+          <View className="flex-row justify-between">
             {ItemOfIndex.prices.map((data: any) => (
               <TouchableOpacity
                 key={data.size}
-                onPress={() => {
-                  setPrice(data);
-                }}
-                style={[
-                  styles.SizeBox,
-                  {
-                    borderColor:
-                      data.size == price.size
-                        ? COLORS.primaryOrangeHex
-                        : COLORS.primaryDarkGreyHex,
-                  },
-                ]}>
+                onPress={() => setPrice(data)}
+                className={`flex-1 items-center justify-center h-12 rounded-lg border-2 mx-2 ${
+                  data.size === price.size ? 'border-orange-500' : 'border-gray-600'
+                }`}>
                 <Text
-                  style={[
-                    styles.SizeText,
-                    {
-                      fontSize:
-                        ItemOfIndex.type == 'Bean'
-                          ? FONTSIZE.size_14
-                          : FONTSIZE.size_16,
-                      color:
-                        data.size == price.size
-                          ? COLORS.primaryOrangeHex
-                          : COLORS.secondaryLightGreyHex,
-                    },
-                  ]}>
+                  className={`font-medium ${
+                    ItemOfIndex.type === 'Bean' ? 'text-base' : 'text-lg'
+                  } ${data.size === price.size ? 'text-orange-500' : 'text-gray-300'}`}>
                   {data.size}
                 </Text>
               </TouchableOpacity>
@@ -166,50 +137,5 @@ const DetailsScreen = ({navigation, route}: any) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  ScreenContainer: {
-    flex: 1,
-    backgroundColor: COLORS.primaryBlackHex,
-  },
-  ScrollViewFlex: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
-  },
-  FooterInfoArea: {
-    padding: SPACING.space_20,
-  },
-  InfoTitle: {
-    fontFamily: FONTFAMILY.poppins_semibold,
-    fontSize: FONTSIZE.size_16,
-    color: COLORS.primaryWhiteHex,
-    marginBottom: SPACING.space_10,
-  },
-  DescriptionText: {
-    letterSpacing: 0.5,
-    fontFamily: FONTFAMILY.poppins_regular,
-    fontSize: FONTSIZE.size_14,
-    color: COLORS.primaryWhiteHex,
-    marginBottom: SPACING.space_30,
-  },
-  SizeOuterContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: SPACING.space_20,
-  },
-  SizeBox: {
-    flex: 1,
-    backgroundColor: COLORS.primaryDarkGreyHex,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: SPACING.space_24 * 2,
-    borderRadius: BORDERRADIUS.radius_10,
-    borderWidth: 2,
-  },
-  SizeText: {
-    fontFamily: FONTFAMILY.poppins_medium,
-  },
-});
 
 export default DetailsScreen;

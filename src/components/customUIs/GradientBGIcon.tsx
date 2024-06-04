@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import LinearGradient from 'react-native-linear-gradient';
 import { COLORS, SPACING } from '../../theme/theme';
+import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface GradientBGIconProps {
   name: string;
@@ -17,7 +18,7 @@ const GradientBGIcon: React.FC<GradientBGIconProps> = ({name, color, size}) => {
       end={{x: 1, y: 1}}
       colors={[COLORS.primaryGreyHex, COLORS.primaryBlackHex]}
       style={styles.LinearGradientBG}>
-
+        <MaterialComunityIcons className='focus:rotate-180' name={name} color="white" size={size} />
       </LinearGradient>
     </View>
   );

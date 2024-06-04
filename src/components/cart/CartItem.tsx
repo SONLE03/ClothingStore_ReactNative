@@ -14,8 +14,8 @@ import {
   FONTFAMILY,
   FONTSIZE,
   SPACING,
-} from '../theme/theme';
-import CustomIcon from './CustomIcon';
+} from '../../theme/theme';
+import CustomIcon from '../customUIs/CustomIcon';
 
 interface CartItemProps {
   id: string;

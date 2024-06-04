@@ -8,7 +8,7 @@ const ProfileImg = () => {
   return (
     <View style={styles.ImageContainer}>
       <Image 
-        source={require('../assets/app_images/avatar.png')} 
+        source={require('../../assets/app_images/avatar.png')} 
         style={styles.Image}
 
       />
@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         overflow: 'hidden',
+        color: COLORS.primaryWhiteHex
 
     },
 

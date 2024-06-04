@@ -7,33 +7,16 @@ import ProfileImg from './ProfileImg';
 
 interface HeaderBarProps {
     title?: string;
-
 }
 
 const HeaderBar: React.FC<HeaderBarProps> = ({title}) => {
-  return (
-    <View style={styles.HeaderContainer}>
-        <GradientBGIcon name='menu' color={COLORS.primaryLightGreyHex} size={16} />
-        <Text style={styles.HeaderText}> {title} </Text>
-        <ProfileImg />
-    </View>
-  );
+    return (
+        <View className="p-4 flex flex-row items-center justify-between bg-orange-500 shadow-xl mb-4">
+            <GradientBGIcon name="menu" color={COLORS.primaryOrangeHex} size={16} />
+            <Text className="font-medium text-2xl text-white"> {title} </Text>
+            <ProfileImg />
+        </View>
+    );
 };
 
-const styles = StyleSheet.create({
-    HeaderContainer: {
-        padding:SPACING.space_30,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-
-    HeaderText: {
-        fontWeight: '500',
-        fontSize: 20,
-        color: COLORS.primaryWhiteHex,
-
-    },
-});
-
-export default HeaderBar
+export default HeaderBar;

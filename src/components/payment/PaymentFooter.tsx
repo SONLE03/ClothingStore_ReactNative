@@ -6,7 +6,7 @@ import {
   FONTFAMILY,
   FONTSIZE,
   SPACING,
-} from '../theme/theme';
+} from '../../theme/theme';
 
 interface PriceProps {
   price: string;
