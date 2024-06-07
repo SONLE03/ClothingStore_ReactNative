@@ -1,3 +1,5 @@
+// HomeScreen.tsx
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -9,6 +11,7 @@ import {
   Image,
   FlatList,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useStore } from '../store/store';
 import ClothesCard from '../components/product/ClothesCard';
@@ -26,9 +29,8 @@ const bannerImages = [
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.9;
 
-const HomeScreen = () => {
-  //const ClothesList = useStore((state: any) => state.ClothesList);
-  //const fetchClothesList = useStore((state: any) => state.fetchClothesList);
+const HomeScreen = ({ navigation }: any) => {
+  //const navigation = useNavigation();
   const [ClothesList, setClothesList] = useState<Product[]>([]);
   const addToCart = useStore((state: any) => state.addToCart);
   const [searchText, setSearchText] = useState('');
@@ -40,6 +42,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       const fetchClothesList = await GetAllProducts();
+      console.log(fetchClothesList.data);
       setClothesList(fetchClothesList.data);
       const fetchedCategories = await GetAllCategory();
       setCategories(fetchedCategories);
@@ -96,12 +99,12 @@ const HomeScreen = () => {
         id={item.id}
         product_Name={item.product_Name}
         description={item.description}
-        prices={item.prices}
+        price={item.price}
         category={item.category}
         branch={item.branch}
         productStatus={item.productStatus}
-        image={item.image}
-        buttonPressHandler={() => addToCart(item)}
+        images={item.images}
+        buttonPressHandler={() => navigation.navigate('ProductDetailsScreen', { productId: item.id })}
       />
     </View>
   );
@@ -109,7 +112,6 @@ const HomeScreen = () => {
   return (
     <View className="flex-1 bg-gray-200">
       <ScrollView showsVerticalScrollIndicator={false}>
-
         <HeaderBar title="Home" />
         {/* Banner Scroll View */}
         <View className="flex-col justify-center my-3">
@@ -144,57 +146,61 @@ const HomeScreen = () => {
               name="home-search"
               size={25}
               color={searchText.length > 0 ? '#FF9100' : '#A9A9A9'}
-              className="mx-5 mr-2 ml-8"
             />
           </TouchableOpacity>
           <TextInput
-            placeholder="Find your clothes here..."
-            value={searchText}
-            onChangeText={(text) => {
-              setSearchText(text);
-              searchClothes(text);
-            }}
+            placeholder="Search Clothes"
             placeholderTextColor="#A9A9A9"
-            className="flex-1 h-12 font-medium text-sm text-gray-600"
+            value={searchText}
+            onChangeText={(text) => searchClothes(text)}
+            className="flex-1 p-3 mx-2"
           />
-          {searchText.length > 0 && (
-            <TouchableOpacity className="mr-2" onPress={() => resetSearchClothes()}>
-              <MaterialCommunityIcons className="mx-5" name="close-circle-outline" size={16} color="gray" />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            className="flex mr-2"
+            onPress={() => resetSearchClothes()}
+          >
+            <MaterialCommunityIcons
+              name="close"
+              size={25}
+              color={searchText.length > 0 ? '#FF9100' : '#A9A9A9'}
+            />
+          </TouchableOpacity>
         </View>
 
-        {/* Category Scroll View */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="px-4 my-4">
-          {categories.map((category) => (
+        {/* Category Filter */}
+        <View className="flex-row justify-center mt-2 mb-4">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <TouchableOpacity
-              key={category.id}
-              onPress={() => setSelectedCategory(category.name)}
-              className={`mx-2 my-2 ${selectedCategory === category.name ? 'border-b-2 border-orange-500' : ''}`}
+              className={`py-2 px-4 rounded-full border ${selectedCategory === '' ? 'bg-orange-500 border-orange-500' : 'border-gray-500'}`}
+              onPress={() => setSelectedCategory('')}
             >
-              <Text className={`text-lg font-semibold ${selectedCategory === category.name ? 'text-orange-500' : 'text-gray-500'}`}>
-                {category.name}
+              <Text className={`${selectedCategory === '' ? 'text-white' : 'text-gray-500'} text-sm font-medium`}>
+                All
               </Text>
-              {selectedCategory === category.name && (
-                <View className={`w-2 h-2 bg-orange-500 rounded-full self-center mt-1`} />
-              )}
             </TouchableOpacity>
-          ))}
-        </ScrollView>
+            {categories.map((category) => (
+              <TouchableOpacity
+                key={category.id}
+                className={`py-2 px-4 mx-2 rounded-full border ${selectedCategory === category.id ? 'bg-orange-500 border-orange-500' : 'border-gray-500'}`}
+                onPress={() => setSelectedCategory(category.id)}
+              >
+                <Text className={`${selectedCategory === category.id ? 'text-white' : 'text-gray-500'} text-sm font-medium`}>
+                  {category.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
 
-        {/* Clothes Cards */}
+        {/* Clothes List */}
         <FlatList
           data={filteredClothes}
           numColumns={2}
           renderItem={renderClothesCard}
           keyExtractor={(item) => item.id}
-          ListEmptyComponent={() => (
-            <View className="flex-1 justify-center items-center">
-              <Text className="text-gray-500">No clothes available</Text>
-            </View>
-          )}
+          contentContainerStyle={{ paddingHorizontal: 4 }}
         />
-
+        <View className='flex w-full mt-20'/>
       </ScrollView>
     </View>
   );

@@ -10,6 +10,7 @@ import {
 import { useStore } from '../store/store';
 import ImageBackgroundInfo from '../components/customUIs/ImageBackgroundInfo';
 import PaymentFooter from '../components/payment/PaymentFooter';
+import HeaderBar from '../components/customUIs/Headerbar';
 
 interface DetailsScreenProps {
   navigation: any;
@@ -18,7 +19,7 @@ interface DetailsScreenProps {
 
 const DetailsScreen: React.FC<DetailsScreenProps> = ({ navigation, route }) => {
   const ItemOfIndex = useStore((state: any) =>
-    route.params.type === 'Coffee' ? state.ClothesList : state.BeanList,
+    route.params.state.ClothesList
   )[route.params.index];
 
   const addToFavoriteList = useStore((state: any) => state.addToFavoriteList);

@@ -43,8 +43,8 @@ const LoginScreen = () => {
         Alert.alert("Đăng nhập không thành công")
       }else{
         try {
-          await AsyncStorage.setItem('access_token', JSON.stringify(data.access));
-          await AsyncStorage.setItem('refresh_token', JSON.stringify(data.refresh));
+          await AsyncStorage.setItem('access_token', JSON.stringify(data.access_token));
+          await AsyncStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
           await AsyncStorage.setItem('user_id', JSON.stringify(data.id));
           await AsyncStorage.setItem('role', JSON.stringify(data.role));
           Alert.alert("Đăng nhập thành công");

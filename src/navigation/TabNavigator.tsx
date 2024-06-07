@@ -8,6 +8,8 @@ import CartScreen from '../screens/CartScreen'
 import FavoritesScreen from '../screens/FavoritesScreen'
 import OrderHistoryScreen from '../screens/OrderHistoryScreen'
 
+
+
 import CustomIcon from '../components/customUIs/CustomIcon'
 import { COLORS } from '../theme/theme'
 import { BlurView } from '@react-native-community/blur'
@@ -44,7 +46,7 @@ const TabNavigator = () => {
                 <MaterialComunityIcons
                 name="cart"
                 size={30}
-                color={focused?COLORS.primaryOrangeHex:COLORS.primaryDarkGreyHex}
+                color={focused?COLORS.primaryOrangeHex:COLORS.primaryWhiteHex}
                 style={{marginRight: 5}}
                 />
             )
@@ -55,7 +57,7 @@ const TabNavigator = () => {
                 <MaterialComunityIcons
                 name="heart"
                 size={30}
-                color={focused?COLORS.primaryOrangeHex:COLORS.primaryDarkGreyHex}
+                color={focused?COLORS.primaryOrangeHex:COLORS.primaryWhiteHex}
                 style={{marginRight: 5}}
                 />
             )
@@ -66,12 +68,13 @@ const TabNavigator = () => {
                 <MaterialComunityIcons
                 name="bell"
                 size={30}
-                color={focused?COLORS.primaryOrangeHex:COLORS.primaryDarkGreyHex}
+                color={focused?COLORS.primaryOrangeHex:COLORS.primaryWhiteHex}
                 style={{marginRight: 5}}
                 />
             )
         }}
         ></Tab.Screen> 
+        
     </Tab.Navigator>
   )
 }

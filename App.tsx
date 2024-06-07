@@ -10,6 +10,9 @@ import TabNavigator from "./src/navigation/TabNavigator";
 
 import DetailsScreen from "./src/screens/DetailsScreen";
 import PaymentScreen from "./src/screens/PaymentScreen";
+import ProductDetailsScreen from "./src/screens/ProductDetailsScreen";
+import OrderScreen from "./src/screens/OrderScreen";
+import VNPayScreen from "./src/screens/VNPay";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,12 +35,20 @@ const AuthContainer = () => {
           component={TabNavigator}
           options={{animation: 'slide_from_bottom'}}></Stack.Screen>
         <Stack.Screen
-          name="Details"
-          component={DetailsScreen}
+          name="ProductDetailsScreen"
+          component={ProductDetailsScreen}
           options={{animation: 'slide_from_bottom'}}></Stack.Screen>
         <Stack.Screen
           name="Payment"
           component={PaymentScreen}
+          options={{animation: 'slide_from_bottom'}}></Stack.Screen>
+        <Stack.Screen
+          name="OrderScreen"
+          component={OrderScreen}
+          options={{animation: 'slide_from_bottom'}}></Stack.Screen>
+        <Stack.Screen
+          name="VNPayScreen"
+          component={VNPayScreen}
           options={{animation: 'slide_from_bottom'}}></Stack.Screen>
       </Stack.Navigator> : <AuthNavigator />}
     </NavigationContainer>

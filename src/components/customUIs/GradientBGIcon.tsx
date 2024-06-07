@@ -1,8 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import LinearGradient from 'react-native-linear-gradient';
 import { COLORS, SPACING } from '../../theme/theme';
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Link, useNavigation } from '@react-navigation/native';
+import HomeScreen from '../../screens/HomeScreen';
 
 interface GradientBGIconProps {
   name: string;
@@ -11,16 +13,20 @@ interface GradientBGIconProps {
 }
 
 const GradientBGIcon: React.FC<GradientBGIconProps> = ({name, color, size}) => {
+  const navigation = useNavigation();
+  
   return (
-    <View style={styles.Container}>
+    <TouchableOpacity style={styles.Container} onPress={() => navigation.goBack()}>
       <LinearGradient 
       start={{x: 0, y: 0}}
       end={{x: 1, y: 1}}
       colors={[COLORS.primaryGreyHex, COLORS.primaryBlackHex]}
-      style={styles.LinearGradientBG}>
+      style={styles.LinearGradientBG}
+      >
         <MaterialComunityIcons className='focus:rotate-180' name={name} color="white" size={size} />
+        
       </LinearGradient>
-    </View>
+    </TouchableOpacity>
   );
 };
 
