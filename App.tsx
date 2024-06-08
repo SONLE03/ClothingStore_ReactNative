@@ -18,6 +18,8 @@ import ChooseAddress from "./src/screens/ChooseAddress";
 import { OrderProvider } from "./src/screens/Order/OrderContext";
 //import OrderScreen from "./src/screens/Order/OrderScreen";
 import CartScreen from "./src/screens/CartScreen";
+import FavoritesScreen from "./src/screens/FavoritesScreen";
+
 
 import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
@@ -73,6 +75,7 @@ const AuthContainer = () => {
             component={CartScreen}
             options={{animation: 'slide_from_bottom'}}
             ></Stack.Screen>
+          
         </Stack.Navigator> : <AuthNavigator />}
       </NavigationContainer>
     </OrderProvider>

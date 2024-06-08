@@ -27,6 +27,7 @@ const OrderHistoryScreen = () => {
             const userId = await AsyncStorage.getItem('user_id');
             if (userId) {
                 const ParseCustomerId = JSON.parse(userId);
+                console.log(ParseCustomerId);
                 const orders = await GetAllOrderByCustomer(ParseCustomerId);
                 setOrders(orders);
                 console.log(orders);
@@ -59,13 +60,13 @@ const OrderHistoryScreen = () => {
         const filteredOrders = orders?.filter(order => order.status === status);
         return (
             <ScrollView className="p-4">
-                {filteredOrders.length === 0 ? (
+                {filteredOrders && filteredOrders.length === 0 ? (
                     <View className="flex-1 justify-center items-center mt-20">
                         <Image source={require('../../assets/app_images/no-order.png')} style={{ width: 200, height: 200 }} />
                         <Text className="text-center text-lg text-gray-600 font-semibold mt-4">You don't have any available orders here</Text>
                     </View>
                 ) : (
-                    filteredOrders.map(order => (
+                    filteredOrders?.map(order => (
                         <TouchableOpacity
                             key={order.orderId}
                             className="mb-4 border p-4 rounded-2xl bg-white"
@@ -199,23 +200,31 @@ const OrderHistoryScreen = () => {
                         ))}
                     </DataTable>
                     
-                    <TouchableOpacity className= 'flex flex-row justify-center items-center h-12 bg-orange-500 p-2 rounded-xl mt-8'  onPress={() => setModalVisible(false)} >
-                        <Text className="text-white font-bold text-lg">Close</Text>
-                    </TouchableOpacity>
-                    {selectedOrder && selectedOrder.status === 'Pending' && (
+                    
+                    {selectedOrder && selectedOrder.status === 'PENDING' && (
                         <>
-                            <Button title="Cancel Order" onPress={() => setCancelModalVisible(true)} />
+                            {/* <Button title="Cancel Order" onPress={() => setCancelModalVisible(true)} /> */}
+
+                            <TouchableOpacity className= 'flex flex-row justify-center items-center h-12 border-orange-600 border p-2 rounded-xl mt-8' onPress={() => setCancelModalVisible(true)} >
+                                <Text className="text-orange-600 font-bold text-lg">Cancel purchase</Text>
+                            </TouchableOpacity>   
+
                             <Modal visible={cancelModalVisible} animationType="slide">
                                 <View className="p-4 flex-1 justify-center items-center">
                                     <Text className="text-lg mb-4">Are you sure you want to cancel this order?</Text>
                                     <View className="flex-row">
-                                        <Button title="OK" onPress={handleCancelOrder} />
-                                        <Button title="Cancel" onPress={() => setCancelModalVisible(false)} />
+                                        <Button title="OK" color='orange' onPress={handleCancelOrder} />
+                                        <Button title="Cancel" color='orange' onPress={() => setCancelModalVisible(false)} />
                                     </View>
                                 </View>
                             </Modal>
                         </>
                     )}  
+
+                    <TouchableOpacity className= 'flex flex-row justify-center items-center h-12 bg-orange-500 p-2 rounded-xl mt-8'  onPress={() => setModalVisible(false)} >
+                        <Text className="text-white font-bold text-lg">Close</Text>
+                    </TouchableOpacity>
+
                     </View>
                     
             

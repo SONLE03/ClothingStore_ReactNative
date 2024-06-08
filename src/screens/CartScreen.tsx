@@ -135,7 +135,7 @@ const CartScreen = ({ navigation, route }: any) => {
   };
 
   return (
-    <View style={styles.ScreenContainer}>
+    <View className='flex-1 bg-gray-200'>
       <View className="flex flex-col h-screen">
         <View style={styles.ItemContainer}>
           <HeaderBar title="Cart" />
@@ -163,7 +163,7 @@ const CartScreen = ({ navigation, route }: any) => {
             
             <View className="flex flex-row justify-start items-center bg-gray-100 p-2 mr-1">
               <CheckBox className='left-0' value={selectAll} onValueChange={handleCheckAll} />
-              <Text className="text-orange-500 font-semibold text-lg mr-14">All</Text>
+              <Text className="text-orange-500 font-semibold text-lg mr-24">All</Text>
               <Text className="text-black font-semibold text-lg">Total Price:</Text>
               <Text className="text-orange-500 font-semibold text-lg"> {calculateTotalPrice().toLocaleString()}đ</Text>
             </View>
@@ -196,10 +196,7 @@ const CartScreen = ({ navigation, route }: any) => {
 };
 
 const styles = StyleSheet.create({
-  ScreenContainer: {
-    flex: 1,
-    backgroundColor: COLORS.primaryWhiteHex,
-  },
+  
   ScrollViewFlex: {
     flexGrow: 1,
   },

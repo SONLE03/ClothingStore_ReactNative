@@ -1,91 +1,111 @@
-import {StyleSheet, Text, View, ImageProps} from 'react-native';
 import React from 'react';
-import ImageBackgroundInfo from '../customUIs/ImageBackgroundInfo';
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity } from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 import LinearGradient from 'react-native-linear-gradient';
-import {
-  BORDERRADIUS,
-  COLORS,
-  FONTFAMILY,
-  FONTSIZE,
-  SPACING,
-} from '../../theme/theme';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Product } from '../../types';
 
-interface FavoritesItemCardProps {
-  id: string;
-  imagelink_portrait: ImageProps;
-  name: string;
-  special_ingredient: string;
-  type: string;
-  ingredients: string;
-  average_rating: number;
-  ratings_count: string;
-  roasted: string;
-  description: string;
-  favourite: boolean;
-  ToggleFavouriteItem: any;
-}
-
-const FavoritesItemCard: React.FC<FavoritesItemCardProps> = ({
-  id,
-  imagelink_portrait,
-  name,
-  special_ingredient,
-  type,
-  ingredients,
-  average_rating,
-  ratings_count,
-  roasted,
-  description,
-  favourite,
-  ToggleFavouriteItem,
-}) => {
+const FavouriteItemCard: React.FC<{
+  item: Product;
+  isChecked: boolean;
+  onCheck: (productItemId: string, isChecked: boolean) => void;
+  onDelete: (productItemId: string) => void;
+}> = ({ item, isChecked, onCheck, onDelete }) => {
   return (
-    <View style={styles.CardContainer}>
-      <ImageBackgroundInfo
-        EnableBackHandler={false}
-        imagelink_portrait={imagelink_portrait}
-        type={type}
-        id={id}
-        favourite={favourite}
-        name={name}
-        special_ingredient={special_ingredient}
-        ingredients={ingredients}
-        average_rating={average_rating}
-        ratings_count={ratings_count}
-        roasted={roasted}
-        ToggleFavourite={ToggleFavouriteItem}
-      />
-      <LinearGradient
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 1}}
-        colors={[COLORS.primaryGreyHex, COLORS.primaryBlackHex]}
-        style={styles.ContainerLinearGradient}>
-        <Text style={styles.DescriptionTitle}>Description</Text>
-        <Text style={styles.DescriptionText}>{description}</Text>
-      </LinearGradient>
+    <LinearGradient
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      colors={['#FFF', '#FFF']}
+      style={styles.cardContainer}
+    >
+    <View className='w-full flex flex-row justify-between'>
+      <View className='w-full' style={styles.cardContent}>
+        {/* <CheckBox
+          value={isChecked}
+          onValueChange={(newValue) => onCheck(item.id, newValue)}
+        /> */}
+        {item.images ? (
+          <ImageBackground
+            source={{ uri: item.images[0] }}
+            resizeMode="cover"
+            style={styles.image}
+          />
+        ) : (
+          <View style={styles.imagePlaceholder} />
+        )}
+
+        <View className='mr-2 flex-col'>
+          <Text style={styles.productName}>{item.product_Name}</Text>
+          <Text style={styles.productDetail}>Size: {item.branch}</Text>
+          <Text style={styles.productDetail}>Color: {item.category}</Text>
+          <View style={styles.priceContainer}>
+            <Text style={styles.price}>
+              đ<Text style={styles.priceValue}>{item.price.toLocaleString()}</Text>
+            </Text>
+          </View>
+        </View>
+
+        <TouchableOpacity className=' right-0' onPress={() => onDelete(item.id)}>
+          <MaterialCommunityIcons name="trash-can" size={24} color="red" />
+        </TouchableOpacity>
+      </View>
     </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  CardContainer: {
-    borderRadius: BORDERRADIUS.radius_25,
+  cardContainer: {
+    borderRadius: 10,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  image: {
+    width: 96,
+    height: 96,
+    borderRadius: 10,
     overflow: 'hidden',
   },
-  ContainerLinearGradient: {
-    gap: SPACING.space_10,
-    padding: SPACING.space_20,
+  imagePlaceholder: {
+    width: 96,
+    height: 96,
+    backgroundColor: '#ccc',
+    borderRadius: 10,
   },
-  DescriptionTitle: {
-    fontFamily: FONTFAMILY.poppins_semibold,
-    fontSize: FONTSIZE.size_16,
-    color: COLORS.secondaryLightGreyHex,
+  productName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#000',
+    marginTop: 8,
   },
-  DescriptionText: {
-    fontFamily: FONTFAMILY.poppins_regular,
-    fontSize: FONTSIZE.size_14,
-    color: COLORS.primaryWhiteHex,
+  productDetail: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  price: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#ff6600',
+  },
+  priceValue: {
+    color: '#000',
+    fontWeight: '700',
   },
 });
 
-export default FavoritesItemCard;
+export default FavouriteItemCard;

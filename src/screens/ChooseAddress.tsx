@@ -59,7 +59,7 @@ const ChooseAddress = ({ navigation }: any) => {
             </TouchableOpacity>
           ))}
           <View className='flex flex-row w-full justify-center items-center'>
-            <Button icon="add" className='bg-orange-500 mt-5 w-48 rounded-lg' textColor='white' onPress={() => navigation.navigate('AddressScreen')}>Add new Address</Button>
+            <Button icon="plus" className='bg-orange-500 mt-5 w-48 rounded-lg' textColor='white' onPress={() => navigation.navigate('AddressScreen')}>Add new Address</Button>
             
           </View>
           

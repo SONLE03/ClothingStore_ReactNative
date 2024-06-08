@@ -14,7 +14,7 @@ const loginUser = async (username: string, password: string) => {
       const data = await response.json();
       return data;
     } catch (error) {
-      throw new Error('Đã xảy ra lỗi khi đăng nhập');
+      //throw new Error('Đã xảy ra lỗi khi đăng nhập');
     }
   };
   

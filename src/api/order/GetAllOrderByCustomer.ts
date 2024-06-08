@@ -24,6 +24,7 @@ export const GetAllOrderByCustomer = async (customerId: string) => {
     try {
         const response = await axios.request(config);
         return response.data;
+        //console.log(response.data);
     } catch (error) {
         console.error(error);
     }

@@ -17,6 +17,8 @@ const ChangePasswordScreen = ({ navigation }: any) => {
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
     const [error, setError] = useState('');
+    const [secureEntry, setSecureEntry] = useState(true);
+
 
     const handleChangePassword = async () => {
         if (password !== repeatPassword) {
@@ -44,20 +46,37 @@ const ChangePasswordScreen = ({ navigation }: any) => {
         <ImageBackground className="flex-1 justify-center items-center bg-white p-4" source={require('../../assets/auth-bg.png')}>
             <View className="w-full max-w-md p-5 bg-white rounded-xl border-2 border-orange-400 flex">
                 <Text className="text-xl font-semibold mb-4 text-center">Change Password</Text>
-                <TextInput
-                    className="border border-gray-400 p-3 mb-4 focus:border-orange-400 rounded-xl"
-                    placeholder="New Password"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                />
-                <TextInput
-                    className={`border p-3 rounded-xl focus:border-orange-400 mb-4 ${error ? 'border-red-500' : 'border-gray-400'}`}
-                    placeholder="Retype New Password"
-                    value={repeatPassword}
-                    onChangeText={setRepeatPassword}
-                    secureTextEntry
-                />
+
+                <View className={`flex-row items-center justify-between border py-1 px-2 rounded-xl focus:border-orange-400 mb-4 ${error ? 'border-red-500' : 'border-gray-400'}`}>
+                    <TextInput
+                        
+                        placeholder="New Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={secureEntry}
+                    />
+                    {password ? (
+                        <TouchableOpacity className='' onPress={() => setSecureEntry((prev) => !prev)}>
+                            <Ionicons className='mt-4' name={secureEntry ? 'eye-off' : 'eye'} size={24} color="black" />
+                        </TouchableOpacity>
+                        ) : null}
+                </View>
+                
+                <View className={`flex-row items-center justify-between border py-1 px-2 rounded-xl focus:border-orange-400 mb-4 ${error ? 'border-red-500' : 'border-gray-400'}`}>
+                    <TextInput
+                        
+                        placeholder="Retype New Password"
+                        value={repeatPassword}
+                        onChangeText={setRepeatPassword}
+                        secureTextEntry={secureEntry}
+                    />
+
+                    {repeatPassword ? (
+                      <TouchableOpacity className='' onPress={() => setSecureEntry((prev) => !prev)}>
+                        <Ionicons className='mt-4' name={secureEntry ? 'eye-off' : 'eye'} size={24} color="black" />
+                      </TouchableOpacity>
+                    ) : null}
+                </View>
                 {error && <Text className="text-red-500 mt-0">{error}</Text>}
                 <TouchableOpacity
                     className="bg-orange-500 rounded-xl p-3 mt-4"

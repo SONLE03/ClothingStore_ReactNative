@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import HomeScreen from '../screens/HomeScreen'
 import CartScreen from '../screens/CartScreen'
-import FavoritesScreen from '../screens/FavoritesScreen'
+import FavoritesScreen from '../screens/Favorite/FavoriteScreen'
 import OrderHistoryScreen from '../screens/Order/OrderHistoryScreen'
 
 
@@ -16,6 +16,7 @@ import { BlurView } from '@react-native-community/blur'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Profile from '../screens/Profile/Profile'
+import FavoriteScreen from '../screens/Favorite/FavoriteScreen'
 
 
 const Tab = createBottomTabNavigator();
@@ -43,7 +44,7 @@ const TabNavigator = () => {
         ></Tab.Screen>
         
         
-        <Tab.Screen name="Favorite" component={FavoritesScreen} options={{
+        <Tab.Screen name="Favorite" component={FavoriteScreen} options={{
             tabBarIcon: ({focused, color, size}) => (
                 <MaterialComunityIcons
                 name="heart"

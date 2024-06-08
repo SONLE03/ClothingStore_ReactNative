@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Dimensions,
   ImageBackground,
   Text,
   TouchableOpacity,
   View,
+  Animated
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -34,6 +35,24 @@ const ClothesCard: React.FC<ClothesCardProps> = ({
   images,
   buttonPressHandler,
 }) => {
+
+  const spinValue = new Animated.Value(0);
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(spinValue, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: true,
+      })
+    ).start();
+  }, []);
+
+  const spin = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+  
   return (
     <LinearGradient 
       start={{ x: 0, y: 0 }}
@@ -48,25 +67,27 @@ const ClothesCard: React.FC<ClothesCardProps> = ({
           resizeMode="cover"
           className="rounded-lg mb-4 overflow-hidden"
         >
-          <View className='w-full flex justify-end items-center'>
-            <View className="flex-row bg-black bg-opacity-50 items-center justify-center gap-2 p-4 absolute top-0 right-0 rounded-bl-lg rounded-tr-lg">
+          <View className='w-full flex justify-end items-center bg-opacity-10'>
+            <View className="flex-row border border-red-500 bg-opacity-5 items-start justify-start h-10 gap-2 p-1 absolute top-0 left-0 rounded-br-xl rounded-tl-lg">
+            <Animated.View style={{ transform: [{ rotate: spin }] }}>
               <MaterialCommunityIcons
                 name="star"
                 size={16}
-                color="#FFA500"
+                color="red"
               />
-              <Text className="text-white text-base font-medium">{productStatus}</Text>
+              </Animated.View>
+              <Text className="text-red-500 text-base font-medium">New</Text>
             </View>
           </View>
         </ImageBackground>
       ) : (
         <View style={{ width: CARD_WIDTH, height: CARD_WIDTH }} className="rounded-lg mb-4 overflow-hidden bg-gray-300" />
       )}
-      <Text className="text-black text-lg font-medium text-ellipsis overflow-hidden">{product_Name}</Text>
-      <Text className="text-black text-xs font-light truncate">{description}</Text>
+      <Text className="text-black text-lg font-medium text-ellipsis overflow-visible h-10">{product_Name}</Text>
+      <Text className="text-black text-xs font-light truncate">{category}</Text>
       <View className="flex-row justify-between items-center mt-4">
         <Text className="text-orange-500 text-lg font-semibold">
-          $<Text className="text-black font-semibold">{price.toLocaleString()}</Text>
+          đ<Text className="text-black font-semibold">{price.toLocaleString()}</Text>
         </Text>
         <TouchableOpacity className='bg-orange-500 p-2 rounded-lg'
           onPress={() => {

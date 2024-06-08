@@ -19,8 +19,8 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Sae } from 'react-native-textinput-effects';
 
 
-const LoginScreen: React.FC = () => {
-  const navigation = useNavigation();
+const LoginScreen = ({navigation} : any) => {
+  //const navigation = useNavigation();
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const { authEmitter } = useAuth();
@@ -32,11 +32,11 @@ const LoginScreen: React.FC = () => {
   }, []);
 
   const handleRegister = () => {
-    navigation.navigate('SignupScreen' as never);
+    navigation.navigate('SignupScreen');
   };
 
   const handleForgotPassword = () => {
-    navigation.navigate('ForgotPasswordScreen' as never);
+    navigation.navigate('ForgotPassword');
   };
 
   const handleLogin = async () => {
@@ -138,7 +138,13 @@ const LoginScreen: React.FC = () => {
             <Text className='underline' style={{ color: 'red', fontWeight: '700' }}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          <Button className='flex justify-center items-center mt-8 bg-orange-400 h-12 text-xl ' textColor='white' onPress={handleLogin}>Login</Button>
+          <TouchableOpacity className='flex justify-center items-center mt-8 bg-orange-400 h-12 w-80 text-xl rounded-2xl' onPress={handleLogin}>
+            <Text className='text-white text-lg font-bold'>Login </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity className='flex justify-center items-center mt-8 border-orange-500 border-2 h-12 w-80 text-xl rounded-2xl' onPress={() => navigation.navigate('SignupScreen')}>
+            <Text className='text-orange-500 text-lg font-bold'>Register new account </Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
     

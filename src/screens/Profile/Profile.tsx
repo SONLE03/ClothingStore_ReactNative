@@ -13,7 +13,7 @@ import { UserPropsDetail } from '../../types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const ProfileScreen = ({ navigation }: { navigation: any }) => {
+const ProfileScreen = ({ navigation }: any ) => {
     const [user, setUser] = useState<UserPropsDetail | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [fullName, setFullName] = useState('');
@@ -25,7 +25,7 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
         const fetchUser = async () => {
             const userData = await GetMe();
             setUser(userData);
-            setFullName(userData.fullname);
+            setFullName(userData.fullName);
             setPhone(userData.phone);
             console.log(fullName, phone);
         };
@@ -85,7 +85,7 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
                         </View>
                         
                         <View className="flex flex-col ml-2">
-                            <Text className=" font-semibold text-sm text-black bg-black mb-4">{fullName}</Text>
+                            <Text className=" font-semibold text-sm text-black bg-white mb-4">{fullName}</Text>
                             <Text className=" text-sm p-1 rounded-2xl border border-orange-500  text-ellipsis text-orange-700">{user.email}</Text>
                         </View>
                     </View>

@@ -109,14 +109,14 @@ const CreateCustomerAddressScreen = ({ navigation }: any) => {
     <View className='flex-1 justify-center items-center h-screen w-full'>
         
       <View className='w-full h-screen px-8 py-4 bg-white rounded-lg shadow-md p-8'>
-      <TouchableOpacity className='flex-row justify-between items-center mb-6 border border-gray-400 rounded-xl p-2 bg-white'>
+      <TouchableOpacity className='flex-row justify-between items-center mb-14 border border-gray-400 rounded-xl p-2 bg-white'>
           <Ionicons onPress={() => navigation.goBack()} name="arrow-back" size={24} color="#333" />
           <Text className='flex-row text-2xl font-semibold space-x-2 text-black'>
-            <MaterialCommunityIcons className='mr-2' name="format-color-fill" size={30} color="#333" />
-            Add Branch</Text>
+            <Ionicons className='mr-2' name="location" size={25} color="#333" />
+            Add new address</Text>
           <View style={{ width: 24 }} />  
       </TouchableOpacity>
-        <Text className='text-lg font-bold mb-5 text-center'>Create Address</Text>
+        
 
         <Text className='text-sm mb-1 font-semibold'>Phone number</Text>
         <TextInput

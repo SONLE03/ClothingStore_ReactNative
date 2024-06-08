@@ -5,24 +5,38 @@ import {
     Text,
     Alert,
     TouchableOpacity,
+    ImageBackground,
   } from 'react-native';
 import InputField from '../../components/customUIs/InputField';
 import PasswordInput from '../../components/customUIs/PasswordInput';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomButton from '../../components/customUIs/CustomButton';
+
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../util/AuthContext';
-import { AsyncLocalStorage } from 'async_hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { Fumi, Sae } from 'react-native-textinput-effects';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { SignUp } from '../../api/auth/SignUp';
+import { Button, Dialog } from 'react-native-paper';
+
 const SignupScreen = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
+  const [fullname, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigation = useNavigation();
+
+  const [secureEntry, setSecureEntry] = useState(true);
+  const [visible, setVisible] = useState(false);
+
+  const hideDialog = () => setVisible(false);
   // test logout
   const { authEmitter } = useAuth();
 
@@ -34,18 +48,21 @@ const SignupScreen = () => {
       }, []);
   
   const handleSignup = async () => {
-    // const result = isValidForm(email, password, name, phone);
-    // if (!result) {
-    //   Alert.alert(errorMessage);
-    // } else {
-    //     const signUpResult = await signup({ email, password, name, phone });
-    //     if (signUpResult instanceof Error) {
-    //         Alert.alert("Error", signUpResult.message);
-    //     } else {
-    //         Alert.alert("Please check your email and confirm account activation");
-    //         navigation.navigate("LoginScreen");
-    //     }
-    // }
+    const result = isValidForm(email, password, fullname, phone);
+    if (!result) {
+      Alert.alert(errorMessage);
+    } else {
+        const signUpResult = await SignUp({ email, password, fullname, phone });
+        if (signUpResult instanceof Error) {
+            Alert.alert("Error", signUpResult.message);
+        } else {
+            //Alert.alert("Please check your email and confirm account activation");
+            setTimeout(() => {
+                navigation.navigate('LoginScreen');
+            }, 3000);
+            setVisible(true);
+        }
+    }
     await AsyncStorage.clear();
     authEmitter.emit('loginStatusChanged');
   };
@@ -88,80 +105,99 @@ const SignupScreen = () => {
   };
 
     return (
-        <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+        <ImageBackground source={require('../../assets/auth-bg.png')} style={{flex: 1, justifyContent: 'center'}} className='p-4'>
             <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')} style={{position: 'absolute', top: 20, left: 20}}>
-                    <Ionicons name="arrow-back" size={24} color="#333" />
+                <Ionicons name="caret-back-circle-outline" size={40} color="#c05621" />
             </TouchableOpacity>
-            <View style={{paddingHorizontal: 25}}>
-                <Text
-                style={{
-                    fontFamily: 'Roboto-Medium',
-                    fontSize: 28,
-                    fontWeight: '500',
-                    color: '#333',
-                    marginBottom: 30,
-                }}>
-                Register
-                </Text>
-                <InputField
-                label={'Email'}
-                icon={
-                    <MaterialIcons
-                    name="alternate-email"
-                    size={20}
-                    color="#666"
-                    style={{marginRight: 5}}
-                    />
-                }
-                marginBottom={30}
-                keyboardType="email-address"
-                onChangeText={email => setEmail(email)}
-                />
-                <InputField
-                label={'Phone '}
-                icon={
-                    <MaterialIcons
-                    name="smartphone"
-                    size={20}
-                    color="#666"
-                    style={{marginRight: 5}}
-                    />
-                }
-                marginBottom={30}
-                keyboardType="phone-pad"
-                onChangeText={phone => setPhone(phone)}
-                />
-                <InputField
-                label={'Full name'}
-                icon={
-                    <MaterialIcons
-                    name="face"
-                    size={20}
-                    color="#666"
-                    style={{marginRight: 5}}
-                    />
-                }
-                marginBottom={30}
-                keyboardType="email-address"
-                onChangeText={name => setName(name)}
-                />
-                <PasswordInput
-                label={'Password'}
-                icon={
-                    <Ionicons
-                    name="lock-closed-outline"
-                    size={20}
-                    color="#666"
-                    style={{marginRight: 5}}
-                />
-                }
-                marginBottom={30}
-                onChangeText={password => setPassword(password)}
-                />
-                <CustomButton label={"Register"} onPress={handleSignup}/>
-            </View>
+            <View className='justify-center items-center flex-col bg-white p-2 rounded-xl border border-orange-600'>
+              
+                <Text className='text-2xl font-bold text-orange-500 mt-2 mb-2'>Register an account</Text>
 
-        </SafeAreaView>
+                <Fumi className='border border-orange-500 rounded-xl mt-4 w-80'
+                    label={'Your email'}
+                    iconClass={MaterialCommunityIcons}
+                    iconName={'email'}
+                    iconColor={'#f95a25'}
+                    iconSize={25}
+                    inputPadding={18}
+                    onChangeText={email => setEmail(email)}
+                    require
+                />
+                
+                <Fumi className='border border-orange-500 rounded-xl mt-4 w-80'
+                    label={'Your phone'}
+                    iconClass={MaterialCommunityIcons}
+                    iconName={'phone'}
+                    iconColor={'#f95a25'}
+                    iconSize={25}
+                    inputPadding={18}
+                    onChangeText={phone => setPhone(phone)}
+                    keyboardType="numeric"
+                    require
+                />
+
+                <Fumi className='border border-orange-500 rounded-xl mt-4 w-80'
+                    label={'Full name'}
+                    iconClass={MaterialCommunityIcons}
+                    iconName={'account'}
+                    iconColor={'#f95a25'}
+                    iconSize={25}
+                    inputPadding={18}
+                    onChangeText={fullname => setName(fullname)}
+                    require
+                />
+
+              <View className='flex flex-row justify-center items-center text-black bg-white space-x-1 p-1 mb-4 mt-4 w-80 h-16 border border-gray-600 rounded-2xl'>
+                <Ionicons
+                    name="shield-checkmark"
+                    size={24}
+                    color="#9ca3af"
+                    style={{ marginRight: 5 }}
+                  />
+                  <View className='flex flex-col'>
+                    <View className='flex flex-row items-center'>
+                      <Sae className='bg-white w-60 h-10 text-black'
+                        secureTextEntry={secureEntry}
+                        label={'Password'}
+                        labelStyle={{ color: '#6b7280' }}
+                        
+                        //keyboardType="password"
+                        inputStyle={{ color: 'black' }}
+                        inputPadding={10}
+                        labelHeight={20}
+                        iconClass={MaterialCommunityIcons}
+                        iconName={'pencil'}
+                        iconColor={'#000'}
+                        borderHeight={2}
+                        height={35}
+                        require
+                        onChangeText={(password) => setPassword(password)}
+                      />
+                      {password ? (
+                        <TouchableOpacity onPress={() => setSecureEntry((prev) => !prev)}>
+                          <Ionicons className='mt-4' name={secureEntry ? 'eye-off' : 'eye'} size={24} color="black" />
+                        </TouchableOpacity>
+                      ) : null}
+                    </View>
+                    
+                    <View className='mt-4'></View>
+                </View>
+              </View>
+
+              <TouchableOpacity className='flex justify-center items-center mt-4 mb-2 bg-orange-500 p-2 h-12 w-80 text-xl rounded-2xl' onPress={handleSignup}>
+                <Text className='text-white text-lg font-bold'>Register new account </Text>
+              </TouchableOpacity>
+              
+            </View>
+            <Dialog style={{ backgroundColor: '#F0FFF4' }} visible={visible} onDismiss={hideDialog}>
+              <Dialog.Icon icon="sticker-check-outline" size={35} color='green' />
+              <Dialog.Title className="text-center text-green-600 font-semibold">Create account successfully!</Dialog.Title>
+              <Dialog.Content>
+                <Text className='text-center text-green-600' >Congratulation! You have successfully created an account! Lets go to login!</Text>
+              </Dialog.Content>
+            </Dialog>
+            
+        </ImageBackground>
     )
 }
 

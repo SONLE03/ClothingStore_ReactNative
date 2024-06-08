@@ -58,6 +58,11 @@ export interface ProductItemInCart {
     product_Name: string;
     image: string;   
 }
+
+//Favourite
+export interface FavouriteItems {
+    productIds: string[];
+}
     
 //Coupons
 export interface ExistedCoupon {
@@ -157,7 +162,7 @@ export interface UserProps {
 export interface UserPropsDetail {
     createdAt: string;
     id: string;
-    fullname: string;
+    fullName: string;
     phone: string;
     email: string;
     password: string;
