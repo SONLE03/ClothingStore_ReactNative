@@ -7,7 +7,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+//import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { COLORS, SPACING } from '../theme/theme';
 import HeaderBar from '../components/customUIs/Headerbar';
 import EmptyListAnimation from '../components/animation/EmptyListAnimation';
@@ -126,7 +126,7 @@ const CartScreen = ({ navigation, route }: any) => {
     }
   };
 
-  const tabBarHeight = useBottomTabBarHeight();
+  //const tabBarHeight = useBottomTabBarHeight();
 
   const buttonPressHandler = () => {
     const selectedCartItems = CartList.filter(item => selectedItems.has(item.productItemId));
@@ -136,7 +136,6 @@ const CartScreen = ({ navigation, route }: any) => {
 
   return (
     <View style={styles.ScreenContainer}>
-      <StatusBar backgroundColor={COLORS.primaryBlackHex} />
       <View className="flex flex-col h-screen">
         <View style={styles.ItemContainer}>
           <HeaderBar title="Cart" />

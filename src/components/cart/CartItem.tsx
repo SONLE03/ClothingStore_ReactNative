@@ -27,7 +27,7 @@ const CartItem: React.FC<{
   useEffect(() => {
     const timer = setTimeout(() => {
       onUpdateQuantity(item.productItemId, quantity);
-    }, 5000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [quantity]);

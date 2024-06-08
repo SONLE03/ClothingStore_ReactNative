@@ -15,7 +15,7 @@ export const DeleteProductInCart = async (customerId: string, cartItem: CartItem
   const parseToken = JSON.parse(accessToken);
 
 
-  console.log(DeleteCartUrl);
+  //console.log(DeleteCartUrl);
 
   const data = JSON.stringify({
     cartItems: cartItem,

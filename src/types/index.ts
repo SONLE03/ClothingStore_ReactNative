@@ -86,21 +86,83 @@ export interface CreateOrderRequest {
     orderItemRequestList: OrderItemRequest[];
 }
 
+export interface Orders {
+    orderId: string;
+    orderDate: string;
+    total: number;
+    customerId: string;
+    customerName: string;
+    customerPhone: string;
+    status: string;
+}
+
+export interface OrderDetail {
+    productItem: string;
+    productName: string;
+    quantity: number;
+    price: number;
+    total: number;
+}
+
 //Address
 
-export interface Address {
-    phone: number;
-    province: number;
-    district: number;
-    ward: number;
-    specificAddress: number;
+export interface AddressRequest {
+    phone: string;
+    province: string;
+    district: string;
+    ward: string;
+    specificAddress: string;
 }
 
 export interface AddressInfo {
     id: string;
-    phone: number;
-    province: number;
-    district: number;
-    ward: number;
-    specificAddress: number;
+    phone: string;
+    province: string;
+    district: string;
+    ward: string;
+    specificAddress: string;
 }
+
+//Province 
+// types.ts
+export interface Province {
+    province_id: string;
+    province_name: string;
+    province_type: string;
+  }
+  
+  export interface District {
+    district_id: string;
+    district_name: string;
+  }
+  
+  export interface Ward {
+    ward_id: string;
+    ward_name: string;
+  }
+  
+//User
+export interface UserProps {
+    createdAt: string;
+    id: string;
+    fullName: string;
+    phone: string;
+    email: string;
+    password: string;
+    role: string;
+    enabled: boolean;
+    image: string | null;
+}
+
+export interface UserPropsDetail {
+    createdAt: string;
+    id: string;
+    fullname: string;
+    phone: string;
+    email: string;
+    password: string;
+    role: string;
+    enabled: boolean;
+    image: string | null;
+}
+  

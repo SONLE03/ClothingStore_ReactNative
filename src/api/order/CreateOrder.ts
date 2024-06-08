@@ -11,7 +11,7 @@ export const CreateOrder = async (order: CreateOrderRequest) => {
 
     const CreateOrderUrl = BASE_URL + '/orders';
     const accessToken = await AsyncStorage.getItem('access_token');
-
+    console.log(order);
     if (accessToken) {
         const parsedToken = ParseJSON(accessToken);
 

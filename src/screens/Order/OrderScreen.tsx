@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { Button, Checkbox, Dialog } from 'react-native-paper';
-import { OrderItem, ExistedCoupon, AddressInfo } from '../types';
-import { GetAllCoupons } from '../api/coupon/GetAllCoupons';
-import { GetAllAdressByCustomer } from '../api/address/GetAllAdressByCustomer';
-import { CreateOrder } from '../api/order/CreateOrder';
-import { GetVNPayUrl } from '../api/order/VNPay';
+import { OrderItem, ExistedCoupon, AddressInfo } from '../../types';
+import { GetAllCoupons } from '../../api/coupon/GetAllCoupons';
+import { GetAllAdressByCustomer } from '../../api/address/GetAllAdressByCustomer';
+import { CreateOrder } from '../../api/order/CreateOrder';
+import { GetVNPayUrl } from '../../api/order/VNPay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
-import HeaderBar from '../components/customUIs/Headerbar';
+import HeaderBar from '../../components/customUIs/Headerbar';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -25,17 +25,20 @@ const OrderScreen = ({ navigation }: any) => {
   const [addresses, setAddresses] = useState<AddressInfo[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [showAddressModal, setShowAddressModal] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<number>(2); // default to COD
+  const [paymentMethod, setPaymentMethod] = useState<number>(0); // default to COD
   const [discount, setDiscount] = useState<number>(0);
   const [totalAmount, setTotalAmount] = useState<number>(amount);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const hideDialog = () => setVisible(false);
+  console.log(selectedAddress)
 
   useEffect(() => {
     fetchCoupons();
     fetchAddresses();
+    //handleSetSelectedAddress();
+    
   }, []);
 
   useEffect(() => {
@@ -48,6 +51,16 @@ const OrderScreen = ({ navigation }: any) => {
     setCoupons(response);
   };
 
+  const handleSetSelectedAddress = async () => {
+    const Address = await AsyncStorage.getItem('address');
+    if (Address) {
+      setSelectedAddress(JSON.parse(Address));
+      //console.log(selectedAddress);
+    }
+    navigation.navigate('ChooseAddress')
+    
+  };
+
   const fetchAddresses = async () => {
     const customerId = await AsyncStorage.getItem('user_id');
     if (customerId !== null) {
@@ -57,6 +70,7 @@ const OrderScreen = ({ navigation }: any) => {
     }
   };
 
+  
   const calculateDiscountAndTotal = () => {
     if (selectedCoupon) {
       const selectedCouponObj = coupons.find(coupon => coupon.id === selectedCoupon);
@@ -97,24 +111,25 @@ const OrderScreen = ({ navigation }: any) => {
     const response = await CreateOrder(newOrder);
     const orderId = response;
     const amount = totalAmount;
-    console.log(response);
     
     if (response.success) {
       setLoading(true);
-      if (paymentMethod === 2) {
+      if (paymentMethod === 1) {
         const vnpayUrl = await GetVNPayUrl(amount, 'Thanh toan don hang by VNPAY', orderId);
         console.log(vnpayUrl);
         
         navigation.navigate('VNPayScreen', { vnpayUrl });
       } else {
         Alert.alert('Order created successfully!');
-        //navigation.navigate('OrderHistoryScreen');
+        navigation.navigate('OrderHistoryScreen');
       }
     } else {
       //Alert.alert('Order created successfully!');
       setLoading(false);
       setVisible(true);
-    }
+      AsyncStorage.removeItem('address');
+      navigation.navigate('OrderHistoryScreen');
+      }
 
   } catch (error) {
     console.log(error);
@@ -142,8 +157,15 @@ const OrderScreen = ({ navigation }: any) => {
             <Text className='text-sm font-bold mt-2'>Delivery Address</Text>
           </View>
         
-        <TouchableOpacity className='p-1 rounded-lg bg-white h-20' onPress={() => setShowAddressModal(true)}>
-          <Text style={styles.selectedAddress}>Selected Address: {selectedAddress}</Text>
+        <TouchableOpacity className='p-1 flex flex-col rounded-lg bg-white h-20' onPress={(handleSetSelectedAddress)}>
+          <Text style={styles.selectedAddress}>Selected Address: {addresses.find(address => address.id === selectedAddress)?.phone} - 
+            {addresses.find(address => address.id === selectedAddress)?.province} - 
+            {addresses.find(address => address.id === selectedAddress)?.district} -
+            {addresses.find(address => address.id === selectedAddress)?.ward} -
+            {addresses.find(address => address.id === selectedAddress)?.specificAddress}
+            
+            </Text>
+          
         </TouchableOpacity>
         </View>
 
@@ -184,11 +206,11 @@ const OrderScreen = ({ navigation }: any) => {
         <Text className='text-lg font-semibold my-2'>Select Payment Method</Text>
         <View className='flex flex-row mb-2 bg-white h-14 my-4 border border-orange-500 w-full'>
           <TouchableOpacity onPress={() => setPaymentMethod(1)} style={styles.paymentMethodButton}>
-            <Checkbox color='#f97316' status={paymentMethod === 1 ? 'checked' : 'unchecked'} />
+            <Checkbox color='#f97316' status={paymentMethod === 0 ? 'checked' : 'unchecked'} />
             <Text className='font-semibold'>Pay by Cash</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setPaymentMethod(2)} style={styles.paymentMethodButton}>
-            <Checkbox color='#f97316' status={paymentMethod === 2 ? 'checked' : 'unchecked'} />
+            <Checkbox color='#f97316' status={paymentMethod === 1 ? 'checked' : 'unchecked'} />
             <Text className='font-semibold'>Pay via VNPay</Text>
           </TouchableOpacity>
         </View>
@@ -205,20 +227,7 @@ const OrderScreen = ({ navigation }: any) => {
 
       <Button loading={loading} mode="contained" onPress={handleCreateOrder} className='m-2 bg-orange-500 rounded-xl'>Create Order</Button>
 
-      <Modal visible={showAddressModal} animationType="slide">
-        <View style={styles.modalContainer}>
-          <Text className='text-center' style={styles.modalTitle}>Select Address</Text>
-          {addresses?.map(address => (
-            <TouchableOpacity key={address.id} onPress={() => {
-              setSelectedAddress(address.id);
-              setShowAddressModal(false);
-            }} style={styles.addressContainer}>
-              <Text style={styles.addressDetails}>{address.district}, {address.ward}, {address.province}</Text>
-            </TouchableOpacity>
-          ))}
-          <Button className='bg-orange-500' textColor='white' onPress={() => setShowAddressModal(false)}>Close</Button>
-        </View>
-      </Modal>
+      
       <Dialog style={{ backgroundColor: '#F0FFF4' }} visible={visible} onDismiss={hideDialog}>
         <Dialog.Icon icon="sticker-check-outline" size={35} color='green' />
         <Dialog.Title className="text-center text-green-600 font-semibold">Congratulation! Purchase successfully!</Dialog.Title>

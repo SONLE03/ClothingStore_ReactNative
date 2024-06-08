@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeScreen from '../screens/HomeScreen'
 import CartScreen from '../screens/CartScreen'
 import FavoritesScreen from '../screens/FavoritesScreen'
-import OrderHistoryScreen from '../screens/OrderHistoryScreen'
+import OrderHistoryScreen from '../screens/Order/OrderHistoryScreen'
 
 
 
@@ -15,6 +15,7 @@ import { COLORS } from '../theme/theme'
 import { BlurView } from '@react-native-community/blur'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Profile from '../screens/Profile/Profile'
 
 
 const Tab = createBottomTabNavigator();
@@ -41,17 +42,7 @@ const TabNavigator = () => {
         }}  
         ></Tab.Screen>
         
-        <Tab.Screen name="Cart" component={CartScreen} options={{
-            tabBarIcon: ({focused, color, size}) => (
-                <MaterialComunityIcons
-                name="cart"
-                size={30}
-                color={focused?COLORS.primaryOrangeHex:COLORS.primaryWhiteHex}
-                style={{marginRight: 5}}
-                />
-            )
-        }} 
-        ></Tab.Screen>
+        
         <Tab.Screen name="Favorite" component={FavoritesScreen} options={{
             tabBarIcon: ({focused, color, size}) => (
                 <MaterialComunityIcons
@@ -73,7 +64,19 @@ const TabNavigator = () => {
                 />
             )
         }}
-        ></Tab.Screen> 
+        ></Tab.Screen>
+
+        <Tab.Screen name="Profile" component={Profile} options={{
+            tabBarIcon: ({focused, color, size}) => (
+                <MaterialComunityIcons
+                name="account"
+                size={30}
+                color={focused?COLORS.primaryOrangeHex:COLORS.primaryWhiteHex}
+                style={{marginRight: 5}}
+                />
+            )
+        }} 
+        ></Tab.Screen>
         
     </Tab.Navigator>
   )

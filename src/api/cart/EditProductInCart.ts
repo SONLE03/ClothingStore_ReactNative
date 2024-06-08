@@ -5,7 +5,7 @@ import { BASE_URL } from '../config';
 export const EditProductInCart = async (customerId: string, productItemId: string, quantity: number) => {
   const AddCartUrl = BASE_URL + `/carts/${customerId}`;
 
-  console.log(AddCartUrl);
+  //console.log(AddCartUrl);
 
   const data = JSON.stringify({
     productItemId,

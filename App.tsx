@@ -11,8 +11,16 @@ import TabNavigator from "./src/navigation/TabNavigator";
 import DetailsScreen from "./src/screens/DetailsScreen";
 import PaymentScreen from "./src/screens/PaymentScreen";
 import ProductDetailsScreen from "./src/screens/ProductDetailsScreen";
-import OrderScreen from "./src/screens/OrderScreen";
+import OrderScreen from "./src/screens/Order/OrderScreen";
 import VNPayScreen from "./src/screens/VNPay";
+import CreateCustomerAddressScreen from "./src/screens/AddCustomerAddress";
+import ChooseAddress from "./src/screens/ChooseAddress";
+import { OrderProvider } from "./src/screens/Order/OrderContext";
+//import OrderScreen from "./src/screens/Order/OrderScreen";
+import CartScreen from "./src/screens/CartScreen";
+
+import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
+import * as eva from '@eva-design/eva';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,30 +36,47 @@ const AuthContainer = () => {
   const { isLoggedIn } = useAuth();
 
   return (
-    <NavigationContainer>
-      {isLoggedIn ? <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen
-          name="Tab"
-          component={TabNavigator}
-          options={{animation: 'slide_from_bottom'}}></Stack.Screen>
-        <Stack.Screen
-          name="ProductDetailsScreen"
-          component={ProductDetailsScreen}
-          options={{animation: 'slide_from_bottom'}}></Stack.Screen>
-        <Stack.Screen
-          name="Payment"
-          component={PaymentScreen}
-          options={{animation: 'slide_from_bottom'}}></Stack.Screen>
-        <Stack.Screen
-          name="OrderScreen"
-          component={OrderScreen}
-          options={{animation: 'slide_from_bottom'}}></Stack.Screen>
-        <Stack.Screen
-          name="VNPayScreen"
-          component={VNPayScreen}
-          options={{animation: 'slide_from_bottom'}}></Stack.Screen>
-      </Stack.Navigator> : <AuthNavigator />}
-    </NavigationContainer>
+    <ApplicationProvider {...eva} theme={eva.light}>
+    <OrderProvider>
+      <NavigationContainer>
+        {isLoggedIn ? <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen
+            name="Tab"
+            component={TabNavigator}
+            options={{animation: 'slide_from_bottom'}}></Stack.Screen>
+          <Stack.Screen
+            name="ProductDetailsScreen"
+            component={ProductDetailsScreen}
+            options={{animation: 'slide_from_bottom'}}></Stack.Screen>
+          <Stack.Screen
+            name="Payment"
+            component={PaymentScreen}
+            options={{animation: 'slide_from_bottom'}}></Stack.Screen>
+          <Stack.Screen
+            name="OrderScreen"
+            component={OrderScreen}
+            options={{animation: 'slide_from_bottom'}}></Stack.Screen>
+          <Stack.Screen
+            name="VNPayScreen"
+            component={VNPayScreen}
+            options={{animation: 'slide_from_bottom'}}></Stack.Screen>
+          <Stack.Screen
+            name="AddressScreen"
+            component={CreateCustomerAddressScreen}
+            options={{animation: 'slide_from_bottom'}}></Stack.Screen>
+          <Stack.Screen
+            name="ChooseAddress"
+            component={ChooseAddress}
+            options={{animation: 'slide_from_bottom'}}></Stack.Screen>
+          <Stack.Screen
+            name="CartScreen"
+            component={CartScreen}
+            options={{animation: 'slide_from_bottom'}}
+            ></Stack.Screen>
+        </Stack.Navigator> : <AuthNavigator />}
+      </NavigationContainer>
+    </OrderProvider>
+    </ApplicationProvider>
   );
 };
 
