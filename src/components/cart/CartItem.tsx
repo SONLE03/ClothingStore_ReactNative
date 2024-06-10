@@ -60,7 +60,7 @@ const CartItem: React.FC<{
         )}
         
         <View className='flex-col'>
-          <Text className="text-black text-lg font-medium text-ellipsis overflow-hidden">{item.product_Name}</Text>
+          <Text className="text-black text-lg font-medium truncate text-ellipsis overflow-hidden">{item.product_Name}</Text>
           <Text className="text-black text-sm font-light truncate">Quantity: {quantity}</Text>
           <Text className="text-black text-sm font-light truncate">Size: {item.sizeName}</Text>
           <Text className="text-black text-sm font-light truncate">Color: {item.colorName}</Text>

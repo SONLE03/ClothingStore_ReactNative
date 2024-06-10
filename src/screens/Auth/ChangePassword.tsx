@@ -11,6 +11,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ChangePassword } from '../../api/auth/ChangePassword';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { ParseJSON } from '../../api/auth/parseJSON';
 
 
 const ChangePasswordScreen = ({ navigation }: any) => {
@@ -31,12 +32,21 @@ const ChangePasswordScreen = ({ navigation }: any) => {
             const email = await AsyncStorage.getItem('email');
             if (!email) {
                 throw new Error('No email found');
+                
             }
+            console.log(email);
+            const parseEmail = ParseJSON(email);
             await ChangePassword(email, password, repeatPassword);
             Alert.alert('Success', 'Password changed successfully.');
-            setTimeout(() => {
-                navigation.navigate('LoginScreen');
-            }, 2000);
+            const user_id = await AsyncStorage.getItem('user_id');
+            if (!user_id) {
+                setTimeout(() => {
+                    navigation.navigate('LoginScreen');
+                }, 2000);
+            }else{
+                navigation.goBack();
+            }
+            
         } catch (error) {
             Alert.alert('Error', 'Failed to change password. Please try again.');
         }

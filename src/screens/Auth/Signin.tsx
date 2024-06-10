@@ -54,7 +54,10 @@ const LoginScreen = ({navigation} : any) => {
           await AsyncStorage.setItem('refresh_token', JSON.stringify(data.refresh_token));
           await AsyncStorage.setItem('user_id', JSON.stringify(data.id));
           await AsyncStorage.setItem('role', JSON.stringify(data.role));
-          console.log(AsyncStorage.getItem('access_token'));
+          await AsyncStorage.setItem('email', JSON.stringify(username));
+          console.log(AsyncStorage.getItem('email'));
+          //console.log(AsyncStorage.getItem('access_token'));
+
           authEmitter.emit('loginStatusChanged');
           //navigation.navigate('HomeScreen' as never);
           Alert.alert('Login successful')

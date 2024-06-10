@@ -27,7 +27,10 @@ export const ChangePassword = async (email: string, password: string, repeatPass
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${parseToken}`
         },
-        data : data
+        data : JSON.stringify({
+            password,
+            repeatPassword
+        })
     };
 
     try {

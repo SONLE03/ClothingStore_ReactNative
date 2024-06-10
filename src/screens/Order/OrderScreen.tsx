@@ -12,6 +12,7 @@ import { Picker } from '@react-native-picker/picker';
 import HeaderBar from '../../components/customUIs/Headerbar';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { DeleteProductInCart } from '../../api/cart/DeleteProductInCart';
 
 type OrderScreenRouteProp = RouteProp<{ params: { orderItems: OrderItem[], amount: number } }, 'params'>;
 
@@ -123,16 +124,28 @@ const OrderScreen = ({ navigation }: any) => {
         console.log(vnpayUrl);
         
         navigation.navigate('VNPayScreen', { vnpayUrl });
+        const deleteCart = await DeleteProductInCart(ParseCustomerId, orderItems);
+        console.log(deleteCart);
       } else {
+
         Alert.alert('Order created successfully!');
-        navigation.navigate('History');
+        
+        const deleteCart = await DeleteProductInCart(ParseCustomerId, orderItems);
+        console.log(deleteCart);
+        // setTimeout(() => {
+        //   navigation.navigate('History');
+        // } , 2000);
       }
     } else {
       //Alert.alert('Order created successfully!');
       setLoading(false);
       setVisible(true);
-      //AsyncStorage.removeItem('address');
-      navigation.navigate('History');
+      AsyncStorage.removeItem('address');
+      setTimeout(() => {
+        navigation.navigate('Home');
+      } , 2000);
+      const deleteCart = await DeleteProductInCart(ParseCustomerId, orderItems);
+      console.log(deleteCart);
       }
 
   } catch (error) {
