@@ -12,8 +12,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SendOtp } from '../../api/auth/SendEmailOTP';
 import { VerifyOtp } from '../../api/auth/VerifyOTP';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Link } from '@react-navigation/native';
-
 
 const ForgotPasswordScreen = ({ navigation }: any) => {
     const [email, setEmail] = useState('');
@@ -50,8 +48,16 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
     };
 
     const handleOtpChange = (value: string, index: number) => {
-        if (/^\d$/.test(value)) {
-            const newOtp = [...otp];
+        const newOtp = [...otp];
+        if (value === '') {
+            // Handle delete
+            newOtp[index] = '';
+            setOtp(newOtp);
+            if (index > 0) {
+                inputs.current[index - 1].focus();
+            }
+        } else if (/^\d$/.test(value)) {
+            // Handle input
             newOtp[index] = value;
             setOtp(newOtp);
             if (index < 5) {
@@ -83,7 +89,6 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
                             <Ionicons name="mail-unread-outline" size={25} color="white" />
                         </View>
                     </TouchableOpacity>
-                    {/* <Link to="/LoginScreen" style={{ color: 'orange', alignSelf: 'center', marginTop: 10, fontWeight: 'bold', textDecorationLine: 'underline' }}>Back to login</Link> */}
                 </View>
             ) : (
                 <View className="w-full max-w-md p-5 bg-white rounded-xl border-2 border-orange-400">
@@ -111,7 +116,6 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
                             <Ionicons name="checkmark-circle-outline" size={25} color="white" />
                         </View>
                     </TouchableOpacity>
-                    {/* <Link to="/ChangePassword" style={{ color: 'orange', alignSelf: 'center', marginTop: 10, fontWeight: 'bold', textDecorationLine: 'underline' }}>test</Link> */}
                 </View>
             )}
         </ImageBackground>
