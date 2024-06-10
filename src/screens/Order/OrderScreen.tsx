@@ -166,7 +166,7 @@ const fetchSelctedAddress = async () => {
         <View className='flex flex-col bg-white fixed mt-1'>
           <View className='flex-row w-full justify-start mt-1'>
             <Ionicons className='mt-2 text-orange-500' name='location' size={24} color='red' />
-            <Text className='text-sm font-bold mt-2'>Delivery Address</Text>
+            <Text className='text-sm font-bold mt-2 text-black'>Delivery Address</Text>
           </View>
         
         <TouchableOpacity className='p-1 flex flex-col rounded-lg bg-white h-20' onPress={(handleSetSelectedAddress)}>
@@ -189,47 +189,47 @@ const fetchSelctedAddress = async () => {
 
         
         
-        <Text className='text-lg font-bold my-2'>Order Items</Text>
+        <Text className='text-lg font-bold my-2 text-black'>Order Items</Text>
         {orderItems.map(item => (
           <View key={item.productItemId} className='flex-row items-center mb-2 border border-orange-500 rounded-lg p-2 bg-white'>
             <Image source={{ uri: item.image }} className='w-32 h-32 mr-4' />
             <View className='flex-col justify-center space-y-3'>
-              <Text className='text-lg font-bold'>{item.product_Name}</Text>
+              <Text className='text-lg text-black'>{item.product_Name}</Text>
               <Text style={styles.itemPrice}>Price: {item.price.toLocaleString()}đ</Text>
               <Text style={styles.itemQuantity}>Quantity: {item.quantity}</Text>
             </View>
           </View>
         ))}
 
-        <Text className='text-lg font-bold my-2'>Select Coupon</Text>
+        <Text className='text-lg font-bold my-2 text-black'>Select Coupon</Text>
         <View className='p-1 border border-orange-400 rounded-lg bg-white'>
           <Picker
               selectedValue={selectedCoupon}
               onValueChange={(itemValue) => setSelectedCoupon(itemValue)}
               //style={styles.couponContainer}
-              className='border border-orange-500 rounded-lg p-2 bg-white'
+              className='border border-orange-500 rounded-lg p-2 bg-white text-gray-600'
           >
               {coupons.map((coupon) => (
-                  <Picker.Item  key={coupon.id} label={`${coupon.name} -Discount: ${coupon.discountValue}%`} value={coupon.id} />
+                  <Picker.Item style={styles.discount} key={coupon.id} label={`${coupon.name} -Discount: ${coupon.discountValue}%`} value={coupon.id} />
               ))}
           </Picker>
         </View>
 
-        <Text className='text-lg font-semibold my-2'>Select Payment Method</Text>
+        <Text className='text-lg font-semibold my-2 text-black'>Select Payment Method</Text>
         <View className='flex flex-row mb-2 bg-white h-14 my-4 border border-orange-500 w-full'>
           <TouchableOpacity onPress={() => setPaymentMethod(1)} style={styles.paymentMethodButton}>
             <Checkbox color='#f97316' status={paymentMethod === 0 ? 'checked' : 'unchecked'} />
-            <Text className='font-semibold'>Pay by Cash</Text>
+            <Text className='font-semibold text-black'>Pay by Cash</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setPaymentMethod(2)} style={styles.paymentMethodButton}>
             <Checkbox color='#f97316' status={paymentMethod === 1 ? 'checked' : 'unchecked'} />
-            <Text className='font-semibold'>Pay via VNPay</Text>
+            <Text className='font-semibold text-black'>Pay via VNPay</Text>
           </TouchableOpacity>
         </View>
         
         <View className='flex flex-col justify-end items-end bg-white border border-orange-500 p-2'>
-            <Text className='text-lg fixed left-0 font-bold my-2 underline'>Summary</Text>
-            <Text style={styles.summaryText}>Total Price: {amount.toLocaleString()}đ</Text>
+            <Text className='text-lg fixed left-0 font-bold my-2 underline text-black'>Summary</Text>
+            <Text className='text-green-500' style={styles.summaryText}>Total Price: {amount.toLocaleString()}đ</Text>
             <Text className='text-green-500' style={styles.summaryText}>Discount: {discount.toLocaleString()}đ</Text>
             <Text className='text-orange-600'style={styles.summaryText}>Shipping Fee: 35,000đ</Text>
             <Text className='text-red-500' style={styles.summaryText}>Total Amount: {(totalAmount + 35000).toLocaleString()}đ</Text>
@@ -274,8 +274,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'green',
   },
+  discount: {
+    fontSize: 14,
+    color: 'black',
+  },
   itemQuantity: {
     fontSize: 14,
+    color: 'green',
   },
   couponContainer: {
     flexDirection: 'row',
@@ -300,6 +305,7 @@ const styles = StyleSheet.create({
   selectedAddress: {
     fontSize: 14,
     marginVertical: 8,
+    color: 'gray'
   },
   paymentMethodContainer: {
     flexDirection: 'row',

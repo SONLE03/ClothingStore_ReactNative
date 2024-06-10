@@ -175,7 +175,7 @@ const HomeScreen = ({ navigation }: any) => {
       <View className="flex-row justify-center mt-2 mb-4 bg-white p-3">
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <TouchableOpacity
-            className={`py-2 px-4 rounded-full border ${selectedCategory === '' ? 'bg-orange-500 border-orange-500' : 'border-gray-500'}`}
+            className={`py-2 px-4 mx-2 rounded-full border ${selectedCategory === '' ? 'bg-orange-500 border-orange-500' : 'border-gray-500'}`}
             onPress={() => setSelectedCategory('')}
           >
             <Text className={`${selectedCategory === '' ? 'text-white' : 'text-gray-500'} text-sm font-medium`}>

@@ -65,7 +65,7 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
             <TouchableOpacity className="mb-4 absolute top-0 left-0 p-4" onPress={() => navigation.goBack()}><Ionicons name="caret-back-circle-outline" size={40} color="#c05621" /></TouchableOpacity>
             {!otpSent ? (
                 <View className="w-full max-w-md p-5 bg-white rounded-xl border-2 border-orange-400 flex">
-                    <Text className="text-xl font-semibold mb-4 text-center">Verify Email</Text>
+                    <Text className="text-xl font-semibold mb-4 text-center text-black">Verify Email</Text>
                     <TextInput
                         className={`border p-3 text-gray-500 rounded-xl text-xl ${error ? 'border-red-500' : 'border-gray-300'}`}
                         placeholder="Enter your email"
@@ -87,7 +87,7 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
                 </View>
             ) : (
                 <View className="w-full max-w-md p-5 bg-white rounded-xl border-2 border-orange-400">
-                    <Text className="text-xl font-semibold mb-4 text-center">Enter OTP</Text>
+                    <Text className="text-xl font-semibold mb-4 text-center text-black">Enter OTP</Text>
                     <View className="flex-row justify-between mb-4">
                         {otp.map((value, index) => (
                             <TextInput

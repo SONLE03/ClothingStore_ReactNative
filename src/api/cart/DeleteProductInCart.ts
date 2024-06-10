@@ -6,7 +6,7 @@ import { CartItems } from '../../types';
 export const DeleteProductInCart = async (customerId: string, cartItem: CartItems[]): Promise<CartItems[]> => {
   const DeleteCartUrl = BASE_URL + `/carts/${customerId}`;
   const accessToken = await AsyncStorage.getItem('access_token');
-
+  const data = JSON.stringify(cartItem);
   if (!accessToken) {
     throw new Error('No access token found');
     //return [];
@@ -27,9 +27,7 @@ export const DeleteProductInCart = async (customerId: string, cartItem: CartItem
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${parseToken}`,
       },    
-      data: JSON.stringify({
-        cartItem
-      })
+      data: data
     });
 
     return response.data;
