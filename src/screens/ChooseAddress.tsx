@@ -8,7 +8,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button } from "react-native-paper";
 import { color } from "react-native-elements/dist/helpers";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { LogBox } from 'react-native';
 
+LogBox.ignoreLogs([
+  'Warning: Each child in a list should have a unique "key" prop',
+]);
 
   
 const ChooseAddress = ({ navigation }: any) => {

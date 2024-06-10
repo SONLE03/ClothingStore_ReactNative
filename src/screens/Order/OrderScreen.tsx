@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native';
-import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
+import { RouteProp, useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Button, Checkbox, Dialog } from 'react-native-paper';
 import { OrderItem, ExistedCoupon, AddressInfo } from '../../types';
 import { GetAllCoupons } from '../../api/coupon/GetAllCoupons';
@@ -25,7 +25,7 @@ const OrderScreen = ({ navigation }: any) => {
   const [coupons, setCoupons] = useState<ExistedCoupon[]>([]);
   const [addresses, setAddresses] = useState<AddressInfo[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
-  const [showAddressModal, setShowAddressModal] = useState(false);
+  //const [showAddressModal, setShowAddressModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<number>(0); // default to COD
   const [discount, setDiscount] = useState<number>(0);
   const [totalAmount, setTotalAmount] = useState<number>(amount);
@@ -38,10 +38,21 @@ const OrderScreen = ({ navigation }: any) => {
   useEffect(() => {
     fetchCoupons();
     fetchAddresses();
-    fetchSelctedAddress();
-    
-    
-  }, []);
+  } , []);
+
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchSelectedAddress = async () => {
+        const address = await AsyncStorage.getItem('address');
+        if (address) {
+          setSelectedAddress(JSON.parse(address));
+        }
+      };
+      fetchSelectedAddress();
+    }, [])
+  );
+
 
   useEffect(() => {
     calculateDiscountAndTotal();
@@ -53,13 +64,15 @@ const OrderScreen = ({ navigation }: any) => {
     setCoupons(response);
   };
 
+  
+
   const handleSetSelectedAddress = async () => {
-    const Address = await AsyncStorage.getItem('address');
-    console.log(Address)
-    if (Address) {
-      setSelectedAddress(JSON.parse(Address));
-      //console.log(selectedAddress);
-    }
+    // const Address = await AsyncStorage.getItem('address');
+    // //console.log(Address)
+    // if (Address) {
+    //   setSelectedAddress(JSON.parse(Address));
+    //   //console.log(selectedAddress);
+    // }
     navigation.navigate('ChooseAddress')
     
   };
@@ -203,7 +216,7 @@ const fetchSelctedAddress = async () => {
         
         
         <Text className='text-lg font-bold my-2 text-black'>Order Items</Text>
-        {orderItems.map(item => (
+        {orderItems?.map(item => (
           <View key={item.productItemId} className='flex-row items-center mb-2 border border-orange-500 rounded-lg p-2 bg-white'>
             <Image source={{ uri: item.image }} className='w-32 h-32 mr-4' />
             <View className='flex-col justify-center space-y-3'>
@@ -242,8 +255,8 @@ const fetchSelctedAddress = async () => {
         
         <View className='flex flex-col justify-end items-end bg-white border border-orange-500 p-2'>
             <Text className='text-lg fixed left-0 font-bold my-2 underline text-black'>Summary</Text>
-            <Text className='text-green-500' style={styles.summaryText}>Total Price: {amount.toLocaleString()}đ</Text>
-            <Text className='text-green-500' style={styles.summaryText}>Discount: {discount.toLocaleString()}đ</Text>
+            <Text className='text-green-500' style={styles.summaryText}>Total Price: {amount?.toLocaleString()}đ</Text>
+            <Text className='text-green-500' style={styles.summaryText}>Discount: {discount?.toLocaleString()}đ</Text>
             <Text className='text-orange-600'style={styles.summaryText}>Shipping Fee: 35,000đ</Text>
             <Text className='text-red-500' style={styles.summaryText}>Total Amount: {(totalAmount + 35000).toLocaleString()}đ</Text>
         </View>

@@ -15,6 +15,16 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ParseJSON } from '../api/auth/parseJSON';
 import HeaderBar from '../components/customUIs/Headerbar';
 import { AddProductToFavourite } from '../api/favourite/AddFavouriteProduct';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  ' Warning: Each child in a list should have a unique "key" prop',
+]);
+
+
+LogBox.ignoreLogs([
+  'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead',
+]);
 
 const ProductDetailsScreen = ({ navigation }: any) => {
   const route = useRoute();

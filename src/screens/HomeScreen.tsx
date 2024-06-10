@@ -19,6 +19,11 @@ import { GetAllProducts } from '../api/product/GetAllProducts';
 import HeaderBar from '../components/customUIs/Headerbar';
 import ClothesCard from '../components/product/ClothesCard';
 import { Input } from 'react-native-elements';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  ' Warning: Each child in a list should have a unique "key" prop',
+]);
 
 const bannerImages = [
   require('../assets/images/asphalt-9.jpeg'),
@@ -26,6 +31,7 @@ const bannerImages = [
   require('../assets/images/genshin-impact.jpeg'),
   require('../assets/images/pokemon-unite.jpeg'),
 ];
+
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.9;
 

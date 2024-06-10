@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Modal, ScrollView, Button, Image } from 'react-native';
 import { AnimationConfig, Icon, IconElement, Tab, TabView } from '@ui-kitten/components';
-
 import { GetAllOrderByCustomer } from '../../api/order/GetAllOrderByCustomer';
 import { OrderDetails } from '../../api/order/OrderDetails';
 import { UpdateOrderStatus } from '../../api/order/UpdateOrderStatus';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DataTable } from 'react-native-paper';
-
 import { Orders, OrderDetail } from '../../types';
 import HeaderBar from '../../components/customUIs/Headerbar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useFocusEffect } from '@react-navigation/native';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'Warning: Failed prop type: Invalid props.style key `tintColor` supplied to `Text`',
+]);
 
 const OrderHistoryScreen = () => {
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -22,19 +25,26 @@ const OrderHistoryScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [cancelModalVisible, setCancelModalVisible] = useState(false);
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-            const userId = await AsyncStorage.getItem('user_id');
-            if (userId) {
-                const ParseCustomerId = JSON.parse(userId);
-                console.log(ParseCustomerId);
-                const orders = await GetAllOrderByCustomer(ParseCustomerId);
-                setOrders(orders);
-                console.log(orders);
-            }
-        };
-        fetchOrders();
+    const fetchOrders = useCallback(async () => {
+        const userId = await AsyncStorage.getItem('user_id');
+        if (userId) {
+            const ParseCustomerId = JSON.parse(userId);
+            console.log(ParseCustomerId);
+            const orders = await GetAllOrderByCustomer(ParseCustomerId);
+            setOrders(orders);
+            console.log(orders);
+        }
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchOrders();
+        }, [fetchOrders])
+    );
+
+    useEffect(() => {
+        fetchOrders();
+    }, [fetchOrders]);
 
     const handleOrderClick = async (order: Orders) => {
         setSelectedOrder(order);
