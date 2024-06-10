@@ -31,7 +31,8 @@ export const CreateOrder = async (order: CreateOrderRequest) => {
             return response.data;
         } catch (error) {
             console.error(error);
-            throw new Error('Failed to create order');
+            //throw new Error('Failed to create order');
+            return false;
         }
     }
 };

@@ -27,6 +27,7 @@ export const GetAllCoupons = async () => {
         return response.data;
     } catch (error) {
         console.error(error);
+        return false;
     }
 }
 

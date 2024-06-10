@@ -1,6 +1,6 @@
 // ProductDetailsScreen.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, FlatList, Alert, ToastAndroid } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { GetDetailProduct } from '../api/product/GetProductDetails';
 import { GetAllProducts } from '../api/product/GetAllProducts';
@@ -14,6 +14,7 @@ import ClothesCard from '../components/product/ClothesCard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ParseJSON } from '../api/auth/parseJSON';
 import HeaderBar from '../components/customUIs/Headerbar';
+import { AddProductToFavourite } from '../api/favourite/AddFavouriteProduct';
 
 const ProductDetailsScreen = ({ navigation }: any) => {
   const route = useRoute();
@@ -31,6 +32,9 @@ const ProductDetailsScreen = ({ navigation }: any) => {
   const [isBuyNow, setIsBuyNow] = useState<boolean>(false);
   const [isReadMore, setIsReadMore] = useState<boolean>(false);
   const [suggestedProducts, setSuggestedProducts] = useState<Product[]>([]);
+  const [favourite, setFavourite] = useState<string | null>(null);
+
+  console.log(productId)
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -70,10 +74,28 @@ const ProductDetailsScreen = ({ navigation }: any) => {
     }
   };
 
+  const handleAddToFavourite = async (productIds: string[]) => {
+    const userId = await AsyncStorage.getItem('user_id');
+      if (userId) {
+          const ParseCustomerId = JSON.parse(userId);
+          const add = await AddProductToFavourite(ParseCustomerId, [productId])
+          console.log(add)
+          if( add == false)
+            {
+              ToastAndroid.showWithGravity('Fail to add this product to Wishlist! Pls try again!', ToastAndroid.SHORT, ToastAndroid.CENTER)
+          }else 
+          {
+            ToastAndroid.showWithGravity('This product is added to Wishlist!', ToastAndroid.SHORT, ToastAndroid.CENTER)
+            setFavourite(add);
+            
+          }
+      }
+  }
+
   const handleAddToCart = async () => {
-    if (!selectedSize || !selectedColor) return;
+    if (!selectedSize || !selectedColor ) return;
     const selectedProductItem = productItems.find(item => item.sizeName === selectedSize && item.colorName === selectedColor);
-    if (selectedProductItem) {
+    if (selectedProductItem && selectedProductItem.quantity > quantity) {
         const customerId = await AsyncStorage.getItem('user_id');
         if (customerId !== null) {
             const ParseCustomerId = ParseJSON(customerId);
@@ -82,7 +104,7 @@ const ProductDetailsScreen = ({ navigation }: any) => {
       
             await AddProductToCart(ParseCustomerId, selectedProductItem.id, quantity);
             setModalVisible(false);
-            Alert.alert('Success', 'Product added to cart');
+            ToastAndroid.showWithGravity('This product is added to Cart! Check now!', ToastAndroid.SHORT, ToastAndroid.CENTER)
           } else {
             Alert.alert('Error', 'Failed to add');
           }
@@ -151,8 +173,8 @@ const ProductDetailsScreen = ({ navigation }: any) => {
                     className="rounded-lg mb-4"
                 />
 
-                <Text className="text-orange-600 text-lg font-semibold mb-1 mt-2">Other figures:</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-4 mt-2">
+                <Text className="text-orange-600 text-lg font-semibold mb-1 mt-2 px-4 mr-4">Other figures:</Text>
+                <View  className="flex flex-col w-full px-4 mb-4 mt-2">
                     
                     {product.images && product.images.length > 0 && product.images.map((img, index) => (
                         <TouchableOpacity key={index} onPress={() => setSelectedImage(img)} className="mr-2">
@@ -168,12 +190,18 @@ const ProductDetailsScreen = ({ navigation }: any) => {
                             />
                         </TouchableOpacity>
                     ))}
-                </ScrollView>
+                </View>
 
 
-                    <View className='flex-row justify-start items-center bg-orange-600 mt-2 p-1 mb-2'>
-                        <Ionicons name="pricetags" size={24} color="white"/>
-                        <Text className="text-white text-2xl font-medium mb-2 ml-2">{product.product_Name}</Text>
+                    <View className='flex-row justify-between items-center bg-orange-600 mt-2 p-1 mb-2'>
+                      <View className='flex flex-row'>
+                      <Ionicons name="pricetags" size={24} color="white" />
+                      <Text className="text-white text-2xl font-medium mb-2 ml-2">{product.product_Name}</Text>
+                      </View>
+                        
+                        <TouchableOpacity className='w-10 h-8' onPress={()=> handleAddToFavourite([productId])}>
+                          <Ionicons name='heart'size={30} color={favourite ? "white" : "gray"}/>
+                        </TouchableOpacity>
                     </View>
                     
                     <View className="flex-row justify-start items-center px-3 mt-2 bg-white h-14">
@@ -294,10 +322,12 @@ const ProductDetailsScreen = ({ navigation }: any) => {
                 className="mb-4"
             />
 
-            <Button className=' bg-orange-500 rounded-md'
-                mode="contained"
+            <Button //lassName=' bg-orange-500 rounded-md'
+                mode="contained" buttonColor='#F15927'
+
                 onPress={isBuyNow ? handleBuyNow : handleAddToCart}
-                disabled={availableQuantity === 0}
+                disabled={availableQuantity === 0 || availableQuantity < quantity}
+                textColor='white'
             >
                 {isBuyNow ? 'Buy Now' : 'Add to Cart'}
             </Button>

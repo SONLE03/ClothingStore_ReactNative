@@ -17,9 +17,9 @@ export const DeleteProductInCart = async (customerId: string, cartItem: CartItem
 
   //console.log(DeleteCartUrl);
 
-  const data = JSON.stringify({
-    cartItems: cartItem,
-  });
+  // const data = JSON.stringify({
+  //   cartItems: cartItem,
+  // });
 
   try {
     const response = await axios.delete(DeleteCartUrl, {
@@ -27,7 +27,9 @@ export const DeleteProductInCart = async (customerId: string, cartItem: CartItem
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${parseToken}`,
       },    
-      data: data,
+      data: JSON.stringify({
+        cartItem
+      })
     });
 
     return response.data;

@@ -18,6 +18,7 @@ import { Category, Product } from '../types';
 import { GetAllProducts } from '../api/product/GetAllProducts';
 import HeaderBar from '../components/customUIs/Headerbar';
 import ClothesCard from '../components/product/ClothesCard';
+import { Input } from 'react-native-elements';
 
 const bannerImages = [
   require('../assets/images/asphalt-9.jpeg'),
@@ -97,7 +98,7 @@ const HomeScreen = ({ navigation }: any) => {
   );
 
   const renderClothesCard = ({ item }: { item: Product }) => (
-    <View className="w-1/2 p-1">
+    <TouchableOpacity className="w-1/2 p-1" onPress={() => navigation.navigate('ProductDetailsScreen', { productId: item.id })}>
       <ClothesCard
         id={item.id}
         product_Name={item.product_Name}
@@ -109,7 +110,7 @@ const HomeScreen = ({ navigation }: any) => {
         images={item.images}
         buttonPressHandler={() => navigation.navigate('ProductDetailsScreen', { productId: item.id })}
       />
-    </View>
+    </TouchableOpacity>
   );
 
   const renderHeader = () => (
@@ -156,7 +157,7 @@ const HomeScreen = ({ navigation }: any) => {
           placeholderTextColor="#A9A9A9"
           value={searchText}
           onChangeText={(text) => searchClothes(text)}
-          className="flex-1 p-3 mx-2"
+          className="flex-1 p-3 mx-2 text-gray-500"
         />
         <TouchableOpacity
           className="flex mr-2"

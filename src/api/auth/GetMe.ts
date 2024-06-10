@@ -27,6 +27,7 @@ export const GetMe = async () => {
         return response.data;
     } catch (error) {
         console.error(error);
+        return false;
     }
 
 }

@@ -24,6 +24,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const FavoritesScreen = ({ navigation, route }: any) => {
   const [FavoriteList, setFavoriteList] = useState<Product[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  
   const [selectAll, setSelectAll] = useState<boolean>(false);
 
   const tabBarHeight = useBottomTabBarHeight();
@@ -37,6 +38,7 @@ const FavoritesScreen = ({ navigation, route }: any) => {
     if (customerId !== null) {
       const ParseCustomerId = ParseJSON(customerId);
       const response = await GetFavouriteList(ParseCustomerId);
+      console.log(response)
       setFavoriteList(response);
     }
   };
@@ -99,7 +101,10 @@ const FavoritesScreen = ({ navigation, route }: any) => {
   };
 
   const buttonPressHandler = () => {
-    navigation.navigate('ProductDetailsScreen', { productIds: selectedItems });
+    const itemsToDelete = Array.from(selectedItems).map(productIds => productIds)
+    
+    navigation.navigate('ProductDetailsScreen', { itemsToDelete});
+    console.log(selectedItems)
   };
 
   return (
@@ -111,7 +116,7 @@ const FavoritesScreen = ({ navigation, route }: any) => {
             {FavoriteList.length == 0 ? (
               <EmptyListAnimation title={'Your Favorite is Empty'} />
             ) : (
-              <View style={styles.ListItemContainer}>
+              <TouchableOpacity style={styles.ListItemContainer}>
                 {FavoriteList?.map((data: any) => (
                   <FavouriteItemCard
                     key={data.productItemId}
@@ -121,7 +126,7 @@ const FavoritesScreen = ({ navigation, route }: any) => {
                     onDelete={handleDeleteItem}
                   />
                 ))}
-              </View>
+              </TouchableOpacity>
             )}
           </ScrollView>
 

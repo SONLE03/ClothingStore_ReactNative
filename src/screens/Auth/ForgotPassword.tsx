@@ -63,14 +63,15 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
     return (
         <ImageBackground className="flex-1 justify-center items-center bg-white p-4" source={require('../../assets/auth-bg.png')}>
             <TouchableOpacity className="mb-4 absolute top-0 left-0 p-4" onPress={() => navigation.goBack()}><Ionicons name="caret-back-circle-outline" size={40} color="#c05621" /></TouchableOpacity>
-            {otpSent ? (
+            {!otpSent ? (
                 <View className="w-full max-w-md p-5 bg-white rounded-xl border-2 border-orange-400 flex">
                     <Text className="text-xl font-semibold mb-4 text-center">Verify Email</Text>
                     <TextInput
-                        className={`border p-3 rounded-xl text-xl ${error ? 'border-red-500' : 'border-gray-300'}`}
+                        className={`border p-3 text-gray-500 rounded-xl text-xl ${error ? 'border-red-500' : 'border-gray-300'}`}
                         placeholder="Enter your email"
                         value={email}
                         onChangeText={setEmail}
+                        placeholderTextColor={"gray"}
                     />
                     {error && <Text className="text-red-500 mt-2">{error}</Text>}
                     <TouchableOpacity
@@ -91,12 +92,13 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
                         {otp.map((value, index) => (
                             <TextInput
                                 key={index}
-                                className="border border-gray-400 rounded w-10 h-10 text-center"
+                                className="border text-gray-500 border-gray-400 rounded w-10 h-10 text-center"
                                 value={value}
                                 onChangeText={(text) => handleOtpChange(text, index)}
                                 keyboardType="numeric"
                                 maxLength={1}
                                 ref={(el) => (inputs.current[index] = el)}
+                                placeholderTextColor={"gray"}
                             />
                         ))}
                     </View>
@@ -109,7 +111,7 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
                             <Ionicons name="checkmark-circle-outline" size={25} color="white" />
                         </View>
                     </TouchableOpacity>
-                    <Link to="/ChangePassword" style={{ color: 'orange', alignSelf: 'center', marginTop: 10, fontWeight: 'bold', textDecorationLine: 'underline' }}>test</Link>
+                    {/* <Link to="/ChangePassword" style={{ color: 'orange', alignSelf: 'center', marginTop: 10, fontWeight: 'bold', textDecorationLine: 'underline' }}>test</Link> */}
                 </View>
             )}
         </ImageBackground>

@@ -39,37 +39,45 @@ const CartItem: React.FC<{
       colors={['#FFF', '#FFF']}
       className="border border-orange-500 p-4 rounded-xl shadow-xl"
     >
-      <View className="flex-row justify-between items-center">
-        <CheckBox
+      <View className="flex-row justify-start items-center p-1 ">
+       
+          <CheckBox 
           value={isChecked}
           onValueChange={(newValue) => onCheck(item.productItemId, newValue)}
-        />
+          //style={{borderWidth: 10, borderColor: "orange" }}
+          className=' absolute top-0 left-0 border border-black'
+          tintColors={{ true: '#F15927', false: 'black' }}
+          />
+        
         {item.image ? (
           <ImageBackground
             source={{ uri: item.image }}
             resizeMode="cover"
-            className="rounded-lg mb-4 overflow-hidden w-24 h-24"
+            className="rounded-lg mb-4 overflow-hidden w-24 h-24 ml-1 mr-4"
           />
         ) : (
           <View className="rounded-lg mb-4 overflow-hidden bg-gray-300 w-24 h-24" />
         )}
-        <TouchableOpacity onPress={() => onDelete(item.productItemId)}>
-          <MaterialCommunityIcons name="trash-can" size={24} color="red" />
-        </TouchableOpacity>
+        
+        <View className='flex-col'>
+          <Text className="text-black text-lg font-medium text-ellipsis overflow-hidden">{item.product_Name}</Text>
+          <Text className="text-black text-sm font-light truncate">Quantity: {quantity}</Text>
+          <Text className="text-black text-sm font-light truncate">Size: {item.sizeName}</Text>
+          <Text className="text-black text-sm font-light truncate">Color: {item.colorName}</Text>
+        </View>
+      
+        
       </View>
-      <Text className="text-black text-lg font-medium text-ellipsis overflow-hidden">{item.product_Name}</Text>
-      <Text className="text-black text-sm font-light truncate">Quantity: {quantity}</Text>
-      <Text className="text-black text-sm font-light truncate">Size: {item.sizeName}</Text>
-      <Text className="text-black text-sm font-light truncate">Color: {item.colorName}</Text>
+      
       <View className="flex-row justify-between items-center mt-4">
         <Text className="text-orange-500 text-lg font-semibold">
           đ<Text className="text-black font-semibold">{item.price.toLocaleString()}</Text>
         </Text>
         <View className="flex-row items-center">
-          <TouchableOpacity onPress={() => setQuantity((prev) => Math.max(prev - 1, 1))}>
+          <TouchableOpacity  onPress={() => setQuantity((prev) => Math.max(prev - 1, 1))}>
             <MaterialCommunityIcons name="minus-circle" size={24} color="black" />
           </TouchableOpacity>
-          <TextInput className='h-9 p-1'
+          <TextInput className='h-9 p-1 text-gray-500'
             style={styles.quantityInput}
             value={quantity.toString()}
             keyboardType="numeric"
@@ -77,6 +85,10 @@ const CartItem: React.FC<{
           />
           <TouchableOpacity onPress={() => setQuantity((prev) => prev + 1)}>
             <MaterialCommunityIcons name="plus-circle" size={24} color="black" />
+          </TouchableOpacity>
+
+          <TouchableOpacity className='ml-4' onPress={() => onDelete(item.productItemId)}>
+            <MaterialCommunityIcons name="trash-can" size={24} color="red" />
           </TouchableOpacity>
         </View>
       </View>

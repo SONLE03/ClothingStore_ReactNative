@@ -6,17 +6,21 @@ export const EditProductInCart = async (customerId: string, productItemId: strin
   const AddCartUrl = BASE_URL + `/carts/${customerId}`;
 
   //console.log(AddCartUrl);
+  try{
+    const data = JSON.stringify({
+      productItemId,
+      quantity
+    });
 
-  const data = JSON.stringify({
-    productItemId,
-    quantity
-  });
+    const response = await axios.put(AddCartUrl, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-  const response = await axios.put(AddCartUrl, data, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  return response.data;
+    return response.data;
+  }catch(error)
+  {
+    return false;
+  }
 };

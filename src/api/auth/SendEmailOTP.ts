@@ -30,6 +30,7 @@ export const SendOtp = async (email: string) => {
     } catch (error) {
         console.error(error);
         //throw error;
+        return false;
     }
 };
 

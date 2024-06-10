@@ -53,8 +53,13 @@ const SignupScreen = () => {
       Alert.alert(errorMessage);
     } else {
         const signUpResult = await SignUp({ email, password, fullname, phone });
-        if (signUpResult instanceof Error) {
-            Alert.alert("Error", signUpResult.message);
+        if (!signUpResult || signUpResult == false ) {
+            Alert.alert("Invalid credentials, Email or phone existed! Please try again!");
+            setEmail('');
+            setPassword('');
+            setName('');
+            setPhone('');
+
         } else {
             //Alert.alert("Please check your email and confirm account activation");
             setTimeout(() => {
@@ -122,6 +127,7 @@ const SignupScreen = () => {
                     inputPadding={18}
                     onChangeText={email => setEmail(email)}
                     require
+                    value={email}
                 />
                 
                 <Fumi className='border border-orange-500 rounded-xl mt-4 w-80'
@@ -134,6 +140,7 @@ const SignupScreen = () => {
                     onChangeText={phone => setPhone(phone)}
                     keyboardType="numeric"
                     require
+                    value={phone}
                 />
 
                 <Fumi className='border border-orange-500 rounded-xl mt-4 w-80'
@@ -145,6 +152,7 @@ const SignupScreen = () => {
                     inputPadding={18}
                     onChangeText={fullname => setName(fullname)}
                     require
+                    value={fullname}
                 />
 
               <View className='flex flex-row justify-center items-center text-black bg-white space-x-1 p-1 mb-4 mt-4 w-80 h-16 border border-gray-600 rounded-2xl'>
@@ -172,6 +180,7 @@ const SignupScreen = () => {
                         height={35}
                         require
                         onChangeText={(password) => setPassword(password)}
+                        value={password}
                       />
                       {password ? (
                         <TouchableOpacity onPress={() => setSecureEntry((prev) => !prev)}>

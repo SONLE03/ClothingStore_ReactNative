@@ -162,7 +162,7 @@ const CartScreen = ({ navigation, route }: any) => {
           <View className="flex-col w-full justify-start items-start p-2 bg-gray-100 border border-t-gray-400 border-x-white border-b-white">
             
             <View className="flex flex-row justify-start items-center bg-gray-100 p-2 mr-1">
-              <CheckBox className='left-0' value={selectAll} onValueChange={handleCheckAll} />
+              <CheckBox className='left-0' value={selectAll} onValueChange={handleCheckAll} tintColors={{ true: '#F15927', false: 'black' }} />
               <Text className="text-orange-500 font-semibold text-lg mr-24">All</Text>
               <Text className="text-black font-semibold text-lg">Total Price:</Text>
               <Text className="text-orange-500 font-semibold text-lg"> {calculateTotalPrice().toLocaleString()}đ</Text>
@@ -189,7 +189,7 @@ const CartScreen = ({ navigation, route }: any) => {
         ) : (
           <></>
         )}
-        <View className="mt-28" />
+        <View className="mt-10" />
       </View>
     </View>
   );

@@ -27,5 +27,6 @@ export const GetAllOrderByCustomer = async (customerId: string) => {
         //console.log(response.data);
     } catch (error) {
         console.error(error);
+        return false;
     }
 }

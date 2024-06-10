@@ -2,20 +2,30 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../config';
 
-export const AddProductToFavourite = async (customerId: string, productItemId: string) => {
+export const AddProductToFavourite = async (customerId: string, productIds: string[]) => {
   const AddCartUrl = BASE_URL + `/favorites/${customerId}`;
 
-  //console.log(AddCartUrl);
+  const accessToken = await AsyncStorage.getItem('access_token');
 
-//   const data = JSON.stringify({
-//     productItemId,
-//   });
+  if (!accessToken) {
+    throw new Error('No access token found');
+  }
 
-  const response = await axios.post(AddCartUrl, JSON.stringify({productItemId}), {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  const parseToken = JSON.parse(accessToken);
+  try{
+    const response = await axios.post(AddCartUrl, JSON.stringify({productIds}), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${parseToken}`,
+      },
+    });
 
-  return response.data;
+    return response.data;
+    
+  }
+  catch (error)
+  {
+    console.log(error);
+    return false;
+  }
 };

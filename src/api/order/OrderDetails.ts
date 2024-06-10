@@ -28,5 +28,6 @@ export const OrderDetails = async (orderId: string) => {
     }
     catch (error) {
         console.error(error);
+        return false;
     }
 }

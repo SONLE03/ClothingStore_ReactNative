@@ -46,8 +46,8 @@ const LoginScreen = ({navigation} : any) => {
       const data = await loginUser(username, password);
       console.log(data);
       console.log(username, password);
-      if (!data) {
-        Alert.alert('User login failed!');
+      if (!data || data == false) {
+        Alert.alert('Wrong user name or password, pls try again!');
       } else {
         try {
           await AsyncStorage.setItem('access_token', JSON.stringify(data.access_token));
@@ -57,6 +57,7 @@ const LoginScreen = ({navigation} : any) => {
           console.log(AsyncStorage.getItem('access_token'));
           authEmitter.emit('loginStatusChanged');
           //navigation.navigate('HomeScreen' as never);
+          Alert.alert('Login successful')
         } catch (error) {
           console.log('Error signing in: ', error);
         }

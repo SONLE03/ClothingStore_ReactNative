@@ -24,5 +24,6 @@ export const GetCartInfo = async (user_id: string) => {
         return response.data;
     } catch (error) {
         console.log(error);
+        return false;
     }
 }

@@ -37,7 +37,8 @@ const OrderScreen = ({ navigation }: any) => {
   useEffect(() => {
     fetchCoupons();
     fetchAddresses();
-    //handleSetSelectedAddress();
+    fetchSelctedAddress();
+    
     
   }, []);
 
@@ -53,6 +54,7 @@ const OrderScreen = ({ navigation }: any) => {
 
   const handleSetSelectedAddress = async () => {
     const Address = await AsyncStorage.getItem('address');
+    console.log(Address)
     if (Address) {
       setSelectedAddress(JSON.parse(Address));
       //console.log(selectedAddress);
@@ -69,6 +71,8 @@ const OrderScreen = ({ navigation }: any) => {
       setAddresses(response);
     }
   };
+
+
 
   
   const calculateDiscountAndTotal = () => {
@@ -121,14 +125,14 @@ const OrderScreen = ({ navigation }: any) => {
         navigation.navigate('VNPayScreen', { vnpayUrl });
       } else {
         Alert.alert('Order created successfully!');
-        navigation.navigate('OrderHistoryScreen');
+        navigation.navigate('History');
       }
     } else {
       //Alert.alert('Order created successfully!');
       setLoading(false);
       setVisible(true);
-      AsyncStorage.removeItem('address');
-      navigation.navigate('OrderHistoryScreen');
+      //AsyncStorage.removeItem('address');
+      navigation.navigate('History');
       }
 
   } catch (error) {
@@ -139,6 +143,14 @@ const OrderScreen = ({ navigation }: any) => {
   }
 
 };
+
+const fetchSelctedAddress = async () => {
+  const Address = await AsyncStorage.getItem('address');
+  console.log(Address)
+  if (Address) {
+    setSelectedAddress(JSON.parse(Address));
+    //console.log(selectedAddress);
+  }}
 
 
   return (

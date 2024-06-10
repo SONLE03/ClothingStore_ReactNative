@@ -39,7 +39,7 @@ const ChooseAddress = ({ navigation }: any) => {
         navigation.goBack('OrderScreen');
         await AsyncStorage.setItem('address', JSON.stringify(address.id));
         const Address = await AsyncStorage.getItem('address');
-        //console.log(Address);
+        console.log(Address);
        
       };
   
@@ -47,8 +47,17 @@ const ChooseAddress = ({ navigation }: any) => {
     
   
     return (
-        <View>
-            <View className="flex flex-colw-full h-screen justify-center items-center p-3">
+        <View className="flex-1">
+          <TouchableOpacity className='flex-row justify-between items-center mb-14 border border-gray-400 rounded-xl p-2 bg-white'>
+          <Ionicons onPress={() => navigation.goBack()} name="arrow-back" size={24} color="#333" />
+          <Text className='flex-row text-2xl font-semibold space-x-2 text-black'>
+            <Ionicons className='mr-2' name="location" size={25} color="#333" />
+            Choose your address</Text>
+          <View style={{ width: 24 }} />  
+      </TouchableOpacity>
+        
+            <View className="flex flex-co w-full h-screen justify-center items-center p-3">
+              
             <Text className='text-lg text-center text-black'><Ionicons name="location" size={24} color="red" /> All your available addresses here!</Text>
                 {addresses?.map(address => (
             <TouchableOpacity
@@ -58,9 +67,9 @@ const ChooseAddress = ({ navigation }: any) => {
               <Text style={styles.addressDetails}>{address.district}, {address.ward}, {address.province}</Text>
             </TouchableOpacity>
           ))}
-          <View className='flex flex-row w-full justify-center items-center'>
-            <Button icon="plus" className='bg-orange-500 mt-5 w-48 rounded-lg' textColor='white' onPress={() => navigation.navigate('AddressScreen')}>Add new Address</Button>
-            
+          <View className='flex flex-col w-full justify-center items-center'>
+            <Button icon="plus" className='bg-orange-500 mt-8 w-48 rounded-lg' textColor='white' onPress={() => navigation.navigate('AddressScreen')}>Add new Address</Button>
+            <Button icon="reload" className='border-2 border-orange-500 mt-3 w-48 rounded-lg' textColor='red' onPress={(fetchAddresses)}>Reload</Button>
           </View>
           
         </View>
@@ -143,6 +152,7 @@ const styles = StyleSheet.create({
     
     addressDetails: {
       fontSize: 14,
+      color: "gray"
     },
   });
 

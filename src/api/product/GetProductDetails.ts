@@ -28,6 +28,7 @@ export const GetDetailProduct = async (productId: string) => {
         return response.data;
     } catch (error) {
         console.log(error);
+        return false;
     }
     
 };

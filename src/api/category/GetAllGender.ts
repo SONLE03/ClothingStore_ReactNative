@@ -1,6 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 //import envConfig from "@/src/config";
 import { Gender } from "../../types";
+import { BASE_URL } from "../config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ParseJSON } from "../auth/parseJSON";
 //import { ParseJSON } from "../../auth/ParseJSON";
 
 const BranchURL = process.env.NEXT_PUBLIC_API_ENDPOINT + '/productGender';
@@ -8,19 +11,23 @@ const BranchURL = process.env.NEXT_PUBLIC_API_ENDPOINT + '/productGender';
 
 export const GetAllGender = async (): Promise<Gender[]> => {
 
-    // if (!accessToken) {
-    //     throw new Error('No access token found');
-    // }
+    const GetAllGenderURL = BASE_URL + '/productGender';
+  const accessToken = await AsyncStorage.getItem('access_token');
+  
+  if (!accessToken) {
+      throw new Error('No access token found');
+  }
 
-    // const parseToken = ParseJSON(accessToken);
+  const parseToken = ParseJSON(accessToken);
+
     
     try {
         const config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: 'http://10.0.2.2:8080/api/v1/productGender',
+            url: GetAllGenderURL,
             headers: {
-            //   "Authorization": `Bearer ${parseToken}`,
+               "Authorization": `Bearer ${parseToken}`,
             }
           };
         

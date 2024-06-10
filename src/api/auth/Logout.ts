@@ -31,6 +31,7 @@ const logoutUser = async (): Promise<void> => {
   } catch (error) {
     console.error(error);
     //throw new Error('Logout failed');
+    
   }
 };
 

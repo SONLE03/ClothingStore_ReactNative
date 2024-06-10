@@ -19,6 +19,7 @@ import { OrderProvider } from "./src/screens/Order/OrderContext";
 //import OrderScreen from "./src/screens/Order/OrderScreen";
 import CartScreen from "./src/screens/CartScreen";
 import FavoritesScreen from "./src/screens/FavoritesScreen";
+import ChangePasswordScreen from "./src/screens/Auth/ChangePassword";
 
 
 import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
@@ -75,6 +76,12 @@ const AuthContainer = () => {
             component={CartScreen}
             options={{animation: 'slide_from_bottom'}}
             ></Stack.Screen>
+          <Stack.Screen
+            name="ChangePassword"
+            component={ChangePasswordScreen}
+            options={{animation: 'slide_from_bottom'}}
+            ></Stack.Screen>
+            
           
         </Stack.Navigator> : <AuthNavigator />}
       </NavigationContainer>

@@ -15,7 +15,7 @@ export const VerifyOtp = async (otp: string, email: string) => {
     // }
     
     // const parseToken = ParseJSON(accessToken);
-
+  try{
     const config = {
       method: 'post',
       maxBodyLength: Infinity,
@@ -26,5 +26,9 @@ export const VerifyOtp = async (otp: string, email: string) => {
     };
   
     return axios.request(config);
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 };
 

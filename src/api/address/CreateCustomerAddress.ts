@@ -35,6 +35,7 @@ export const CreateCustomerAddress = async (customer: string, addressRequest: Ad
         return response.data;
     } catch (error) {
         console.error(error);
-        throw new Error('Create address failed');
+        //throw new Error('Create address failed');
+        return false;
     }
 }

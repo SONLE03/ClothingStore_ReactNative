@@ -1,5 +1,7 @@
+import { BASE_URL } from "../config";
+
 const loginUser = async (username: string, password: string) => {
-    const envLogin = "http://10.0.2.2:8080/api/v1/auth/login"
+    const envLogin = BASE_URL + "/auth/login"
     try {
       const response = await fetch(envLogin, {
         method: 'POST',
@@ -15,6 +17,7 @@ const loginUser = async (username: string, password: string) => {
       return data;
     } catch (error) {
       //throw new Error('Đã xảy ra lỗi khi đăng nhập');
+      return false;
     }
   };
   

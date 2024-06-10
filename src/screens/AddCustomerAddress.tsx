@@ -7,6 +7,9 @@ import { Province, District, Ward, AddressRequest } from '../types';
 import { CreateCustomerAddress } from '../api/address/CreateCustomerAddress';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { color } from 'react-native-elements/dist/helpers';
+
+
 
 
 const backgroundImages = [
@@ -111,7 +114,7 @@ const CreateCustomerAddressScreen = ({ navigation }: any) => {
       <View className='w-full h-screen px-8 py-4 bg-white rounded-lg shadow-md p-8'>
       <TouchableOpacity className='flex-row justify-between items-center mb-14 border border-gray-400 rounded-xl p-2 bg-white'>
           <Ionicons onPress={() => navigation.goBack()} name="arrow-back" size={24} color="#333" />
-          <Text className='flex-row text-2xl font-semibold space-x-2 text-black'>
+          <Text className='flex-row text-2xl font-semibold space-x-2 text-gray-600'>
             <Ionicons className='mr-2' name="location" size={25} color="#333" />
             Add new address</Text>
           <View style={{ width: 24 }} />  
@@ -120,7 +123,7 @@ const CreateCustomerAddressScreen = ({ navigation }: any) => {
 
         <Text className='text-sm mb-1 font-semibold'>Phone number</Text>
         <TextInput
-          className='border border-gray-400 rounded-md px-3 py-2 mb-4 font-medium h-10'
+          className='border border-gray-400 rounded-md px-3 py-2 mb-4 font-medium h-10 text-gray-500'
           keyboardType="numeric"
           value={phone}
           onChangeText={setPhone}
@@ -130,7 +133,7 @@ const CreateCustomerAddressScreen = ({ navigation }: any) => {
 
         <Text className='text-sm mb-1 font-semibold'>Province</Text>
 
-        <View className='flex flex-row w-full justify-center items-center bg-white border border-gray-400 rounded-lg h-10 mb-4'>
+        <View className='flex flex-row w-full justify-center items-center bg-white border border-gray-400 rounded-lg h-10 mb-4 text-gray'>
             <Dropdown 
             data={provinces && provinces.map((province) => ({ label: province.province_name, value: province.province_id }))}
             value={selectedProvince}
@@ -139,8 +142,12 @@ const CreateCustomerAddressScreen = ({ navigation }: any) => {
             valueField="value"
             style={{ width: 300}}
             placeholder='Select province...'
+            placeholderStyle={{color: 'gray'}}
             search
             searchPlaceholder='Search province...'
+            itemTextStyle={{color: 'black'}}
+            selectedTextStyle = {{color: "gray"}}
+            
             
             />
         </View>
@@ -155,8 +162,12 @@ const CreateCustomerAddressScreen = ({ navigation }: any) => {
             valueField="value"
             style={{ width: 300}}
             placeholder='Select district...'
+            placeholderStyle={{color: 'gray'}}
             search
             searchPlaceholder='Search district...'
+            itemTextStyle={{color: 'black'}}
+            selectedTextStyle = {{color: "gray"}}
+            
             />
         </View>
 
@@ -170,19 +181,23 @@ const CreateCustomerAddressScreen = ({ navigation }: any) => {
             valueField="value"
             style={{ width: 300}}
             placeholder='Select ward...'
+            placeholderStyle={{color: 'gray'}}
             search
             searchPlaceholder='Search ward...'
+            itemTextStyle={{color: 'black'}}
+            selectedTextStyle = {{color: "gray"}}
             />
         </View>
 
         <Text className='text-sm mb-1 font-semibold'>Specific Address</Text>
         <TextInput
-          className='border border-gray-400 rounded-md px-3 py-2 mb-4 h-20'
+          className='border border-gray-400 rounded-md px-3 py-2 mb-4 h-20 text-gray'
           value={specificAddress}
           onChangeText={setSpecificAddress}
           placeholder='Street name, building name...'
-          placeholderTextColor='#d1d5db'
+          placeholderTextColor='gray'
           multiline
+          style={{color: "gray"}}
         />
 
         <Button color='orange' title="Add Address" onPress={handleAddAddress} />

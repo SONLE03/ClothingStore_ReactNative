@@ -12,6 +12,7 @@ import HeaderBar from '../../components/customUIs/Headerbar';
 import { UserPropsDetail } from '../../types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useAuth } from '../../util/AuthContext';
 
 const ProfileScreen = ({ navigation }: any ) => {
     const [user, setUser] = useState<UserPropsDetail | null>(null);
@@ -20,6 +21,7 @@ const ProfileScreen = ({ navigation }: any ) => {
     const [phone, setPhone] = useState('');
     const [image, setImage] = useState<{ uri: string, type: string, name: string } | null>(null);
     const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+    const { authEmitter } = useAuth();
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -60,8 +62,8 @@ const ProfileScreen = ({ navigation }: any ) => {
 
     const handleLogout = async () => {
         await logoutUser();
-        navigation.navigate('LoginScreen'); // Redirect to login screen
         AsyncStorage.clear();
+        authEmitter.emit('loginStatusChanged');
     };
 
     return (
@@ -85,13 +87,13 @@ const ProfileScreen = ({ navigation }: any ) => {
                         </View>
                         
                         <View className="flex flex-col ml-2">
-                            <Text className=" font-semibold text-sm text-black bg-white mb-4">{fullName}</Text>
+                            <Text className=" font-semibold text-xl text-black bg-white mb-4">{fullName}</Text>
                             <Text className=" text-sm p-1 rounded-2xl border border-orange-500  text-ellipsis text-orange-700">{user.email}</Text>
                         </View>
                     </View>
                     <TouchableOpacity className="flex flex-row border border-gray-500 rounded-xl p-2 items-center focus:border-orange-500" onPress={() => setModalVisible(true)}>
                         <MaterialCommunityIcons name="account-edit" size={24} color="gray" />
-                        <Text className='font-semibold'>Edit</Text>
+                        <Text className='font-semibold text-gray-400'>Edit</Text>
                     </TouchableOpacity>
                 </View>
             )}
@@ -114,7 +116,7 @@ const ProfileScreen = ({ navigation }: any ) => {
 
             <TouchableOpacity 
                 className="flex flex-row mb-4 p-4 border border-gray-400 rounded space-x-2 bg-white mt-4" 
-                onPress={() => navigation.navigate('ForgotPassword')}
+                onPress={() => navigation.navigate('ChangePassword')}
             >
                 <Ionicons name="key" size={30} color="#dd6b20" />
                 <Text className='text-lg font-semibold text-orange-600'>Change Password</Text>
@@ -198,7 +200,7 @@ const ProfileScreen = ({ navigation }: any ) => {
                     shadowRadius: 3.84,
                     elevation: 5
                 }}>
-                    <Text className="text-lg mb-4 text-center p-1"><Ionicons name="warning" size={30} color="#dd6b20"/> Are you sure you want to log out?</Text>
+                    <Text className="text-lg mb-4 text-center p-1 text-black"><Ionicons name="warning" size={30} color="#dd6b20"/> Are you sure you want to log out?</Text>
                     <View className="flex-row w-full justify-center items-center space-x-4 mt-4">
                         <TouchableOpacity className='flex justify-center items-center bg-orange-500 rounded-xl w-1/2 h-12' onPress={handleLogout}>
                             <Text className="text-lg font-semibold text-white">OK</Text>

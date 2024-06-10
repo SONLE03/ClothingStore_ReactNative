@@ -1,25 +1,32 @@
 "use client";
 import axios, { AxiosResponse } from 'axios';
 import { Product } from '../../types';
+import { BASE_URL } from '../config';
+import { ParseJSON } from '../auth/parseJSON';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductURL = process.env.NEXT_PUBLIC_API_ENDPOINT + 'products';
 //const accessToken = localStorage.getItem('access_token');
 
 export const GetAllProducts = async (): Promise<AxiosResponse<Product[]>> => {
       
-    //   if (!accessToken) {
-    //       throw new Error('No access token found');
-    //   }
+  const GetProductURL = BASE_URL + '/products';
+  const accessToken = await AsyncStorage.getItem('access_token');
   
-    //   const parseToken = ParseJSON(accessToken);
+  if (!accessToken) {
+      throw new Error('No access token found');
+  }
+
+  const parseToken = ParseJSON(accessToken);
+
       
       try {
           const config = {
               method: 'get',
               maxBodyLength: Infinity,
-              url: 'http://10.0.2.2:8080/api/v1/products',
+              url: GetProductURL, 
               headers: {
-                //"Authorization": `Bearer ${parseToken}`,
+                "Authorization": `Bearer ${parseToken}`,
               }
             };
           

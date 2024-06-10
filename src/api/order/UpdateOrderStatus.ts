@@ -28,5 +28,6 @@ export const UpdateOrderStatus = async (orderId: string, status: number) => {
     }
     catch (error) {
         console.error(error);
+        return false;
     }
 }

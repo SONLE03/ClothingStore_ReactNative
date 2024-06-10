@@ -36,7 +36,7 @@ const ChangePasswordScreen = ({ navigation }: any) => {
             Alert.alert('Success', 'Password changed successfully.');
             setTimeout(() => {
                 navigation.navigate('LoginScreen');
-            }, 3000);
+            }, 2000);
         } catch (error) {
             Alert.alert('Error', 'Failed to change password. Please try again.');
         }
@@ -44,6 +44,7 @@ const ChangePasswordScreen = ({ navigation }: any) => {
 
     return (
         <ImageBackground className="flex-1 justify-center items-center bg-white p-4" source={require('../../assets/auth-bg.png')}>
+            <TouchableOpacity className="mb-4 absolute top-0 left-0 p-4" onPress={() => navigation.goBack()}><Ionicons name="caret-back-circle-outline" size={40} color="#c05621" /></TouchableOpacity>
             <View className="w-full max-w-md p-5 bg-white rounded-xl border-2 border-orange-400 flex">
                 <Text className="text-xl font-semibold mb-4 text-center">Change Password</Text>
 
