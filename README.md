@@ -1,8 +1,33 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+## This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli), typescript, nativewind, react native paper, ui kitten...
+
+![react-native](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/36c83c02-d913-4406-b8d4-eee582f55176) ![nativewind](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/31b3601f-8464-46c5-8035-b54fbf9644af)
+ ![m-icon](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/c05d8f17-46b6-437d-a454-8f6e09c87aab) ![ui-kitten](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/628e85f2-e702-481a-8589-20d0a76c52c6) ![rn-paper](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/eea07faa-712c-4272-9765-ca4f1171eb06)
+
+# Some UI Screens
+
+![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/38e12441-2d6c-4b49-a49b-de718d07c26c)
+ ![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/db66a313-51c7-4358-b70f-0d61609f7071)
+ ![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/8d4583ee-0129-44ea-8ad7-c52057e832b5) ![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/0a8653bb-9201-4e50-8e5b-1d0cb593ee9b) ![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/d7fbb691-ae80-4eb9-82d8-8c96ef6c3df8) ![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/04b964e8-1082-44bd-b9b2-c06fa8a56d42) ![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/81c95ecc-ff07-4521-b93b-2e6537127634) ![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/1c0c07b1-4066-4581-b588-ef36f8fdee1d) ![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/8524523e-cef3-4837-8d35-7fb1931f3393) 
+
 
 # Getting Started
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+
+## Prepare: Change local BASE_URL to compatible with your device
+Run this command on CMD to take IPv4 Address, then set it to BASE_URL in file /api/config.ts
+
+```bash
+# cmd
+ipconfig
+```
+For example:
+
+![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/b087ee6a-9b82-4b5b-ab6b-4ba7fb59170f)
+
+
+![image](https://github.com/Semester02-UIT-2023-2024/ClothingStore_ReactNative/assets/121101254/cd71480f-5e91-4a1d-930c-c0e81c3beced)
+
 
 ## Step 1: Start the Metro Server
 
@@ -25,6 +50,9 @@ Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _roo
 ### For Android
 
 ```bash
+# install node-module first
+npm install
+
 # using npm
 npm run android
 
@@ -46,7 +74,7 @@ If everything is set up _correctly_, you should see your new app running in your
 
 This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
 
-## Step 3: Modifying your App
+## Step 3: Modifying your App (Optional)
 
 Now that you have successfully run the app, let's modify it.
 
