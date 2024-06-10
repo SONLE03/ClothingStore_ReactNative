@@ -174,7 +174,7 @@ const ProductDetailsScreen = ({ navigation }: any) => {
                 />
 
                 <Text className="text-orange-600 text-lg font-semibold mb-1 mt-2 px-4 mr-4">Other figures:</Text>
-                <View  className="flex flex-col w-full px-4 mb-4 mt-2">
+                <View  className="flex flex-row w-full px-4 mb-4 mt-2">
                     
                     {product.images && product.images.length > 0 && product.images.map((img, index) => (
                         <TouchableOpacity key={index} onPress={() => setSelectedImage(img)} className="mr-2">

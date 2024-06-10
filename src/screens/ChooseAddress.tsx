@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { View, Text, FlatList, TouchableOpacity, StyleSheet} from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView} from "react-native";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { GetAllAdressByCustomer } from "../api/address/GetAllAdressByCustomer";
 import { AddressInfo } from "../types";
@@ -53,10 +53,12 @@ const ChooseAddress = ({ navigation }: any) => {
           <Text className='flex-row text-2xl font-semibold space-x-2 text-black'>
             <Ionicons className='mr-2' name="location" size={25} color="#333" />
             Choose your address</Text>
-          <View style={{ width: 24 }} />  
+          <View style={{ width: 24 }} /> 
+           
       </TouchableOpacity>
+        <ScrollView>
         
-            <View className="flex flex-co w-full h-screen justify-center items-center p-3">
+            <View className="flex flex-co w-full h-screen justify-center items-center p-3 bg-white">
               
             <Text className='text-lg text-center text-black'><Ionicons name="location" size={24} color="red" /> All your available addresses here!</Text>
                 {addresses?.map(address => (
@@ -67,12 +69,16 @@ const ChooseAddress = ({ navigation }: any) => {
               <Text style={styles.addressDetails}>{address.district}, {address.ward}, {address.province}</Text>
             </TouchableOpacity>
           ))}
-          <View className='flex flex-col w-full justify-center items-center'>
-            <Button icon="plus" className='bg-orange-500 mt-8 w-48 rounded-lg' textColor='white' onPress={() => navigation.navigate('AddressScreen')}>Add new Address</Button>
-            <Button icon="reload" className='border-2 border-orange-500 mt-3 w-48 rounded-lg' textColor='red' onPress={(fetchAddresses)}>Reload</Button>
-          </View>
           
-        </View>
+          
+          
+            </View>
+        </ScrollView>
+        <View className='flex flex-col w-full justify-center items-center'>
+            <Button icon="plus" className='bg-orange-500 mt-8 w-48 rounded-lg' textColor='white' onPress={() => navigation.navigate('AddressScreen')}>Add new Address</Button>
+            <Button icon="reload" className='border-2 border-orange-500 mt-3 w-48 rounded-lg mb-2' textColor='red' onPress={(fetchAddresses)}>Reload</Button>
+          </View>
+
         </View>
     );
 }
