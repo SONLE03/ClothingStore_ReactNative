@@ -55,7 +55,7 @@ const OrderHistoryScreen = () => {
 
     const handleCancelOrder = async () => {
         if (selectedOrder) {
-            await UpdateOrderStatus(selectedOrder.orderId, 3);
+            await UpdateOrderStatus(selectedOrder.orderId, 1);
             const userId = await AsyncStorage.getItem('user_id');
             if (userId) {
                 const ParseCustomerId = JSON.parse(userId);
