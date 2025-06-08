@@ -1,6 +1,6 @@
 // HomeScreen.tsx
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   TextInput,
@@ -13,29 +13,28 @@ import {
   Animated,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { GetAllCategory } from '../api/category/GetAllCategory';
-import { Category, Product } from '../types';
-import { GetAllProducts } from '../api/product/GetAllProducts';
+import {GetAllCategory} from '../api/category/GetAllCategory';
+import {Category, Product} from '../types';
+import {GetAllProducts} from '../api/product/GetAllProducts';
 import HeaderBar from '../components/customUIs/Headerbar';
 import ClothesCard from '../components/product/ClothesCard';
-import { Input } from 'react-native-elements';
-import { LogBox } from 'react-native';
+import {Input} from 'react-native-elements';
+import {LogBox} from 'react-native';
 
 LogBox.ignoreLogs([
   ' Warning: Each child in a list should have a unique "key" prop',
 ]);
 
 const bannerImages = [
-  require('../assets/images/asphalt-9.jpeg'),
-  require('../assets/images/Altos-Odyssey.jpeg'),
-  require('../assets/images/genshin-impact.jpeg'),
-  require('../assets/images/pokemon-unite.jpeg'),
+  require('../assets/images/banner-01.png'),
+  require('../assets/images/banner-02.png'),
+  require('../assets/images/banner-03.png'),
+  require('../assets/images/banner-04.png'),
 ];
-
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.9;
 
-const HomeScreen = ({ navigation }: any) => {
+const HomeScreen = ({navigation}: any) => {
   const [ClothesList, setClothesList] = useState<Product[]>([]);
   const [searchText, setSearchText] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
@@ -46,8 +45,6 @@ const HomeScreen = ({ navigation }: any) => {
 
   //console.log(selectedCategory);
 
-
-  
   useEffect(() => {
     const fetchData = async () => {
       const fetchClothesList = await GetAllProducts();
@@ -62,8 +59,8 @@ const HomeScreen = ({ navigation }: any) => {
     if (ClothesList) {
       setFilteredClothes(
         ClothesList.filter((clothes: Product) =>
-          clothes.product_Name.toLowerCase().includes(searchText.toLowerCase())
-        )
+          clothes.product_Name.toLowerCase().includes(searchText.toLowerCase()),
+        ),
       );
     }
   }, [searchText, ClothesList]);
@@ -71,7 +68,9 @@ const HomeScreen = ({ navigation }: any) => {
   useEffect(() => {
     if (selectedCategory) {
       setFilteredClothes(
-        ClothesList.filter((clothes: Product) => clothes.category === selectedCategory)
+        ClothesList.filter(
+          (clothes: Product) => clothes.category === selectedCategory,
+        ),
       );
     } else {
       setFilteredClothes(ClothesList);
@@ -92,19 +91,27 @@ const HomeScreen = ({ navigation }: any) => {
     setSearchText('');
   };
 
-  const renderBannerCard = ({ item }: { item: any }) => (
+  const renderBannerCard = ({item}: {item: any}) => (
     <TouchableOpacity onPress={() => navigation.navigate('Event')}>
       <View className="p-2 rounded-xl overflow-hidden">
         <Image
           source={item}
-          style={{ width: CARD_WIDTH, height: CARD_WIDTH * 0.6, borderRadius: 12 }}
+          style={{
+            width: CARD_WIDTH,
+            height: CARD_WIDTH * 0.6,
+            borderRadius: 12,
+          }}
         />
       </View>
     </TouchableOpacity>
   );
 
-  const renderClothesCard = ({ item }: { item: Product }) => (
-    <TouchableOpacity className="w-1/2 p-1" onPress={() => navigation.navigate('ProductDetailsScreen', { productId: item.id })}>
+  const renderClothesCard = ({item}: {item: Product}) => (
+    <TouchableOpacity
+      className="w-1/2 p-1"
+      onPress={() =>
+        navigation.navigate('ProductDetailsScreen', {productId: item.id})
+      }>
       <ClothesCard
         id={item.id}
         product_Name={item.product_Name}
@@ -114,7 +121,9 @@ const HomeScreen = ({ navigation }: any) => {
         branch={item.branch}
         productStatus={item.productStatus}
         images={item.images}
-        buttonPressHandler={() => navigation.navigate('ProductDetailsScreen', { productId: item.id })}
+        buttonPressHandler={() =>
+          navigation.navigate('ProductDetailsScreen', {productId: item.id})
+        }
       />
     </TouchableOpacity>
   );
@@ -124,17 +133,16 @@ const HomeScreen = ({ navigation }: any) => {
       {/* Banner Scroll View */}
       <View className="flex-col justify-center my-3">
         <ScrollView
-          className='m-2'
+          className="m-2"
           horizontal
           //pagingEnabled
           showsHorizontalScrollIndicator={false}
           onScroll={handleScroll}
           scrollEventThrottle={100000}
-          ref={scrollViewRef}
-        >
+          ref={scrollViewRef}>
           {bannerImages.map((image, index) => (
-            <View key={index} style={{ width: CARD_WIDTH }}>
-              {renderBannerCard({ item: image })}
+            <View key={index} style={{width: CARD_WIDTH}}>
+              {renderBannerCard({item: image})}
             </View>
           ))}
         </ScrollView>
@@ -143,15 +151,19 @@ const HomeScreen = ({ navigation }: any) => {
           {bannerImages.map((_, index) => (
             <View
               key={index}
-              className={`w-2 h-2 mx-1 rounded-full ${index === currentBannerIndex ? 'bg-orange-500' : 'bg-gray-500'}`}
+              className={`w-2 h-2 mx-1 rounded-full ${
+                index === currentBannerIndex ? 'bg-yellow-500' : 'bg-gray-500'
+              }`}
             />
           ))}
         </View>
       </View>
 
       {/* Search Bar */}
-      <View className="flex-row mx-4 my-6 rounded-2xl bg-gray-50 border border-orange-500 items-center">
-        <TouchableOpacity className="flex ml-2" onPress={() => searchClothes(searchText)}>
+      <View className="flex-row mx-4 my-6 rounded-2xl bg-gray-50 border border-yellow-500 items-center">
+        <TouchableOpacity
+          className="flex ml-2"
+          onPress={() => searchClothes(searchText)}>
           <MaterialCommunityIcons
             name="home-search"
             size={25}
@@ -162,13 +174,12 @@ const HomeScreen = ({ navigation }: any) => {
           placeholder="Search Clothes"
           placeholderTextColor="#A9A9A9"
           value={searchText}
-          onChangeText={(text) => searchClothes(text)}
+          onChangeText={text => searchClothes(text)}
           className="flex-1 p-3 mx-2 text-gray-500"
         />
         <TouchableOpacity
           className="flex mr-2"
-          onPress={() => resetSearchClothes()}
-        >
+          onPress={() => resetSearchClothes()}>
           <MaterialCommunityIcons
             name="close"
             size={25}
@@ -181,37 +192,56 @@ const HomeScreen = ({ navigation }: any) => {
       <View className="flex-row justify-center mt-2 mb-4 bg-white p-3">
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <TouchableOpacity
-            className={`py-2 px-4 mx-2 rounded-full border ${selectedCategory === '' ? 'bg-orange-500 border-orange-500' : 'border-gray-500'}`}
-            onPress={() => setSelectedCategory('')}
-          >
-            <Text className={`${selectedCategory === '' ? 'text-white' : 'text-gray-500'} text-sm font-medium`}>
+            className={`py-2 px-4 mx-2 rounded-full border ${
+              selectedCategory === ''
+                ? 'bg-yellow-500 border-yellow-500'
+                : 'border-gray-500'
+            }`}
+            onPress={() => setSelectedCategory('')}>
+            <Text
+              className={`${
+                selectedCategory === '' ? 'text-white' : 'text-gray-500'
+              } text-sm font-medium`}>
               All
             </Text>
           </TouchableOpacity>
-          {categories.map((category) => (
+          {categories.map(category => (
             <TouchableOpacity
               key={category.name}
-              className={`py-2 px-4 mx-2 rounded-full border ${selectedCategory === category.name ? 'bg-orange-500 border-orange-500' : 'border-gray-500'}`}
-              onPress={() => setSelectedCategory(category.name)}
-            >
-              <Text className={`${selectedCategory === category.name ? 'text-white' : 'text-gray-500'} text-sm font-medium`}>
+              className={`py-2 px-4 mx-2 rounded-full border ${
+                selectedCategory === category.name
+                  ? 'bg-yellow-500 border-yellow-500'
+                  : 'border-gray-500'
+              }`}
+              onPress={() => setSelectedCategory(category.name)}>
+              <Text
+                className={`${
+                  selectedCategory === category.name
+                    ? 'text-white'
+                    : 'text-gray-500'
+                } text-sm font-medium`}>
                 {category.name}
               </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
-        
       </View>
-      <Text className='text-lg font-bold mx-4 my-2 text-orange-600 border border-b-orange-600 border-x-white border-t-gray-200 p-0 '>Our newest clothes here</Text>
+      <Text className="text-lg font-bold mx-4 my-2 text-orange-600 border border-b-orange-600 border-x-white border-t-gray-200 p-0 ">
+        Our newest clothes here
+      </Text>
     </>
   );
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentBannerIndex((prevIndex) => {
-        const nextIndex = prevIndex + 1 >= bannerImages.length ? 0 : prevIndex + 1;
+      setCurrentBannerIndex(prevIndex => {
+        const nextIndex =
+          prevIndex + 1 >= bannerImages.length ? 0 : prevIndex + 1;
         if (scrollViewRef.current) {
-          scrollViewRef.current.scrollTo({ x: nextIndex * CARD_WIDTH, animated: true });
+          scrollViewRef.current.scrollTo({
+            x: nextIndex * CARD_WIDTH,
+            animated: true,
+          });
         }
         return nextIndex;
       });
@@ -223,13 +253,14 @@ const HomeScreen = ({ navigation }: any) => {
   return (
     <View className="flex-1 bg-gray-50">
       <HeaderBar title="Home" />
-      <FlatList className='bg-gray-100'
+      <FlatList
+        className="bg-gray-100"
         data={filteredClothes}
         numColumns={2}
         renderItem={renderClothesCard}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         ListHeaderComponent={renderHeader}
-        contentContainerStyle={{ paddingHorizontal: 4, paddingBottom: 100 }}
+        contentContainerStyle={{paddingHorizontal: 4, paddingBottom: 100}}
         showsVerticalScrollIndicator={false}
       />
     </View>

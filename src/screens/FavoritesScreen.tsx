@@ -40,7 +40,7 @@ const FavoritesScreen = ({navigation}: any) => {
               <EmptyListAnimation title={'No Favourites'} />
             ) : (
               <View style={styles.ListItemContainer}>
-                {FavoritesList.map((data: any) => (
+                {FavoritesList && FavoritesList?.map((data: any) => (
                   <TouchableOpacity
                     onPress={() => {
                       navigation.push('Details', {
@@ -51,18 +51,14 @@ const FavoritesScreen = ({navigation}: any) => {
                     }}
                     key={data.id}>
                     <FavoritesItemCard
-                      id={data.id}
-                      imagelink_portrait={data.imagelink_portrait}
-                      name={data.name}
-                      special_ingredient={data.special_ingredient}
-                      type={data.type}
-                      ingredients={data.ingredients}
-                      average_rating={data.average_rating}
-                      ratings_count={data.ratings_count}
-                      roasted={data.roasted}
-                      description={data.description}
-                      favourite={data.favourite}
-                      ToggleFavouriteItem={ToggleFavourite}
+                      item={data}
+                      isChecked={data.favourite}
+                      onCheck={(productItemId: string, isChecked: boolean) =>
+                        ToggleFavourite(isChecked, data.type, productItemId)
+                      }
+                      onDelete={(productItemId: string) =>
+                        deleteFromFavoriteList(data.type, productItemId)
+                      }
                     />
                   </TouchableOpacity>
                 ))}

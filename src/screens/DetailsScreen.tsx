@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
-import { useStore } from '../store/store';
+import {useStore} from '../store/store';
 import ImageBackgroundInfo from '../components/customUIs/ImageBackgroundInfo';
 import PaymentFooter from '../components/payment/PaymentFooter';
 import HeaderBar from '../components/customUIs/Headerbar';
@@ -17,10 +17,10 @@ interface DetailsScreenProps {
   route: any;
 }
 
-const DetailsScreen: React.FC<DetailsScreenProps> = ({ navigation, route }) => {
-  const ItemOfIndex = useStore((state: any) =>
-    route.params.state.ClothesList
-  )[route.params.index];
+const DetailsScreen: React.FC<DetailsScreenProps> = ({navigation, route}) => {
+  const ItemOfIndex = useStore((state: any) => route.params.state.ClothesList)[
+    route.params.index
+  ];
 
   const addToFavoriteList = useStore((state: any) => state.addToFavoriteList);
   const deleteFromFavoriteList = useStore(
@@ -58,7 +58,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ navigation, route }) => {
       imagelink_square,
       special_ingredient,
       type,
-      prices: [{ ...price, quantity: 1 }],
+      prices: [{...price, quantity: 1}],
     });
     calculateCartPrice();
     navigation.navigate('Cart');
@@ -69,7 +69,7 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ navigation, route }) => {
       <StatusBar backgroundColor="#000" />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }}>
+        contentContainerStyle={{flexGrow: 1, justifyContent: 'space-between'}}>
         <ImageBackgroundInfo
           EnableBackHandler={true}
           imagelink_portrait={ItemOfIndex.imagelink_portrait}
@@ -87,13 +87,19 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ navigation, route }) => {
         />
 
         <View className="p-5">
-          <Text className="font-semibold text-lg text-white mb-2">Description</Text>
+          <Text className="font-semibold text-lg text-white mb-2">
+            Description
+          </Text>
           {fullDesc ? (
-            <TouchableWithoutFeedback onPress={() => setFullDesc((prev) => !prev)}>
-              <Text className="text-sm text-white mb-7">{ItemOfIndex.description}</Text>
+            <TouchableWithoutFeedback
+              onPress={() => setFullDesc(prev => !prev)}>
+              <Text className="text-sm text-white mb-7">
+                {ItemOfIndex.description}
+              </Text>
             </TouchableWithoutFeedback>
           ) : (
-            <TouchableWithoutFeedback onPress={() => setFullDesc((prev) => !prev)}>
+            <TouchableWithoutFeedback
+              onPress={() => setFullDesc(prev => !prev)}>
               <Text numberOfLines={3} className="text-sm text-white mb-7">
                 {ItemOfIndex.description}
               </Text>
@@ -106,12 +112,18 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ navigation, route }) => {
                 key={data.size}
                 onPress={() => setPrice(data)}
                 className={`flex-1 items-center justify-center h-12 rounded-lg border-2 mx-2 ${
-                  data.size === price.size ? 'border-orange-500' : 'border-gray-600'
+                  data.size === price.size
+                    ? 'border-yellow-500'
+                    : 'border-gray-600'
                 }`}>
                 <Text
                   className={`font-medium ${
                     ItemOfIndex.type === 'Bean' ? 'text-base' : 'text-lg'
-                  } ${data.size === price.size ? 'text-orange-500' : 'text-gray-300'}`}>
+                  } ${
+                    data.size === price.size
+                      ? 'text-yellow-500'
+                      : 'text-gray-300'
+                  }`}>
                   {data.size}
                 </Text>
               </TouchableOpacity>

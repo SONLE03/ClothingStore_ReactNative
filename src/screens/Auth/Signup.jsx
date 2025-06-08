@@ -116,9 +116,9 @@ const SignupScreen = () => {
             </TouchableOpacity>
             <View className='justify-center items-center flex-col bg-white p-2 rounded-xl border border-orange-600'>
               
-                <Text className='text-2xl font-bold text-orange-500 mt-2 mb-2'>Register an account</Text>
+                <Text className='text-2xl font-bold text-yellow-500 mt-2 mb-2'>Register an account</Text>
 
-                <Fumi className='border border-orange-500 rounded-xl mt-4 w-80'
+                <Fumi className='border border-yellow-500 rounded-xl mt-4 w-80'
                     label={'Your email'}
                     iconClass={MaterialCommunityIcons}
                     iconName={'email'}
@@ -130,7 +130,7 @@ const SignupScreen = () => {
                     value={email}
                 />
                 
-                <Fumi className='border border-orange-500 rounded-xl mt-4 w-80'
+                <Fumi className='border border-yellow-500 rounded-xl mt-4 w-80'
                     label={'Your phone'}
                     iconClass={MaterialCommunityIcons}
                     iconName={'phone'}
@@ -143,7 +143,7 @@ const SignupScreen = () => {
                     value={phone}
                 />
 
-                <Fumi className='border border-orange-500 rounded-xl mt-4 w-80'
+                <Fumi className='border border-yellow-500 rounded-xl mt-4 w-80'
                     label={'Full name'}
                     iconClass={MaterialCommunityIcons}
                     iconName={'account'}
@@ -193,7 +193,7 @@ const SignupScreen = () => {
                 </View>
               </View>
 
-              <TouchableOpacity className='flex justify-center items-center mt-4 mb-2 bg-orange-500 p-2 h-12 w-80 text-xl rounded-2xl' onPress={handleSignup}>
+              <TouchableOpacity className='flex justify-center items-center mt-4 mb-2 bg-yellow-500 p-2 h-12 w-80 text-xl rounded-2xl' onPress={handleSignup}>
                 <Text className='text-white text-lg font-bold'>Register new account </Text>
               </TouchableOpacity>
               

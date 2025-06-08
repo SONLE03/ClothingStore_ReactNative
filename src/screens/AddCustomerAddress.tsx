@@ -7,9 +7,6 @@ import { Province, District, Ward, AddressRequest } from '../types';
 import { CreateCustomerAddress } from '../api/address/CreateCustomerAddress';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { color } from 'react-native-elements/dist/helpers';
-
-
 
 
 const backgroundImages = [
@@ -103,6 +100,7 @@ const CreateCustomerAddressScreen = ({ navigation }: any) => {
     try {
       await CreateCustomerAddress(customerId, address);
       Alert.alert('Address added successfully');
+      navigation.goBack();
     } catch (error) {
       Alert.alert('Failed to add address');
     }

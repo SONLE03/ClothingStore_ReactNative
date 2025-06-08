@@ -14,7 +14,7 @@ interface HeaderBarProps {
 const HeaderBar: React.FC<HeaderBarProps> = ({title}) => {
     const navigation = useNavigation<NavigationProp<any>>();
     return (
-        <View className="p-4 flex flex-row items-center justify-between bg-orange-500 shadow-xl mb-4">
+        <View className="p-4 flex flex-row items-center justify-between bg-yellow-500 shadow-xl mb-4">
             <TouchableOpacity className='rounded-xl' onPress={() => navigation.navigate('Home')}>
                 <GradientBGIcon  name="home" color={COLORS.primaryOrangeHex} size={16} />
             </TouchableOpacity>
