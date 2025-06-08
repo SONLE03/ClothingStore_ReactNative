@@ -8,6 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.32;
@@ -64,7 +65,7 @@ const ClothesCard: React.FC<ClothesCardProps> = ({
           style={{width: CARD_WIDTH, height: CARD_WIDTH}}
           resizeMode="cover"
           className="rounded-lg mb-4 overflow-hidden">
-          <View className="w-full flex justify-end items-center bg-opacity-10">
+          <View className="w-full flex justify-end items-center bg-red-100">
             <View className="flex-row border border-red-500 bg-opacity-5 items-start justify-start h-10 gap-2 p-1 absolute top-0 left-0 rounded-br-xl rounded-tl-lg">
               <Animated.View style={{transform: [{rotate: spin}]}}>
                 <MaterialCommunityIcons name="star" size={16} color="red" />
@@ -83,13 +84,37 @@ const ClothesCard: React.FC<ClothesCardProps> = ({
         {product_Name}
       </Text>
       <Text className="text-black text-xs font-light truncate">{category}</Text>
+      <View className="flex flex-row items-center mb-2">
+        <Text className="text-black text-lg font-semibold mb-2">4.5</Text>
+        <View className="flex flex-row items-center mb-2">
+          <Ionicons name="star" size={20} color="#FFD700" />
+          <Text className="ml-2 text-gray-600">(4 reviews)</Text>
+        </View>
+      </View>
+      <View className="flex-row justify-start items-center h-10 space-x-2">
+        <View className="flex-row justify-start items-center w-10 h-6 bg-red-100  rounded-md mt-1 px-2">
+          <Ionicons name="checkmark-circle" size={20} color="red" />
+        </View>
+        <View className="flex-row justify-start items-center w-20 h-6 bg-cyan-100 rounded-md mt-1 px-2">
+          <Ionicons name="car" size={20} color="darkcyan" />
+          <Text className="text-cyan-600 text-xs">
+            1-2 days
+          </Text>
+        </View>
+      </View>
+
       <View className="flex-row justify-between items-center mt-4">
-        <Text className="text-yellow-500 text-lg font-semibold">
+        <Text className="text-yellow-500 text-[14px] font-semibold">
           đ
           <Text className="text-black font-semibold">
             {price.toLocaleString()}
           </Text>
         </Text>
+        <View className="flex-row justify-center items-center w-10 h-6 bg-red-100 rounded-md mt-1 ml-1 mr-2">
+          <Text className="text-red-600 text-xs">
+            -35%
+          </Text>
+        </View>
         <TouchableOpacity
           className="bg-yellow-500 p-2 rounded-lg"
           onPress={() => {

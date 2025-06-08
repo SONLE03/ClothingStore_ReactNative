@@ -55,18 +55,16 @@ const reviews = [
     id: 3,
     name: 'Alice Johnson',
     rating: 3,
-    review:
-      'The product is okay, but I expected more from the brand.',
+    review: 'The product is okay, but I expected more from the brand.',
     image: 'https://randomuser.me/api/portraits/women/3.jpg',
   },
   {
     id: 4,
     name: 'Bob Brown',
     rating: 5,
-    review:
-      'Absolutely love this! It exceeded my expectations in every way.',
+    review: 'Absolutely love this! It exceeded my expectations in every way.',
     image: 'https://randomuser.me/api/portraits/men/1.jpg',
-  }
+  },
 ];
 
 const ProductDetailsScreen = ({navigation}: any) => {
@@ -317,17 +315,16 @@ const ProductDetailsScreen = ({navigation}: any) => {
             </View>
 
             <View className="flex-col bg-white">
-            <View className="flex-row justify-start items-center px-3 bg-white h-14">
-              <Text className="text-[#F24E2E] text-lg font-semibold">
-                ₫{product.price.toLocaleString()}
-              </Text>
-              {/* help me add an fake not discount price, about increase 20% of price, with text line-through */}
-              <Text className="text-gray-400 text-sm font-semibold ml-2 line-through">
-                ₫{(product.price * 1.2).toLocaleString()}
-              </Text>
+              <View className="flex-row justify-start items-center px-3 bg-white h-14">
+                <Text className="text-[#F24E2E] text-lg font-semibold">
+                  ₫{product.price.toLocaleString()}
+                </Text>
+                <Text className="text-gray-400 text-sm font-semibold ml-2 line-through">
+                  ₫{(product.price * 1.2).toLocaleString()}
+                </Text>
               </View>
 
-              <View className="flex-row justify-start items-center w-20 h-10 px-3">
+              <View className="flex-row justify-start items-center w-20 h-10 ">
                 <View className="flex-row justify-start items-center w-28 h-6  rounded-md mt-1 px-2">
                   <Ionicons name="checkmark-circle" size={20} color="red" />
                   <Text className="text-red-600 text-center font-semibold">
@@ -335,25 +332,29 @@ const ProductDetailsScreen = ({navigation}: any) => {
                   </Text>
                 </View>
                 <View className="flex-row justify-start items-center w-28 h-6  rounded-md mt-1 px-2">
-                  <Ionicons name="checkmark-circle" size={20} color="red" />
-                  <Text className="text-red-600 text-center font-semibold">
-                    Free ship
+                  <Ionicons name="car" size={20} color="darkcyan" />
+                  <Text className="text-cyan-600 text-center font-semibold">
+                    Free delivery
                   </Text>
                 </View>
               </View>
             </View>
             {/* help me add an delivery inform: truck icon + We will deliver your order from date now to future 5 date*/}
             <View className="flex-col bg-white border border-gray-200">
-            <View className="flex-row justify-start items-center px-3 mt-2 bg-white">
-              <Ionicons name="car" size={24} color="darkcyan" />
-              <Text className="text-gray-600 text-sm ml-2">
-                We will deliver your order from{' '}
+              <View className="flex-row justify-start items-center px-3 mt-2 bg-white">
+                <Ionicons name="car" size={24} color="darkcyan" />
+                <Text className="text-gray-600 text-sm ml-2">
+                  We will deliver your order from{' '}
+                </Text>
+              </View>
+              <Text className="text-red-600 text-sm ml-[46px]">
                 {new Date().toLocaleDateString()} to{' '}
-                {new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                {new Date(
+                  Date.now() + 5 * 24 * 60 * 60 * 1000,
+                ).toLocaleDateString()}
               </Text>
-              
-              </View><Text className="text-gray-600 text-sm ml-[46px] mb-2">
-                Free shipping
+              <Text className="text-gray-600 text-sm ml-[46px] mb-4">
+                Free shipping on orders over $50
               </Text>
             </View>
 
@@ -362,9 +363,9 @@ const ProductDetailsScreen = ({navigation}: any) => {
             </Text>
             <View className="bg-white mt-2">
               <Text className="text-black text-lg font-regular p-2">
-                Description:{' '}
+                Product description:{' '}
               </Text>
-              <Text className="text-black text-lg mb-2 p-4">
+              <Text className="text-black text-sm mb-2 px-2">
                 {product.description.length > 40 && !isReadMore
                   ? `${product.description.substring(0, 40)}... `
                   : product.description}
@@ -377,61 +378,78 @@ const ProductDetailsScreen = ({navigation}: any) => {
                 )}
               </Text>
             </View>
-            {/* help mew create a fake user review 5 stars, this section has 4 reviews */}
+
             <View className="bg-white mt-2 p-4">
-            <View className="flex flex-row items-center mb-2">
-              <Text className="text-black text-lg font-semibold mb-2">
-                4.5
-              </Text>
               <View className="flex flex-row items-center mb-2">
-                <Ionicons name="star" size={20} color="#FFD700" />
-                <Ionicons name="star" size={20} color="#FFD700" />
-                <Ionicons name="star" size={20} color="#FFD700" />
-                <Ionicons name="star" size={20} color="#FFD700" />
-                <Ionicons name="star-half" size={20} color="#FFD700" />
-                <Text className="ml-2 text-gray-600">4.5 (4 reviews)</Text>
-              </View>
-            </View>
-                {/* MODIFY THIS: EACH REVIEW IS A CARD with 5 sections: (fake user avatar + name), 5 small stars rating, review, and small product image*/}
-            {reviews.map(review => (
-              <View className="flex flex-row items-center mb-2 border-b border-gray-200 pb-2">
-              <View>
-              <View className="flex flex-row items-center mb-2">
-              <Image
-                source={{
-                  uri: review.image || 'https://randomuser.me/api/portraits/women/1.jpg',
-                }}
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 20,
-                  marginRight: 10, 
-                }}
-                className="rounded-full"
-              />
-                <Text className="text-black text-SM font-REGULAR">
-                  {review.name}
+                <Text className="text-black text-lg font-semibold mb-2">
+                  4.5
                 </Text>
-              </View>
-                <View className="flex flex-row items-center">
-                {[...Array(review.rating)].map((_, index) => (
-                  <Ionicons
-                    key={index}
-                    name="star"
-                    size={16}
-                    color="#FFD700"
-                  />
-                ))}
+                <View className="flex flex-row items-center mb-2">
+                  <Ionicons name="star" size={20} color="#FFD700" />
+                  <Ionicons name="star" size={20} color="#FFD700" />
+                  <Ionicons name="star" size={20} color="#FFD700" />
+                  <Ionicons name="star" size={20} color="#FFD700" />
+                  <Ionicons name="star-half" size={20} color="#FFD700" />
+                  <Text className="ml-2 text-gray-600">4.5 (4 reviews)</Text>
                 </View>
-                <Text className="text-gray-600">
-                  {review.review}
-                </Text>
               </View>
-            </View>
-            ))}
-                
+
+              {reviews.map(review => (
+                <View className="flex flex-row items-center mb-2 border-b border-gray-200 pb-2">
+                  <View>
+                    <View className="flex flex-row items-center mb-2">
+                      <Image
+                        source={{
+                          uri:
+                            review.image ||
+                            'https://randomuser.me/api/portraits/women/1.jpg',
+                        }}
+                        style={{
+                          width: 20,
+                          height: 20,
+                          borderRadius: 20,
+                          marginRight: 10,
+                        }}
+                        className="rounded-full"
+                      />
+                      <Text className="text-black text-SM font-REGULAR">
+                        {review.name}
+                      </Text>
+                    </View>
+                    <View className="flex flex-row items-center">
+                      {[...Array(review.rating)].map((_, index) => (
+                        <Ionicons
+                          key={index}
+                          name="star"
+                          size={16}
+                          color="#FFD700"
+                        />
+                      ))}
+                    </View>
+                    <Text className="text-gray-600">{review.review}</Text>
+                    <Image
+                      source={{
+                        uri:
+                          product.images[0] ||
+                          'https://via.placeholder.com/150',
+                      }}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 10,
+                        marginTop: 5,
+                      }}
+                      className="rounded-lg"
+                    />
+                  </View>
+                </View>
+              ))}
             </View>
 
+            <View className="bg-white mt-2 p-4 mb-12">
+              <Text className="text-black text-lg font-regular mb-2 text-center">
+                Other related products:
+              </Text>
             <FlatList
               className="mt-6 bg-white"
               data={suggestedProducts}
@@ -440,6 +458,7 @@ const ProductDetailsScreen = ({navigation}: any) => {
               keyExtractor={item => item.id}
               contentContainerStyle={{paddingHorizontal: 4}}
             />
+            </View>
           </>
         </View>
       </ScrollView>
@@ -458,19 +477,19 @@ const ProductDetailsScreen = ({navigation}: any) => {
           Add to Cart
         </Button>
         <Button
-          className="w-1/2 bg-[#F24E2E] rounded-none"
+          className="w-1/2 bg-[#F24E2E] rounded-none h-[61px] flex justify-center items-center"
           mode="contained"
           //icon="credit-card-outline"
           onPress={() => {
             setIsBuyNow(true);
             setModalVisible(true);
           }}>
-          <View className='flex-COL items-center space-x-2 p-0'>
-          <View className='flex-row items-center space-x-2'>
-            <Ionicons name="cash-outline" size={24} color="white" />
-            <Text className="text-white">Buy Now</Text>
+          <View className="flex-col justify-center items-center space-x-2">
+            <View className="flex-row items-center space-x-2">
+              <Ionicons name="cash-outline" size={24} color="white" />
+              <Text className="text-white">Buy Now</Text>
             </View>
-            <Text className="text-white text-xs">{product.price}</Text>
+            {/* <Text className="text-white text-xs">{product.price}</Text> */}
           </View>
         </Button>
       </View>

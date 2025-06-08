@@ -1,6 +1,6 @@
 // HomeScreen.tsx
 
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   View,
   TextInput,
@@ -14,12 +14,15 @@ import {
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {GetAllCategory} from '../api/category/GetAllCategory';
-import {Category, Product} from '../types';
+import {Category, ExistedCoupon, Product} from '../types';
 import {GetAllProducts} from '../api/product/GetAllProducts';
 import HeaderBar from '../components/customUIs/Headerbar';
 import ClothesCard from '../components/product/ClothesCard';
 import {Input} from 'react-native-elements';
 import {LogBox} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {GetAllOrderByCustomer} from '../api/order/GetAllOrderByCustomer';
+import { GetAllCoupons } from '../api/coupon/GetAllCoupons';
 
 LogBox.ignoreLogs([
   ' Warning: Each child in a list should have a unique "key" prop',
@@ -42,6 +45,39 @@ const HomeScreen = ({navigation}: any) => {
   const [filteredClothes, setFilteredClothes] = useState<Product[]>([]);
   const [currentBannerIndex, setCurrentBannerIndex] = useState<number>(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [coupons, setCoupons] = useState<ExistedCoupon[]>([]);
+  console.log('Orders:', orders);
+
+  // Calculate total spend from ALL orders, each order has total field and status COMPLETED
+  const totalSpend = orders.reduce((total, order) => {
+    if (order.status === 'COMPLETED') {
+      return total + order.total;
+    }
+    return total;
+  }, 0).toLocaleString();
+  const fetchOrders = useCallback(async () => {
+    const userId = await AsyncStorage.getItem('user_id');
+    if (userId) {
+      const ParseCustomerId = JSON.parse(userId);
+      console.log(ParseCustomerId);
+      const orders = await GetAllOrderByCustomer(ParseCustomerId);
+      setOrders(orders);
+      console.log(orders);
+    }
+  }, []);
+
+  const fetchCoupons = async () => {
+    const response = await GetAllCoupons();
+    if (!response) return;
+    setCoupons(response);
+  };
+
+
+  useEffect(() => {
+    fetchOrders();
+    fetchCoupons();
+  }, [fetchOrders]);
 
   //console.log(selectedCategory);
 
@@ -159,6 +195,41 @@ const HomeScreen = ({navigation}: any) => {
         </View>
       </View>
 
+      <View className="flex-row justify-between bg-white items-center mx-4 my-2 p-4 rounded-lg shadow-md">
+        {/* TOTAL ORDER */}
+        <View className="flex w-[30%]">
+          <View className="flex-row items-center">
+            <MaterialCommunityIcons
+              name="clipboard-text"
+              size={20}
+              color="#FF9100"
+            />
+            <Text className="text-gray-500 text-sm ml-2">Orders</Text>
+          </View>
+          <Text className="text-yellow-500 text-lg font-bold">{orders?.length}</Text>
+        </View>
+        {/* Vertical Line */}
+        <View
+          className="w-px bg-gray-300 mx-2"
+          style={{height: '100%'}}
+        ></View>
+        {/* TOTAL SPEND */}
+        <View className="flex-1">
+          <Text className="text-gray-500 text-sm">Total Spend</Text>
+          <Text className="text-yellow-500 text-lg font-bold">{totalSpend}</Text>
+        </View>
+        {/* Vertical Line */}
+        <View
+          className="w-px bg-gray-300 mx-2"
+          style={{height: '100%'}}
+        ></View>
+        {/* TOTAL COUPON */}
+        <View className="flex-1">
+          <Text className="text-gray-500 text-sm">Total Coupon</Text>
+          <Text className="text-yellow-500 text-lg font-bold">{coupons?.length}</Text>
+        </View>
+      </View>
+
       {/* Search Bar */}
       <View className="flex-row mx-4 my-6 rounded-2xl bg-gray-50 border border-yellow-500 items-center">
         <TouchableOpacity
@@ -227,7 +298,7 @@ const HomeScreen = ({navigation}: any) => {
         </ScrollView>
       </View>
       <Text className="text-lg font-bold mx-4 my-2 text-orange-600 border border-b-orange-600 border-x-white border-t-gray-200 p-0 ">
-        Our newest clothes here
+        Our newest products here
       </Text>
     </>
   );
@@ -252,7 +323,7 @@ const HomeScreen = ({navigation}: any) => {
 
   return (
     <View className="flex-1 bg-gray-50">
-      <HeaderBar title="Home" />
+      <HeaderBar title="Furnistore" />
       <FlatList
         className="bg-gray-100"
         data={filteredClothes}
@@ -262,6 +333,11 @@ const HomeScreen = ({navigation}: any) => {
         ListHeaderComponent={renderHeader}
         contentContainerStyle={{paddingHorizontal: 4, paddingBottom: 100}}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => (
+          <View className="flex-1 justify-center items-center mt-20 mb-20">
+            <Text className="text-gray-500 text-lg">No product Found</Text>
+          </View>
+        )}
       />
     </View>
   );
