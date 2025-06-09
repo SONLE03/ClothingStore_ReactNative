@@ -1,21 +1,27 @@
 // ProductInterface
 export interface Product {
-    id: string;
-    product_Name: string;
-    description: string;
-    price: number;
-    category: string;
-    branch: string;
-    productStatus: string;
-    images: string[];
+    Id: string;
+    ProductName: string;
+    ImageSource: string;
+    Unit: string;
+    Description: string;
+    BrandName: string;
+    CategoryName: string;
+    DisplayPrice: string;
+    Discount : number;
+    Materials: string[];
+    Designers: string[];
+    ProductVariants: ProductItem[];
 }
 
 export interface ProductItem {
-    id: string;
-    sizeName: string;
-    colorName: string;
-    quantity: number;
-    price: number;
+    Id: string;
+    ColorId: string;
+    ColorName: string;
+    DisplayDimension: string;
+    Quantity: number;
+    Price: number;
+    ImageSource: string[];
 }
 
 // Gender
@@ -27,9 +33,11 @@ export interface Gender {
 
 // Category
 export interface Category {
-    id: string;
-    name: string;
-    productGender: Gender;
+    Id: string;
+    CategoryName: string;
+    ImageSource: string;
+    Description: string;
+    FurnitureTypeId: string;
 }
 
 //Order 

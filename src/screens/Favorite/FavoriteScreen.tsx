@@ -38,8 +38,8 @@ const FavoritesScreen = ({ navigation, route }: any) => {
     if (customerId !== null) {
       const ParseCustomerId = ParseJSON(customerId);
       const response = await GetFavouriteList(ParseCustomerId);
-      console.log(response)
-      setFavoriteList(response);
+      setFavoriteList(response.data.data);
+      console.log(FavoriteList); 
     }
   };
 
@@ -61,7 +61,7 @@ const FavoritesScreen = ({ navigation, route }: any) => {
 
   const handleCheckAll = (isChecked: boolean) => {
     if (isChecked) {
-      setSelectedItems(new Set(FavoriteList.map(item => item.id)));
+      setSelectedItems(new Set(FavoriteList.map(item => item.Id)));
     } else {
       setSelectedItems(new Set());
     }
@@ -72,10 +72,10 @@ const FavoritesScreen = ({ navigation, route }: any) => {
     const customerId = await AsyncStorage.getItem('user_id');
     if (customerId) {
       const ParseCustomerId = ParseJSON(customerId);
-      const itemToDelete = FavoriteList.find(item => item.id === productIds);
+      const itemToDelete = FavoriteList.find(item => item.Id === productIds);
       if (itemToDelete) {
-        await DeleteProductInFavourite(ParseCustomerId, [productIds]);
-        const updatedFavoriteList = FavoriteList.filter(item => item.id !== productIds);
+        await DeleteProductInFavourite(ParseCustomerId, productIds);
+        const updatedFavoriteList = FavoriteList.filter(item => item.Id !== productIds);
         setFavoriteList(updatedFavoriteList);
         setSelectedItems(prev => {
           const newSelectedItems = new Set(prev);
@@ -92,8 +92,8 @@ const FavoritesScreen = ({ navigation, route }: any) => {
       const ParseCustomerId = ParseJSON(customerId);
       const itemsToDelete = Array.from(selectedItems).map(productIds => productIds);
       console.log(itemsToDelete);
-      await DeleteProductInFavourite(ParseCustomerId, itemsToDelete);
-      const updatedCartList = FavoriteList.filter(item => !selectedItems.has(item.id));
+      // await DeleteProductInFavourite(ParseCustomerId, itemsToDelete);
+      const updatedCartList = FavoriteList.filter(item => !selectedItems.has(item.Id));
       setFavoriteList(updatedCartList);
       setSelectedItems(new Set());
       setSelectAll(false);
@@ -116,17 +116,17 @@ const FavoritesScreen = ({ navigation, route }: any) => {
             {FavoriteList.length == 0 ? (
               <EmptyListAnimation title={'Your Favorite is Empty'} />
             ) : (
-              <TouchableOpacity style={styles.ListItemContainer}>
-                {FavoriteList?.map((data: any) => (
-                  <FavouriteItemCard
-                    key={data.productItemId}
-                    item={data}
-                    isChecked={selectedItems.has(data.productItemId)}
-                    onCheck={handleCheckItem}
-                    onDelete={handleDeleteItem}
-                  />
-                ))}
-              </TouchableOpacity>
+             <View style={styles.ListItemContainer}>
+              {FavoriteList.map((data: any) => (
+                <FavouriteItemCard
+                  key={data.Id || data.productItemId} // dùng data.Id nếu productItemId không tồn tại
+                  item={data}
+                  isChecked={selectedItems.has(data.Id || data.productItemId)}
+                  onCheck={handleCheckItem}
+                  onDelete={handleDeleteItem}
+                />
+              ))}
+            </View>
             )}
           </ScrollView>
 

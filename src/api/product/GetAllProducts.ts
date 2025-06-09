@@ -10,7 +10,7 @@ const ProductURL = process.env.NEXT_PUBLIC_API_ENDPOINT + 'products';
 
 export const GetAllProducts = async (): Promise<AxiosResponse<Product[]>> => {
       
-  const GetProductURL = BASE_URL + '/products';
+  const GetProductURL = BASE_URL + '/product';
   const accessToken = await AsyncStorage.getItem('access_token');
   
   if (!accessToken) {

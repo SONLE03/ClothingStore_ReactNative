@@ -50,13 +50,13 @@ const ProductDetailsScreen = ({ navigation }: any) => {
     const fetchProductDetails = async () => {
       try {
         const fetchedProducts = await GetAllProducts();
-        const fetchedProduct = fetchedProducts.data.find(product => product.id === productId);
+        const fetchedProduct = fetchedProducts.data.data.find(product => product.Id === productId);
         if (fetchedProduct) {
           setProduct(fetchedProduct);
           const detailedProduct = await GetDetailProduct(productId);
           setProductItems(detailedProduct);
           setSelectedImage(fetchedProduct.images[0]);
-          const relatedProducts = fetchedProducts.data.filter(product => product.category === fetchedProduct.category && product.id !== productId);
+          const relatedProducts = fetchedProducts.data.filter(product => product.CategoryName === fetchedProduct.category && product.Id !== productId);
           setSuggestedProducts(relatedProducts);
         }
       } catch (error) {
@@ -74,14 +74,14 @@ const ProductDetailsScreen = ({ navigation }: any) => {
   };
 
   const handleColorSelect = (colorName: string) => {
-    if (!selectedSize) return;
+    // if (!selectedSize) return;
 
-    setSelectedColor(colorName);
-    const selectedProductItem = productItems.find(item => item.sizeName === selectedSize && item.colorName === colorName);
-    if (selectedProductItem) {
-      setAvailableQuantity(selectedProductItem.quantity);
-      setPrice(selectedProductItem.price);
-    }
+    // setSelectedColor(colorName);
+    // const selectedProductItem = productItems.find(item => item.sizeName === selectedSize && item.colorName === colorName);
+    // if (selectedProductItem) {
+    //   setAvailableQuantity(selectedProductItem.quantity);
+    //   setPrice(selectedProductItem.price);
+    // }
   };
 
   const handleAddToFavourite = async (productIds: string[]) => {

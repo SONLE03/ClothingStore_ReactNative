@@ -6,7 +6,7 @@ import { ParseJSON } from '../auth/parseJSON';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const GetDetailProduct = async (productId: string) => {
-    const GetProductUrl = BASE_URL + `/products/${productId}`;
+    const GetProductUrl = BASE_URL + `/product/${productId}`;
     const accessToken = await AsyncStorage.getItem('access_token');
     
     if (!accessToken) {
@@ -25,6 +25,8 @@ export const GetDetailProduct = async (productId: string) => {
     };
     try {
         const response = await axios.request(config);
+        console.log(response.data);
+        console.log('abc');
         return response.data;
     } catch (error) {
         console.log(error);

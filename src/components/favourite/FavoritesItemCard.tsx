@@ -4,7 +4,7 @@ import CheckBox from '@react-native-community/checkbox';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Product } from '../../types';
-
+import ProductUtils from '../../util/DisplayPrice';
 const FavouriteItemCard: React.FC<{
   item: Product;
   isChecked: boolean;
@@ -24,9 +24,9 @@ const FavouriteItemCard: React.FC<{
           value={isChecked}
           onValueChange={(newValue) => onCheck(item.id, newValue)}
         /> */}
-        {item.images ? (
+        {item.ImageSource ? (
           <ImageBackground
-            source={{ uri: item.images[0] }}
+            source={{ uri: item.ImageSource}}
             resizeMode="cover"
             style={styles.image}
           />
@@ -35,17 +35,17 @@ const FavouriteItemCard: React.FC<{
         )}
 
         <View className='mr-2 flex-col'>
-          <Text style={styles.productName}>{item.product_Name}</Text>
-          <Text style={styles.productDetail}>Size: {item.branch}</Text>
-          <Text style={styles.productDetail}>Color: {item.category}</Text>
+          <Text style={styles.productName}>{item.ProductName}</Text>
+          <Text style={styles.productDetail}>Brand: {item.BrandName}</Text>
+          <Text style={styles.productDetail}>Category: {item.CategoryName}</Text>
           <View style={styles.priceContainer}>
             <Text style={styles.price}>
-              đ<Text style={styles.priceValue}>{item.price.toLocaleString()}</Text>
+              đ<Text style={styles.priceValue}>{ProductUtils.getDisplayPrice(item.ProductVariants)}</Text>
             </Text>
           </View>
         </View>
 
-        <TouchableOpacity className=' right-0' onPress={() => onDelete(item.id)}>
+        <TouchableOpacity className=' right-0' onPress={() => onDelete(item.Id)}>
           <MaterialCommunityIcons name="trash-can" size={24} color="red" />
         </TouchableOpacity>
       </View>

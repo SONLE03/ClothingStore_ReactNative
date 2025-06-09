@@ -31,6 +31,7 @@ export const GetAllCategory = async (): Promise<Category[]> => {
           };
         
           const response: AxiosResponse<Category[]> = await axios.request(config);
+          console.log(response.data);
           return response.data;
     } catch (error) {
         console.error(error);

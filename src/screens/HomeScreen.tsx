@@ -10,7 +10,7 @@ import {
   Image,
   FlatList,
   ScrollView,
-  Animated,
+  Animated, 
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { GetAllCategory } from '../api/category/GetAllCategory';
@@ -20,6 +20,7 @@ import HeaderBar from '../components/customUIs/Headerbar';
 import ClothesCard from '../components/product/ClothesCard';
 import { Input } from 'react-native-elements';
 import { LogBox } from 'react-native';
+import ProductUtils from '../util/DisplayPrice';
 
 LogBox.ignoreLogs([
   ' Warning: Each child in a list should have a unique "key" prop',
@@ -51,9 +52,9 @@ const HomeScreen = ({ navigation }: any) => {
   useEffect(() => {
     const fetchData = async () => {
       const fetchClothesList = await GetAllProducts();
-      setClothesList(fetchClothesList.data);
+      setClothesList(fetchClothesList.data.data);
       const fetchedCategories = await GetAllCategory();
-      setCategories(fetchedCategories);
+      setCategories(fetchedCategories.data);
     };
     fetchData();
   }, []);
@@ -62,7 +63,7 @@ const HomeScreen = ({ navigation }: any) => {
     if (ClothesList) {
       setFilteredClothes(
         ClothesList.filter((clothes: Product) =>
-          clothes.product_Name.toLowerCase().includes(searchText.toLowerCase())
+          clothes.ProductName.toLowerCase().includes(searchText.toLowerCase())
         )
       );
     }
@@ -71,7 +72,7 @@ const HomeScreen = ({ navigation }: any) => {
   useEffect(() => {
     if (selectedCategory) {
       setFilteredClothes(
-        ClothesList.filter((clothes: Product) => clothes.category === selectedCategory)
+        ClothesList.filter((clothes: Product) => clothes.CategoryName === selectedCategory)
       );
     } else {
       setFilteredClothes(ClothesList);
@@ -103,21 +104,44 @@ const HomeScreen = ({ navigation }: any) => {
     </TouchableOpacity>
   );
 
-  const renderClothesCard = ({ item }: { item: Product }) => (
-    <TouchableOpacity className="w-1/2 p-1" onPress={() => navigation.navigate('ProductDetailsScreen', { productId: item.id })}>
-      <ClothesCard
-        id={item.id}
-        product_Name={item.product_Name}
-        description={item.description}
-        price={item.price}
-        category={item.category}
-        branch={item.branch}
-        productStatus={item.productStatus}
-        images={item.images}
-        buttonPressHandler={() => navigation.navigate('ProductDetailsScreen', { productId: item.id })}
-      />
-    </TouchableOpacity>
-  );
+  // const renderClothesCard = ({ item }: { item: Product }) => (
+  //   <TouchableOpacity className="w-1/2 p-1" onPress={() => navigation.navigate('ProductDetailsScreen', { productId: item.Id })}>
+  //     <ClothesCard
+  //       id={item.Id}
+  //       product_Name={item.ProductName}
+  //       description={item.Description}
+  //       price={item.DisplayPrice}
+  //       category={item.CategoryName}
+  //       branch={item.BrandName}
+  //       images={item.Images}
+  //       buttonPressHandler={() => navigation.navigate('ProductDetailsScreen', { productId: item.id })}
+  //     />
+  //   </TouchableOpacity>
+  // );
+    const renderClothesCard = ({ item }: { item: Product }) => {
+    // Lấy mỗi variant 1 ảnh đầu tiên
+    const variantImages: string[] = item.ProductVariants
+      .map((variant) => variant.ImageSource?.[0])
+      .filter((img) => !!img);
+    return (
+      <TouchableOpacity
+        className="w-1/2 p-1"
+        onPress={() => navigation.navigate('ProductDetailsScreen', { productId: item.Id })}
+      >
+        <ClothesCard
+          id={item.Id}
+          product_Name={item.ProductName}
+          description={item.Description}
+          price={ProductUtils.getDisplayPrice(item.ProductVariants)}
+          category={item.CategoryName}
+          branch={item.BrandName}
+          images={variantImages} // 👈 truyền vào đây
+          buttonPressHandler={() => navigation.navigate('ProductDetailsScreen', { productId: item.Id })}
+        />
+      </TouchableOpacity>
+    );
+  };
+
 
   const renderHeader = () => (
     <>
@@ -190,12 +214,12 @@ const HomeScreen = ({ navigation }: any) => {
           </TouchableOpacity>
           {categories.map((category) => (
             <TouchableOpacity
-              key={category.name}
-              className={`py-2 px-4 mx-2 rounded-full border ${selectedCategory === category.name ? 'bg-orange-500 border-orange-500' : 'border-gray-500'}`}
-              onPress={() => setSelectedCategory(category.name)}
+              key={category.CategoryName}
+              className={`py-2 px-4 mx-2 rounded-full border ${selectedCategory === category.CategoryName ? 'bg-orange-500 border-orange-500' : 'border-gray-500'}`}
+              onPress={() => setSelectedCategory(category.CategoryName)}
             >
-              <Text className={`${selectedCategory === category.name ? 'text-white' : 'text-gray-500'} text-sm font-medium`}>
-                {category.name}
+              <Text className={`${selectedCategory === category.CategoryName ? 'text-white' : 'text-gray-500'} text-sm font-medium`}>
+                {category.CategoryName}
               </Text>
             </TouchableOpacity>
           ))}
@@ -227,7 +251,7 @@ const HomeScreen = ({ navigation }: any) => {
         data={filteredClothes}
         numColumns={2}
         renderItem={renderClothesCard}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.Id}
         ListHeaderComponent={renderHeader}
         contentContainerStyle={{ paddingHorizontal: 4, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}

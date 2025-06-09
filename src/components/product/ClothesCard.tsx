@@ -16,10 +16,9 @@ interface ClothesCardProps {
   id: string;
   product_Name: string;
   description: string;
-  price: number;
+  price: string;
   category: string;
   branch: string;
-  productStatus: string;
   images: string[];
   buttonPressHandler: (product: any) => void;
 }
@@ -31,7 +30,6 @@ const ClothesCard: React.FC<ClothesCardProps> = ({
   price,
   category,
   branch,
-  productStatus,
   images,
   buttonPressHandler,
 }) => {
@@ -98,7 +96,6 @@ const ClothesCard: React.FC<ClothesCardProps> = ({
               price,
               category,
               branch,
-              productStatus,
               images,
             });
           }}

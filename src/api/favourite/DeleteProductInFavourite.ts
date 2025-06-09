@@ -2,8 +2,9 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../config';
 
-export const DeleteProductInFavourite = async (customerId: string, productIds: string[]): Promise<string[]> => {
-  const DeleteCartUrl = `${BASE_URL}/favorites/${customerId}`;
+export const DeleteProductInFavourite = async (customerId: string, productIds: string) => {
+  const DeleteCartUrl = `${BASE_URL}/favorite/${customerId}/${productIds}`;
+  console.log(DeleteCartUrl);
   const accessToken = await AsyncStorage.getItem('access_token');
 
   if (!accessToken) {
@@ -18,7 +19,6 @@ export const DeleteProductInFavourite = async (customerId: string, productIds: s
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${parseToken}`,
       },
-      data: { productIds },
     });
 
     return response.data;
