@@ -197,7 +197,7 @@ const HomeScreen = ({navigation}: any) => {
 
       <View className="flex-row justify-between bg-white items-center mx-4 my-2 p-4 rounded-lg shadow-md">
         {/* TOTAL ORDER */}
-        <View className="flex w-[30%]">
+        <View className="flex w-[27%]">
           <View className="flex-row items-center">
             <MaterialCommunityIcons
               name="clipboard-text"
@@ -214,8 +214,15 @@ const HomeScreen = ({navigation}: any) => {
           style={{height: '100%'}}
         ></View>
         {/* TOTAL SPEND */}
-        <View className="flex-1">
-          <Text className="text-gray-500 text-sm">Total Spend</Text>
+        <View className="flex w-[33%]">
+        <View className="flex-row items-center">
+            <MaterialCommunityIcons
+              name="cash-multiple"
+              size={20}
+              color="#FF9100"
+            />
+            <Text className="text-gray-500 text-sm ml-2">Total Spend</Text>
+          </View>
           <Text className="text-yellow-500 text-lg font-bold">{totalSpend}</Text>
         </View>
         {/* Vertical Line */}
@@ -225,7 +232,14 @@ const HomeScreen = ({navigation}: any) => {
         ></View>
         {/* TOTAL COUPON */}
         <View className="flex-1">
-          <Text className="text-gray-500 text-sm">Total Coupon</Text>
+        <View className="flex-row items-center">
+            <MaterialCommunityIcons
+              name="ticket"
+              size={20}
+              color="#FF9100"
+            />
+            <Text className="text-gray-500 text-sm ml-2">Coupon</Text>
+          </View>
           <Text className="text-yellow-500 text-lg font-bold">{coupons?.length}</Text>
         </View>
       </View>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -17,10 +17,12 @@ import {GetMe} from '../../api/auth/GetMe';
 import {EditUser} from '../../api/auth/ChangeProfile';
 import logoutUser from '../../api/auth/Logout';
 import HeaderBar from '../../components/customUIs/Headerbar';
-import {UserPropsDetail} from '../../types';
+import {ExistedCoupon, UserPropsDetail} from '../../types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useAuth} from '../../util/AuthContext';
+import { GetAllCoupons } from '../../api/coupon/GetAllCoupons';
+import { GetAllOrderByCustomer } from '../../api/order/GetAllOrderByCustomer';
 
 const ProfileScreen = ({navigation}: any) => {
   const [user, setUser] = useState<UserPropsDetail | null>(null);
@@ -34,6 +36,41 @@ const ProfileScreen = ({navigation}: any) => {
   } | null>(null);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const {authEmitter} = useAuth();
+
+  const [orders, setOrders] = useState<any[]>([]);
+  const [coupons, setCoupons] = useState<ExistedCoupon[]>([]);
+  console.log('Orders:', orders);
+
+  // Calculate total spend from ALL orders, each order has total field and status COMPLETED
+  const totalSpend = orders.reduce((total, order) => {
+    if (order.status === 'COMPLETED') {
+      return total + order.total;
+    }
+    return total;
+  }, 0).toLocaleString();
+  const fetchOrders = useCallback(async () => {
+    const userId = await AsyncStorage.getItem('user_id');
+    if (userId) {
+      const ParseCustomerId = JSON.parse(userId);
+      console.log(ParseCustomerId);
+      const orders = await GetAllOrderByCustomer(ParseCustomerId);
+      setOrders(orders);
+      console.log(orders);
+    }
+  }, []);
+
+  const fetchCoupons = async () => {
+    const response = await GetAllCoupons();
+    if (!response) return;
+    setCoupons(response);
+  };
+
+
+  useEffect(() => {
+    fetchOrders();
+    fetchCoupons();
+  }, [fetchOrders]);
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -124,6 +161,56 @@ const ProfileScreen = ({navigation}: any) => {
           </TouchableOpacity>
         </View>
       )}
+
+       <View className="flex-row justify-between bg-white items-center mx-4 my-2 p-4 rounded-lg shadow-md">
+              {/* TOTAL ORDER */}
+              <View className="flex w-[27%]">
+                <View className="flex-row items-center">
+                  <MaterialCommunityIcons
+                    name="clipboard-text"
+                    size={20}
+                    color="#FF9100"
+                  />
+                  <Text className="text-gray-500 text-sm ml-2">Orders</Text>
+                </View>
+                <Text className="text-yellow-500 text-lg font-bold">{orders?.length}</Text>
+              </View>
+              {/* Vertical Line */}
+              <View
+                className="w-px bg-gray-300 mx-2"
+                style={{height: '100%'}}
+              ></View>
+              {/* TOTAL SPEND */}
+              <View className="flex w-[33%]">
+              <View className="flex-row items-center">
+                  <MaterialCommunityIcons
+                    name="cash-multiple"
+                    size={20}
+                    color="#FF9100"
+                  />
+                  <Text className="text-gray-500 text-sm ml-2">Total Spend</Text>
+                </View>
+                <Text className="text-yellow-500 text-lg font-bold">{totalSpend}</Text>
+              </View>
+              {/* Vertical Line */}
+              <View
+                className="w-px bg-gray-300 mx-2"
+                style={{height: '100%'}}
+              ></View>
+              {/* TOTAL COUPON */}
+              <View className="flex-1">
+              <View className="flex-row items-center">
+                  <MaterialCommunityIcons
+                    name="ticket"
+                    size={20}
+                    color="#FF9100"
+                  />
+                  <Text className="text-gray-500 text-sm ml-2">Coupon</Text>
+                </View>
+                <Text className="text-yellow-500 text-lg font-bold">{coupons?.length}</Text>
+              </View>
+            </View>
+      
 
       <TouchableOpacity
         className=" flex flex-row mb-4 p-4 border border-gray-400 rounded space-x-2 bg-white mt-8"
