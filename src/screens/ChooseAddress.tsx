@@ -34,14 +34,15 @@ const ChooseAddress = ({ navigation }: any) => {
         if (customerId !== null) {
           const ParseCustomerId = JSON.parse(customerId);
           const response = await GetAllAdressByCustomer(ParseCustomerId);
-          setAddresses(response);
+          console.log(response);
+          setAddresses(response.data);
         }
     };
   
     const selectAddress = async (address: AddressInfo) => {
         setSelectedAddress(address);
         navigation.goBack('OrderScreen');
-        await AsyncStorage.setItem('address', JSON.stringify(address.id));
+        await AsyncStorage.setItem('address', JSON.stringify(address.Id));
         const Address = await AsyncStorage.getItem('address');
         console.log(Address);
        
@@ -70,7 +71,7 @@ const ChooseAddress = ({ navigation }: any) => {
             onPress={() => selectAddress(address)}
             className='w-full p-4 border border-orange-500 rounded-xl shadow-xl mt-4 focus:border-orange-500'
           >
-              <Text style={styles.addressDetails}>{address.district}, {address.ward}, {address.province}</Text>
+              <Text style={styles.addressDetails}>{address.SpecificAddress},{address.District}, {address.Ward}, {address.Province}</Text>
             </TouchableOpacity>
           ))}
           

@@ -93,11 +93,12 @@ const CreateCustomerAddressScreen = ({ navigation }: any) => {
     //console.log(ParseCustomerId);
 
     const address: AddressRequest = {
-      phone: phone,
       province: selectedProvince.label,
       district: selectedDistrict.label,
       ward: selectedWard.label,
       specificAddress: specificAddress,
+      postalCode: '1',
+      isDefault: true
     };
 
     try {
@@ -119,17 +120,6 @@ const CreateCustomerAddressScreen = ({ navigation }: any) => {
             Add new address</Text>
           <View style={{ width: 24 }} />  
       </TouchableOpacity>
-        
-
-        <Text className='text-sm mb-1 font-semibold'>Phone number</Text>
-        <TextInput
-          className='border border-gray-400 rounded-md px-3 py-2 mb-4 font-medium h-10 text-gray-500'
-          keyboardType="numeric"
-          value={phone}
-          onChangeText={setPhone}
-          placeholder='Enter phone number...'
-          placeholderTextColor='#d1d5db'
-        />
 
         <Text className='text-sm mb-1 font-semibold'>Province</Text>
 

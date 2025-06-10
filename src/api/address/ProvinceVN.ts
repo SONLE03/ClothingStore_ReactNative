@@ -1,7 +1,7 @@
 // api/GetProvinces
 import axios from 'axios';
 
-const BASE_API_URL = 'https://vapi.vnappmob.com/api';
+const BASE_API_URL = 'https://vapi.vnappmob.com/api/v2';
  const GetProvincesUrl = BASE_API_URL + '/province/';
 
 export const GetProvinces = async () => {
@@ -9,7 +9,7 @@ export const GetProvinces = async () => {
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: 'https://vapi.vnappmob.com/api/province/',
+      url: 'https://vapi.vnappmob.com/api/v2/province/',
       headers: {},
         
     };
@@ -28,7 +28,7 @@ export const GetProvinces = async () => {
 
 export const GetDistrictsByProvince = async (province_id: string) => {
   try {
-    const response = await axios.get(`https://vapi.vnappmob.com/api/province/district/${province_id}`);
+    const response = await axios.get(`https://vapi.vnappmob.com/api/v2/province/district/${province_id}`);
     return response.data.results;
   } catch (error) {
     console.error(error);

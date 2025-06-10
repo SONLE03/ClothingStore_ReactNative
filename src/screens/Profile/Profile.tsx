@@ -13,7 +13,9 @@ import { UserPropsDetail } from '../../types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAuth } from '../../util/AuthContext';
-
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {EditUserAvatar} from '../../api/auth/change-avatar';
+import { GetMeV2 } from '../../api/auth/GetMe';
 const ProfileScreen = ({ navigation }: any ) => {
     const [user, setUser] = useState<UserPropsDetail | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -22,24 +24,73 @@ const ProfileScreen = ({ navigation }: any ) => {
     const [image, setImage] = useState<{ uri: string, type: string, name: string } | null>(null);
     const [logoutModalVisible, setLogoutModalVisible] = useState(false);
     const { authEmitter } = useAuth();
+    const [dateOfBirth, setDateOfBirth] = useState('');
 
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+        // Format date to display string (DD/MM/YYYY)
+    const formatDate = (date: Date) => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
+  // Handle date selection
+    const onDateChange = (event: any, date?: Date) => {
+        setShowDatePicker(false);
+        if (event.type === 'set' && date) {
+        // User selected a date
+        setSelectedDate(date);
+        setDateOfBirth(formatDate(date));
+        }
+        // If event.type === 'dismissed', user cancelled - do nothing
+    };
+
+    // Open date picker
+    const openDatePicker = () => {
+        setShowDatePicker(true);
+    };
+
+    // Calculate maximum date (today - for reasonable age limit)
+    const getMaxDate = () => {
+        return new Date(); // Today
+    };
+
+    // Calculate minimum date (100 years ago - reasonable limit)
+    const getMinDate = () => {
+        const today = new Date();
+        const minDate = new Date(
+        today.getFullYear() - 100,
+        today.getMonth(),
+        today.getDate(),
+        );
+        return minDate;
+    };
     useEffect(() => {
         const fetchUser = async () => {
             const userData = await GetMe();
-            setUser(userData);
-            setFullName(userData.fullName);
-            setPhone(userData.phone);
-            console.log(fullName, phone);
+            setUser(userData.data);
+            setFullName(userData.data.FullName || '');
+            setPhone(userData.data.PhoneNumber || '');
         };
         fetchUser();
     }, []);
 
     const handleEditProfile = async () => {
         if (user) {
-            await EditUser(user.id, phone, fullName, image || undefined);
-            const updatedUser = await GetMe();
-            setUser(updatedUser);
-            setModalVisible(false);
+        await EditUser(
+            user.Id,
+            phone,
+            fullName,
+            '2000-06-09T16:09:18.637Z',
+        );
+        if (image) {
+            await EditUserAvatar(user.Id, image);
+        }
+        const updatedUser = await GetMeV2(user.Id);
+        setUser(updatedUser);
+        setModalVisible(false);
         }
     };
 
@@ -75,7 +126,7 @@ const ProfileScreen = ({ navigation }: any ) => {
                         <View className="relative h-20 w-20">
                             <Avatar.Image 
                                 size={65} 
-                                source={user.image ? { uri: user.image } : require('../../assets/app_images/avatar.png')} 
+                                source={user.ImageSource ? { uri: user.ImageSource } : require('../../assets/app_images/avatar.png')} 
                             />
                             <IconButton 
                                 icon="pencil" 
@@ -88,7 +139,7 @@ const ProfileScreen = ({ navigation }: any ) => {
                         
                         <View className="flex flex-col ml-2">
                             <Text className=" font-semibold text-xl text-black bg-white mb-4">{fullName}</Text>
-                            <Text className=" text-sm p-1 rounded-2xl border border-orange-500  text-ellipsis text-orange-700">{user.email}</Text>
+                            <Text className=" text-sm p-1 rounded-2xl border border-orange-500  text-ellipsis text-orange-700">{user.Email}</Text>
                         </View>
                     </View>
                     <TouchableOpacity className="flex flex-row border border-gray-500 rounded-xl p-2 items-center focus:border-orange-500" onPress={() => setModalVisible(true)}>
@@ -138,7 +189,7 @@ const ProfileScreen = ({ navigation }: any ) => {
                     <TouchableOpacity className='border border-orange-500 rounded-full h-28 w-28' onPress={pickImage}>
                         <Avatar.Image 
                             size={110} 
-                            source={image ? { uri: image.uri } : user && user.image ? { uri: user.image } : require('../../assets/app_images/avatar.png')} 
+                            source={image ? { uri: image.uri } : user && user.ImageSource ? { uri: user.ImageSource } : require('../../assets/app_images/avatar.png')} 
                         />
                         <IconButton 
                                 icon="plus" 
@@ -172,6 +223,33 @@ const ProfileScreen = ({ navigation }: any ) => {
                         keyboardType='number-pad'
                         value={phone}
                     />
+                    <TouchableOpacity
+                        className="border border-gray-500 rounded-xl mt-4 px-5 py-4 flex-row items-center justify-start space-x-2"
+                        onPress={openDatePicker}>
+                        <Ionicons
+                        name="calendar"
+                        size={24}
+                        color="#f95a25"
+                        className="ml-4"
+                        />
+                        {/* Divider */}
+                        <View className="h-8 w-px bg-gray-300 mx-2" />
+                        <Text className="text-lg text-gray-700">
+                        {dateOfBirth || 'Select Date of Birth'}
+                        </Text>
+                    </TouchableOpacity>
+
+                    {/* Android Date Picker */}
+                    {showDatePicker && (
+                        <DateTimePicker
+                        value={selectedDate}
+                        mode="date"
+                        display="default" // Android default date picker
+                        onChange={onDateChange}
+                        maximumDate={getMaxDate()}
+                        minimumDate={getMinDate()}
+                        />
+                    )}
                     <View className="flex-row justify-center items-center p-2 h-12 w-full mb-4 mt-8">
                         <TouchableOpacity className='flex justify-center items-center bg-orange-500 rounded-xl w-1/2 h-12' onPress={handleEditProfile}>
                             <Text className="text-lg font-semibold text-white">Save Changes</Text>

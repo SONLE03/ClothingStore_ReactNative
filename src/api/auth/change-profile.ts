@@ -1,14 +1,7 @@
 import axios from 'axios';
-import FormData from 'form-data';
-import { BASE_URL } from '../config';
-import { ParseJSON } from '../auth/parseJSON';
+import {BASE_URL} from '../config';
+import {ParseJSON} from '../auth/ParseJSON';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-interface ImageFile {
-    uri: string;
-    type: string;
-    name: string;
-}
 
 export const EditUser = async (
   userId: string,
@@ -56,4 +49,3 @@ export const EditUser = async (
     throw error; // Re-throw for better error handling
   }
 };
-

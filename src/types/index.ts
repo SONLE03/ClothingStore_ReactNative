@@ -120,20 +120,24 @@ export interface OrderDetail {
 //Address
 
 export interface AddressRequest {
-    phone: string;
     province: string;
     district: string;
     ward: string;
     specificAddress: string;
+    postalCode: string;
+    isDefault: boolean;
+
+
 }
 
 export interface AddressInfo {
-    id: string;
-    phone: string;
-    province: string;
-    district: string;
-    ward: string;
-    specificAddress: string;
+    Id: string;
+    IsDefault: string;
+    Province: string;
+    District: string;
+    Ward: string;
+    SpecificAddress: string;
+    PostalCode: string;
 }
 
 //Province 
@@ -168,14 +172,14 @@ export interface UserProps {
 }
 
 export interface UserPropsDetail {
-    createdAt: string;
-    id: string;
-    fullName: string;
-    phone: string;
-    email: string;
-    password: string;
-    role: string;
-    enabled: boolean;
-    image: string | null;
+  createdAt: string;
+  Id: string;
+  FullName: string;
+  Email: string;
+  DateOfBirth: string;
+  PhoneNumber: string | null;
+  ImageSource: string | null;
+  Role: string;
+  IsDeleted: boolean;
+  IsLocked: boolean;
 }
-  
