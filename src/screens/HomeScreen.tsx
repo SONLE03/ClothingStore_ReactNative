@@ -23,6 +23,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GetAllOrderByCustomer} from '../api/order/GetAllOrderByCustomer';
 import {GetAllCoupons} from '../api/coupon/GetAllCoupons';
 import ProductUtils from '../util/DisplayPrice';
+import FloatingChatIcon from '../components/chat-assistant/component/FloatingChatIcon';
+import ChatBox from '../components/chat-assistant/component/ChatBox';
 
 LogBox.ignoreLogs([
   ' Warning: Each child in a list should have a unique "key" prop',
@@ -47,6 +49,14 @@ const HomeScreen = ({navigation}: any) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [coupons, setCoupons] = useState<ExistedCoupon[]>([]);
+
+  const [isChatVisible, setIsChatVisible] = useState(false);
+  const [showChatIcon, setShowChatIcon] = useState(true);
+
+  // Add this function inside your HomeScreen component
+  const toggleChat = () => {
+    setIsChatVisible(!isChatVisible);
+  };
 
   // Calculate total spend from ALL orders, each order has total field and status COMPLETED
   const totalSpend =
@@ -299,22 +309,26 @@ const HomeScreen = ({navigation}: any) => {
                   : 'border-gray-500'
               }`}
               onPress={() => setSelectedCategory(category.CategoryName)}>
-                <View className="flex-row items-center">
-              <Image
-                source={{uri: category.ImageSource || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}}
-                className="w-6 h-6 rounded-full mr-2"
-              />
-              <Text
-                className={`${
-                  selectedCategory === category.CategoryName
-                    ? 'text-white'
-                    : 'text-gray-500'
-                } text-sm font-medium`}>
-                {category.CategoryName}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+              <View className="flex-row items-center">
+                <Image
+                  source={{
+                    uri:
+                      category.ImageSource ||
+                      'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+                  }}
+                  className="w-6 h-6 rounded-full mr-2"
+                />
+                <Text
+                  className={`${
+                    selectedCategory === category.CategoryName
+                      ? 'text-white'
+                      : 'text-gray-500'
+                  } text-sm font-medium`}>
+                  {category.CategoryName}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       </View>
       <Text className="text-lg font-bold mx-4 my-2 text-orange-600 border border-b-orange-600 border-x-white border-t-gray-200 p-0 ">
@@ -344,6 +358,14 @@ const HomeScreen = ({navigation}: any) => {
   return (
     <View className="flex-1 bg-gray-50">
       <HeaderBar title="Furnistore" />
+      <FloatingChatIcon
+        isVisible={showChatIcon && !isChatVisible}
+        onPress={toggleChat}
+      />
+      <ChatBox
+        isVisible={isChatVisible}
+        onClose={() => setIsChatVisible(false)}
+      />
       <FlatList
         className="bg-gray-100"
         data={filteredClothes}

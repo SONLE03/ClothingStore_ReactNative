@@ -1,0 +1,71 @@
+
+{
+  "categories": {
+    "products": [
+      {
+        "question": "What types of furniture do you sell?",
+        "answer": "We offer a comprehensive range of furniture including living room sets (sofas, coffee tables, TV stands), bedroom furniture (beds, wardrobes, nightstands), dining sets, office furniture, and home decor accessories."
+      },
+      {
+        "question": "Do you have furniture for small spaces?",
+        "answer": "Yes! We have a dedicated small space collection featuring compact sofas, extendable dining tables, storage ottomans, and multi-functional furniture pieces perfect for apartments and smaller homes."
+      },
+      {
+        "question": "What materials are your furniture made from?",
+        "answer": "Our furniture is crafted from high-quality materials including solid hardwood, engineered wood, premium metal frames, genuine leather, and durable fabric upholstery. Each product description specifies the exact materials used."
+      }
+    ],
+    "sizing": [
+      {
+        "question": "How do I know if furniture will fit in my space?",
+        "answer": "All our products include detailed dimensions. We recommend measuring your space and doorways. Our team can also provide guidance on sizing and space planning."
+      },
+      {
+        "question": "Do you provide room planning services?",
+        "answer": "Yes, our design team offers complimentary room planning consultations to help you choose the right furniture sizes and arrangements for your space."
+      }
+    ],
+    "care": [
+      {
+        "question": "How do I care for wooden furniture?",
+        "answer": "Clean with a slightly damp cloth, avoid harsh chemicals, dust regularly, keep away from direct sunlight and heat sources, and apply furniture polish monthly to maintain the finish."
+      },
+      {
+        "question": "How do I clean fabric upholstery?",
+        "answer": "Vacuum regularly, treat spills immediately by blotting (not rubbing), use appropriate fabric cleaners for deep cleaning, and consider professional cleaning annually for best results."
+      },
+      {
+        "question": "How do I maintain leather furniture?",
+        "answer": "Clean with a damp cloth, use leather conditioner every 3-6 months, keep away from direct heat and sunlight, and address spills immediately with a clean, dry cloth."
+      }
+    ],
+    "delivery": [
+      {
+        "question": "Do you offer delivery services?",
+        "answer": "Yes, we provide delivery services throughout the area. Delivery fees vary based on distance and furniture size. We also offer white-glove delivery service for larger items."
+      },
+      {
+        "question": "How long does delivery take?",
+        "answer": "Standard delivery is 3-7 business days for in-stock items. Custom orders may take 2-6 weeks. We'll provide a specific timeframe when you place your order."
+      },
+      {
+        "question": "Do you provide assembly services?",
+        "answer": "Yes, we offer professional assembly services for an additional fee. Our trained technicians will assemble your furniture and remove all packaging materials."
+      }
+    ],
+    "policies": [
+      {
+        "question": "What is your return policy?",
+        "answer": "We offer a 30-day return policy for items in original condition with all packaging and tags. Custom orders and clearance items may have different return terms."
+      },
+      {
+        "question": "Do you offer warranties?",
+        "answer": "Yes, most furniture comes with manufacturer warranties ranging from 1-10 years depending on the item. We also offer extended warranty options for additional protection."
+      },
+      {
+        "question": "What payment options do you accept?",
+        "answer": "We accept cash, credit cards, debit cards, and offer financing options including 0% interest plans for qualified customers."
+      }
+    ]
+  }
+}
