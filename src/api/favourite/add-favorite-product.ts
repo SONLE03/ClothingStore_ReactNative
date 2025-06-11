@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../config';
 
 export const AddProductToFavourite = async (customerId: string, productIds: string[]) => {
-  const AddCartUrl = BASE_URL + `/favorite/${customerId}`;
+  const AddCartUrl = BASE_URL + `/favorite/${customerId}/${productIds}`;
 
   const accessToken = await AsyncStorage.getItem('access_token');
 

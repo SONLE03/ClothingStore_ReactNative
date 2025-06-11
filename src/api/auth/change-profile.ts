@@ -1,5 +1,5 @@
 import {BASE_URL} from '../config';
-import {ParseJSON} from './ParseJSON';
+import { ParseJSON } from './parseJSON';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const EditUser = async (

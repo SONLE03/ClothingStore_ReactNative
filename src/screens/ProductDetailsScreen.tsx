@@ -173,7 +173,7 @@ const ProductDetailsScreen = ({navigation}: any) => {
         await AddProductToCart(
           ParseCustomerId,
           {
-            productId: selectedProductItem.Id,
+            productId: product?.Id || '',
             dimension: selectedProductItem.DisplayDimension,
             colorId: selectedProductItem.ColorId,
             quantity: quantity,

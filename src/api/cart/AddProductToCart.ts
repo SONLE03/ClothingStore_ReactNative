@@ -10,7 +10,11 @@ interface AddProductToCartRequest {
 }
 
 export const AddProductToCart = async (customerId: string, addProductToCartRequest: AddProductToCartRequest) => {
-  const AddCartUrl = BASE_URL + `/cart/${customerId}`;
+  // Remove quotes from customerId if they exist
+  const cleanCustomerId = customerId.replace(/['"]/g, '');
+  const AddCartUrl = BASE_URL + `/cart/${cleanCustomerId}`;
+
+  console.log('AddProductToCart URL:', AddCartUrl);
 
   //console.log(AddCartUrl);
 
@@ -19,6 +23,7 @@ export const AddProductToCart = async (customerId: string, addProductToCartReque
   const response = await axios.post(AddCartUrl, data, {
     headers: {
       'Content-Type': 'application/json',
+      //Authorization: `Bearer ${await AsyncStorage.getItem('access_token')}`,
     },
   });
 
