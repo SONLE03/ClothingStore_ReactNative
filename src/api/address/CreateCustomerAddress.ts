@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const CreateCustomerAddress = async (customer: string, addressRequest: AddressRequest) => {
     const customerId = ParseJSON(customer);
-    const AddAddressUrl = BASE_URL + `/address/${customerId}`;
+    const AddAddressUrl = BASE_URL + `/user/address/${customerId}`;
     const accessToken = await AsyncStorage.getItem('access_token');
     if (!accessToken) {
         throw new Error('No access token found');

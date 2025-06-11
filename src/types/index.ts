@@ -1,21 +1,27 @@
 // ProductInterface
 export interface Product {
-    id: string;
-    product_Name: string;
-    description: string;
-    price: number;
-    category: string;
-    branch: string;
-    productStatus: string;
-    images: string[];
+    Id: string;
+    ProductName: string;
+    ImageSource: string;
+    Unit: string;
+    Description: string;
+    BrandName: string;
+    CategoryName: string;
+    DisplayPrice: string;
+    Discount : number;
+    Materials: string[];
+    Designers: string[];
+    ProductVariants: ProductItem[];
 }
 
 export interface ProductItem {
-    id: string;
-    sizeName: string;
-    colorName: string;
-    quantity: number;
-    price: number;
+    Id: string;
+    ColorId: string;
+    ColorName: string;
+    DisplayDimension: string;
+    Quantity: number;
+    Price: number;
+    ImageSource: string[];
 }
 
 // Gender
@@ -27,9 +33,9 @@ export interface Gender {
 
 // Category
 export interface Category {
-    id: string;
-    name: string;
-    productGender: Gender;
+    Id : string;
+    CategoryName: string;
+    ImageSource: string;
 }
 
 //Order 
@@ -78,35 +84,69 @@ export interface ExistedCoupon {
 
 //Order
 
-export interface OrderItemRequest {
-    productItemId: string;
-    quantity: number;
-}
-
-export interface CreateOrderRequest {
-    coupon: string;
-    addressId: string;
-    customerId: string;
-    paymentMethod: number;
-    orderItemRequestList: OrderItemRequest[];
+export interface Address {
+    Id: string;
+    Province: string;
+    District: string;
+    Ward: string;
+    SpecificAddress: string;
+    PostalCode: string;
+    IsDefault: boolean;
 }
 
 export interface Orders {
-    orderId: string;
-    orderDate: string;
-    total: number;
-    customerId: string;
-    customerName: string;
-    customerPhone: string;
-    status: string;
+    Id: string;
+    PhoneNumber: string;
+    Email: string;
+    PaymentMethod: string;
+    CanceledAt: string;
+    CompletedAt: string;
+    DeliveredAt: string;
+    Note: string;
+    ShippingFee: number;
+    OrderStatus: string;
+    UserId: string;
+    FullName: string | null;
+    Address: Address;
+    TaxFee: number;
+    SubTotal: number;
+    Total: number;
+    AccountsReceivable: number;
+    OrderItemResponses: OrderItemResponse[];
 }
 
-export interface OrderDetail {
-    productItem: string;
-    productName: string;
-    quantity: number;
-    price: number;
-    total: number;
+export interface OrderItemResponse {
+    Id: string;
+    ProductId: string;
+    ProductName: string | null;
+    Dimension: string;
+    ColorId: string;
+    ColorName: string | null;
+    Price: number;
+    Quantity: number;
+    SubTotal: number;
+}
+
+export interface OrdersAnalysis{
+    totalAmount: number,
+    distinctProductItemCount: number,
+    totalQuantity: number,
+}
+
+
+export interface CreateOrderRequest {
+    PhoneNumber: string;
+    Email: string;
+    PaymentMethod: number;
+    ShippingFee: number;
+    Note: string;
+    CouponId?: string; // Optional, if not used
+    UserId: string;
+    AddressId: string;
+    TaxFee: number;
+    SubTotal: number;
+    Total: number;
+    OrderItems: string[];
 }
 
 //Address
@@ -120,12 +160,13 @@ export interface AddressRequest {
 }
 
 export interface AddressInfo {
-    id: string;
-    phone: string;
-    province: string;
-    district: string;
-    ward: string;
-    specificAddress: string;
+    Id: string;
+    IsDefault: string;
+    Province: string;
+    District: string;
+    Ward: string;
+    SpecificAddress: string;
+    PostalCode: string;
 }
 
 //Province 
@@ -148,26 +189,26 @@ export interface Province {
   
 //User
 export interface UserProps {
-    createdAt: string;
-    id: string;
-    fullName: string;
-    phone: string;
-    email: string;
-    password: string;
-    role: string;
-    enabled: boolean;
-    image: string | null;
+  createdAt: string;
+  Id: string;
+  FullName: string;
+  Email: string;
+  DateOfBirth: string;
+  PhoneNumber: string | null;
+  ImageSource: string | null;
+  Role: string;
+  IsDeleted: boolean;
+  IsLocked: boolean;
 }
-
 export interface UserPropsDetail {
-    createdAt: string;
-    id: string;
-    fullName: string;
-    phone: string;
-    email: string;
-    password: string;
-    role: string;
-    enabled: boolean;
-    image: string | null;
+  createdAt: string;
+  Id: string;
+  FullName: string;
+  Email: string;
+  DateOfBirth: string;
+  PhoneNumber: string | null;
+  ImageSource: string | null;
+  Role: string;
+  IsDeleted: boolean;
+  IsLocked: boolean;
 }
-  

@@ -2,7 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "../config";
 
 export const GetCartInfo = async (user_id: string) => {
-    const GetCartUrl = BASE_URL + `/carts/${user_id}`;
+    const GetCartUrl = BASE_URL + `/cart/${user_id}`;
     // const accessToken = await AsyncStorage.getItem('access_token');
     // if (!accessToken) {
     //     throw new Error('No access token found');

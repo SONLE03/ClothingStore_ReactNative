@@ -11,20 +11,21 @@ import {
   ToastAndroid,
 } from 'react-native';
 import {useRoute, useNavigation} from '@react-navigation/native';
-import {GetDetailProduct} from '../api/product/GetProductDetails';
-import {GetAllProducts} from '../api/product/GetAllProducts';
+import {GetDetailProduct} from '../api/product/get-product-detail';
+import {GetAllProducts} from '../api/product/get-product';
 import {AddProductToCart} from '../api/cart/AddProductToCart';
 import {Product, ProductItem} from '../types';
 import {Button, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
-import ClothesCard from '../components/product/ClothesCard';
+import ClothesCard from '../components/product/ItemCard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ParseJSON} from '../api/auth/parseJSON';
 import HeaderBar from '../components/customUIs/Headerbar';
-import {AddProductToFavourite} from '../api/favourite/AddFavouriteProduct';
+import {AddProductToFavourite} from '../api/favourite/add-favorite-product';
 import {LogBox} from 'react-native';
+import ProductUtils from '../util/DisplayPrice';
 
 LogBox.ignoreLogs([
   ' Warning: Each child in a list should have a unique "key" prop',
@@ -94,17 +95,16 @@ const ProductDetailsScreen = ({navigation}: any) => {
       try {
         const fetchedProducts = await GetAllProducts();
         const fetchedProduct = fetchedProducts.data.find(
-          product => product.id === productId,
+          product => product.Id === productId,
         );
         if (fetchedProduct) {
           setProduct(fetchedProduct);
-          const detailedProduct = await GetDetailProduct(productId);
-          setProductItems(detailedProduct);
-          setSelectedImage(fetchedProduct.images[0]);
+          setProductItems(fetchedProduct.ProductVariants || []);
+          setSelectedImage(fetchedProduct.ImageSource);
           const relatedProducts = fetchedProducts.data.filter(
             product =>
-              product.category === fetchedProduct.category &&
-              product.id !== productId,
+              product.CategoryName === fetchedProduct.CategoryName &&
+              product.Id !== productId,
           );
           setSuggestedProducts(relatedProducts);
         }
@@ -123,15 +123,14 @@ const ProductDetailsScreen = ({navigation}: any) => {
   };
 
   const handleColorSelect = (colorName: string) => {
-    if (!selectedSize) return;
 
     setSelectedColor(colorName);
     const selectedProductItem = productItems.find(
-      item => item.sizeName === selectedSize && item.colorName === colorName,
+      item => item.ColorName === colorName,
     );
     if (selectedProductItem) {
-      setAvailableQuantity(selectedProductItem.quantity);
-      setPrice(selectedProductItem.price);
+      setAvailableQuantity(selectedProductItem.Quantity);
+      setPrice(selectedProductItem.Price);
     }
   };
 
@@ -139,7 +138,7 @@ const ProductDetailsScreen = ({navigation}: any) => {
     const userId = await AsyncStorage.getItem('user_id');
     if (userId) {
       const ParseCustomerId = JSON.parse(userId);
-      const add = await AddProductToFavourite(ParseCustomerId, [productId]);
+      const add = await AddProductToFavourite(ParseCustomerId, productIds);
       console.log(add);
       if (add == false) {
         ToastAndroid.showWithGravity(
@@ -159,12 +158,12 @@ const ProductDetailsScreen = ({navigation}: any) => {
   };
 
   const handleAddToCart = async () => {
-    if (!selectedSize || !selectedColor) return;
     const selectedProductItem = productItems.find(
       item =>
-        item.sizeName === selectedSize && item.colorName === selectedColor,
+        item.ColorName === selectedColor,
     );
-    if (selectedProductItem && selectedProductItem.quantity > quantity) {
+    console.log('selectedProductItem HIHIHIHI', selectedProductItem);
+    if (selectedProductItem && selectedProductItem.Quantity > quantity) {
       const customerId = await AsyncStorage.getItem('user_id');
       if (customerId !== null) {
         const ParseCustomerId = ParseJSON(customerId);
@@ -173,8 +172,12 @@ const ProductDetailsScreen = ({navigation}: any) => {
 
         await AddProductToCart(
           ParseCustomerId,
-          selectedProductItem.id,
-          quantity,
+          {
+            productId: selectedProductItem.Id,
+            dimension: selectedProductItem.DisplayDimension,
+            colorId: selectedProductItem.ColorId,
+            quantity: quantity,
+          }
         );
         setModalVisible(false);
         ToastAndroid.showWithGravity(
@@ -186,29 +189,30 @@ const ProductDetailsScreen = ({navigation}: any) => {
         Alert.alert('Error', 'Failed to add');
       }
     }
-  };
+  }; console.log('QUANTITY', quantity);
 
   const handleBuyNow = () => {
     if (!selectedSize || !selectedColor || !product) return;
 
     const selectedProductItem = productItems.find(
       item =>
-        item.sizeName === selectedSize && item.colorName === selectedColor,
+        item.ColorName === selectedColor,
     );
+    console.log('selectedProductItem', selectedProductItem);
 
     if (selectedProductItem) {
       const orderItem = {
-        productItemId: selectedProductItem.id,
+        productItemId: selectedProductItem.Id,
         sizeName: selectedSize,
         colorName: selectedColor,
         quantity,
-        price: selectedProductItem.price,
-        product_Name: product?.product_Name,
-        image: product?.images[0],
+        price: selectedProductItem.Price,
+        product_Name: product?.ProductName,
+        image: product?.ImageSource,
       };
       navigation.navigate('OrderScreen', {
         orderItems: [orderItem],
-        amount: quantity * selectedProductItem.price,
+        amount: quantity * selectedProductItem.Price,
       });
     }
   };
@@ -224,31 +228,22 @@ const ProductDetailsScreen = ({navigation}: any) => {
   const renderClothesCard = ({item}: {item: Product}) => (
     <View className="w-1/2 p-2">
       <ClothesCard
-        id={item.id}
-        product_Name={item.product_Name}
-        description={item.description}
-        price={item.price}
-        category={item.category}
-        branch={item.branch}
-        productStatus={item.productStatus}
-        images={item.images}
+        id={item.Id}
+        product_Name={item.ProductName}
+        description={item.Description}
+        price={item.DisplayPrice}
+        category={item.CategoryName}
+        branch={item.BrandName}
+        images={[item.ImageSource]}
         buttonPressHandler={() =>
-          navigation.navigate('ProductDetailsScreen', {productId: item.id})
+          navigation.navigate('ProductDetailsScreen', {productId: item.Id})
         }
       />
     </View>
   );
 
-  const availableSizes = [...new Set(productItems?.map(item => item.sizeName))];
-  const availableColors = selectedSize
-    ? [
-        ...new Set(
-          productItems
-            .filter(item => item.sizeName === selectedSize)
-            .map(item => item.colorName),
-        ),
-      ]
-    : [];
+  const availableColors = [...new Set(productItems?.map(item => item.ColorName))];
+  console.log('selectedProductItems', productItems);
 
   return (
     <View className="flex flex-col justify-between bg-gray-100">
@@ -258,7 +253,7 @@ const ProductDetailsScreen = ({navigation}: any) => {
           <>
             <Image
               source={{
-                uri: selectedImage || (product.images && product.images[0]),
+                uri: selectedImage || (product.ImageSource),
               }}
               style={{
                 width: '100%',
@@ -274,32 +269,29 @@ const ProductDetailsScreen = ({navigation}: any) => {
               Other figures:
             </Text>
             <View className="flex flex-row w-full px-4 mb-4 mt-2">
-              {product.images &&
-                product.images.length > 0 &&
-                product.images.map((img, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => setSelectedImage(img)}
-                    className="mr-2">
-                    <Image
-                      source={{uri: img}}
-                      style={{
-                        width: 80,
-                        height: 80,
-                        borderWidth: 2,
-                        borderColor: img === selectedImage ? 'orange' : 'white',
-                      }}
-                      className="rounded-lg"
-                    />
-                  </TouchableOpacity>
-                ))}
+              {product.ImageSource && (
+                <TouchableOpacity
+                  onPress={() => setSelectedImage(product.ImageSource)}
+                  className="mr-2">
+                  <Image
+                    source={{uri: product.ImageSource}}
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderWidth: 2,
+                      borderColor: product.ImageSource === selectedImage ? 'orange' : 'white',
+                    }}
+                    className="rounded-lg"
+                  />
+                </TouchableOpacity>
+              )}
             </View>
 
             <View className="flex-row justify-between border-gray-200 border bg-white items-center p-1">
               <View className="flex flex-row justify-center items-center">
                 <Ionicons name="pricetags" size={24} color="black" />
                 <Text className="text-black text-2xl font-regular mb-2 ml-2">
-                  {product.product_Name}
+                  {product.ProductName}
                 </Text>
               </View>
 
@@ -317,10 +309,10 @@ const ProductDetailsScreen = ({navigation}: any) => {
             <View className="flex-col bg-white">
               <View className="flex-row justify-start items-center px-3 bg-white h-14">
                 <Text className="text-[#F24E2E] text-lg font-semibold">
-                  ₫{product.price.toLocaleString()}
+                  đ{ProductUtils.getDisplayPrice(product.ProductVariants)}
                 </Text>
                 <Text className="text-gray-400 text-sm font-semibold ml-2 line-through">
-                  ₫{(product.price * 1.2).toLocaleString()}
+                  đ{product.ProductVariants[0].Price.toLocaleString()}
                 </Text>
               </View>
 
@@ -359,17 +351,17 @@ const ProductDetailsScreen = ({navigation}: any) => {
             </View>
 
             <Text className="text-black text-lg mb-2 font-regular p-2 h-12 bg-white mt-4">
-              Category: {product.category}
+              Category: {product.CategoryName}
             </Text>
             <View className="bg-white mt-2">
               <Text className="text-black text-lg font-regular p-2">
                 Product description:{' '}
               </Text>
               <Text className="text-black text-sm mb-2 px-2">
-                {product.description.length > 40 && !isReadMore
-                  ? `${product.description.substring(0, 40)}... `
-                  : product.description}
-                {product.description.length > 40 && (
+                {product.Description.length > 40 && !isReadMore
+                  ? `${product.Description.substring(0, 40)}... `
+                  : product.Description}
+                {product.Description.length > 40 && (
                   <TouchableOpacity onPress={() => setIsReadMore(!isReadMore)}>
                     <Text className="text-blue-500">
                       {isReadMore ? 'Read less' : 'Read more'}
@@ -430,8 +422,8 @@ const ProductDetailsScreen = ({navigation}: any) => {
                     <Image
                       source={{
                         uri:
-                          product.images[0] ||
-                          'https://via.placeholder.com/150',
+                          product.ImageSource ||
+                          'https://randomuser.me/api/portraits/women/1.jpg',
                       }}
                       style={{
                         width: 50,
@@ -450,14 +442,14 @@ const ProductDetailsScreen = ({navigation}: any) => {
               <Text className="text-black text-lg font-regular mb-2 text-center">
                 Other related products:
               </Text>
-            <FlatList
-              className="mt-6 bg-white"
-              data={suggestedProducts}
-              renderItem={renderClothesCard}
-              numColumns={2}
-              keyExtractor={item => item.id}
-              contentContainerStyle={{paddingHorizontal: 4}}
-            />
+              <FlatList
+                className="mt-6 bg-white"
+                data={suggestedProducts}
+                renderItem={renderClothesCard}
+                numColumns={2}
+                keyExtractor={item => item.Id}
+                contentContainerStyle={{paddingHorizontal: 4}}
+              />
             </View>
           </>
         </View>
@@ -501,10 +493,10 @@ const ProductDetailsScreen = ({navigation}: any) => {
             style={{alignSelf: 'flex-end'}}>
             <MaterialCommunityIcons name="close" size={24} color="black" />
           </TouchableOpacity>
-          <Text className="text-black text-lg font-semibold mb-2">
+          {/* <Text className="text-black text-lg font-semibold mb-2">
             Select Size:
-          </Text>
-          <ScrollView
+          </Text> */}
+          {/* <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             className="mb-4">
@@ -525,9 +517,8 @@ const ProductDetailsScreen = ({navigation}: any) => {
                 </Text>
               </TouchableOpacity>
             ))}
-          </ScrollView>
+          </ScrollView> */}
 
-          {selectedSize && (
             <>
               <Text className="text-black text-lg font-semibold mb-2">
                 Select Color:
@@ -555,7 +546,6 @@ const ProductDetailsScreen = ({navigation}: any) => {
                 ))}
               </ScrollView>
             </>
-          )}
 
           {availableQuantity !== null && price !== null && (
             <View>

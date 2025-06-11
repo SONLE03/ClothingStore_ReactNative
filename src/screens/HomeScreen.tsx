@@ -13,16 +13,17 @@ import {
   Animated,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {GetAllCategory} from '../api/category/GetAllCategory';
+import {GetAllCategory} from '../api/category/get-category';
 import {Category, ExistedCoupon, Product} from '../types';
-import {GetAllProducts} from '../api/product/GetAllProducts';
+import {GetAllProducts} from '../api/product/get-product';
 import HeaderBar from '../components/customUIs/Headerbar';
-import ClothesCard from '../components/product/ClothesCard';
+import ClothesCard from '../components/product/ItemCard';
 import {Input} from 'react-native-elements';
 import {LogBox} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GetAllOrderByCustomer} from '../api/order/GetAllOrderByCustomer';
-import { GetAllCoupons } from '../api/coupon/GetAllCoupons';
+import {GetAllCoupons} from '../api/coupon/GetAllCoupons';
+import ProductUtils from '../util/DisplayPrice';
 
 LogBox.ignoreLogs([
   ' Warning: Each child in a list should have a unique "key" prop',
@@ -47,22 +48,27 @@ const HomeScreen = ({navigation}: any) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [coupons, setCoupons] = useState<ExistedCoupon[]>([]);
-  console.log('Orders:', orders);
 
   // Calculate total spend from ALL orders, each order has total field and status COMPLETED
-  const totalSpend = orders.reduce((total, order) => {
-    if (order.status === 'COMPLETED') {
-      return total + order.total;
-    }
-    return total;
-  }, 0).toLocaleString();
+  const totalSpend =
+    orders.length > 0
+      ? orders
+          .reduce((total, order) => {
+            if (order.status === 'Completed' || order.status === 'Paid') {
+              return total + order.total;
+            }
+            return total;
+          }, 0)
+          .toLocaleString()
+      : '0';
+
   const fetchOrders = useCallback(async () => {
     const userId = await AsyncStorage.getItem('user_id');
     if (userId) {
       const ParseCustomerId = JSON.parse(userId);
       console.log(ParseCustomerId);
       const orders = await GetAllOrderByCustomer(ParseCustomerId);
-      setOrders(orders);
+      setOrders(orders.data);
       console.log(orders);
     }
   }, []);
@@ -72,7 +78,6 @@ const HomeScreen = ({navigation}: any) => {
     if (!response) return;
     setCoupons(response);
   };
-
 
   useEffect(() => {
     fetchOrders();
@@ -95,7 +100,7 @@ const HomeScreen = ({navigation}: any) => {
     if (ClothesList) {
       setFilteredClothes(
         ClothesList.filter((clothes: Product) =>
-          clothes.product_Name.toLowerCase().includes(searchText.toLowerCase()),
+          clothes.ProductName.toLowerCase().includes(searchText.toLowerCase()),
         ),
       );
     }
@@ -105,7 +110,7 @@ const HomeScreen = ({navigation}: any) => {
     if (selectedCategory) {
       setFilteredClothes(
         ClothesList.filter(
-          (clothes: Product) => clothes.category === selectedCategory,
+          (clothes: Product) => clothes.CategoryName === selectedCategory,
         ),
       );
     } else {
@@ -146,19 +151,19 @@ const HomeScreen = ({navigation}: any) => {
     <TouchableOpacity
       className="w-1/2 p-1"
       onPress={() =>
-        navigation.navigate('ProductDetailsScreen', {productId: item.id})
+        navigation.navigate('ProductDetailsScreen', {productId: item.Id})
       }>
       <ClothesCard
-        id={item.id}
-        product_Name={item.product_Name}
-        description={item.description}
-        price={item.price}
-        category={item.category}
-        branch={item.branch}
-        productStatus={item.productStatus}
-        images={item.images}
+        id={item.Id}
+        product_Name={item.ProductName}
+        description={item.Description}
+        // price={item.DisplayPrice} // Assuming DisplayPrice is a method in ProductUtils
+        price={ProductUtils.getDisplayPrice(item.ProductVariants)}
+        category={item.CategoryName}
+        branch={item.BrandName}
+        images={[item.ImageSource]}
         buttonPressHandler={() =>
-          navigation.navigate('ProductDetailsScreen', {productId: item.id})
+          navigation.navigate('ProductDetailsScreen', {productId: item.Id})
         }
       />
     </TouchableOpacity>
@@ -206,16 +211,15 @@ const HomeScreen = ({navigation}: any) => {
             />
             <Text className="text-gray-500 text-sm ml-2">Orders</Text>
           </View>
-          <Text className="text-yellow-500 text-lg font-bold">{orders?.length}</Text>
+          <Text className="text-yellow-500 text-lg font-bold">
+            {orders?.length || 0}
+          </Text>
         </View>
         {/* Vertical Line */}
-        <View
-          className="w-px bg-gray-300 mx-2"
-          style={{height: '100%'}}
-        ></View>
+        <View className="w-px bg-gray-300 mx-2" style={{height: '100%'}}></View>
         {/* TOTAL SPEND */}
         <View className="flex w-[33%]">
-        <View className="flex-row items-center">
+          <View className="flex-row items-center">
             <MaterialCommunityIcons
               name="cash-multiple"
               size={20}
@@ -223,24 +227,21 @@ const HomeScreen = ({navigation}: any) => {
             />
             <Text className="text-gray-500 text-sm ml-2">Total Spend</Text>
           </View>
-          <Text className="text-yellow-500 text-lg font-bold">{totalSpend}</Text>
+          <Text className="text-yellow-500 text-lg font-bold">
+            {totalSpend}
+          </Text>
         </View>
         {/* Vertical Line */}
-        <View
-          className="w-px bg-gray-300 mx-2"
-          style={{height: '100%'}}
-        ></View>
+        <View className="w-px bg-gray-300 mx-2" style={{height: '100%'}}></View>
         {/* TOTAL COUPON */}
         <View className="flex-1">
-        <View className="flex-row items-center">
-            <MaterialCommunityIcons
-              name="ticket"
-              size={20}
-              color="#FF9100"
-            />
+          <View className="flex-row items-center">
+            <MaterialCommunityIcons name="ticket" size={20} color="#FF9100" />
             <Text className="text-gray-500 text-sm ml-2">Coupon</Text>
           </View>
-          <Text className="text-yellow-500 text-lg font-bold">{coupons?.length}</Text>
+          <Text className="text-yellow-500 text-lg font-bold">
+            {coupons?.length}
+          </Text>
         </View>
       </View>
 
@@ -292,23 +293,29 @@ const HomeScreen = ({navigation}: any) => {
           </TouchableOpacity>
           {categories.map(category => (
             <TouchableOpacity
-              key={category.name}
+              key={category.Id}
               className={`py-2 px-4 mx-2 rounded-full border ${
-                selectedCategory === category.name
+                selectedCategory === category.CategoryName
                   ? 'bg-yellow-500 border-yellow-500'
                   : 'border-gray-500'
               }`}
-              onPress={() => setSelectedCategory(category.name)}>
+              onPress={() => setSelectedCategory(category.CategoryName)}>
+                <View className="flex-row items-center">
+              <Image
+                source={{uri: category.ImageSource || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}}
+                className="w-6 h-6 rounded-full mr-2"
+              />
               <Text
                 className={`${
-                  selectedCategory === category.name
+                  selectedCategory === category.CategoryName
                     ? 'text-white'
                     : 'text-gray-500'
                 } text-sm font-medium`}>
-                {category.name}
+                {category.CategoryName}
               </Text>
-            </TouchableOpacity>
-          ))}
+            </View>
+          </TouchableOpacity>
+        ))}
         </ScrollView>
       </View>
       <Text className="text-lg font-bold mx-4 my-2 text-orange-600 border border-b-orange-600 border-x-white border-t-gray-200 p-0 ">
@@ -343,7 +350,7 @@ const HomeScreen = ({navigation}: any) => {
         data={filteredClothes}
         numColumns={2}
         renderItem={renderClothesCard}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.Id}
         ListHeaderComponent={renderHeader}
         contentContainerStyle={{paddingHorizontal: 4, paddingBottom: 100}}
         showsVerticalScrollIndicator={false}

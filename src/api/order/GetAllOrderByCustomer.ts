@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const GetAllOrderByCustomer = async (customerId: string) => {
 
-    const GetAllOrderByCustomerUrl = BASE_URL + `/orders/customer/${customerId}`;
+    const GetAllOrderByCustomerUrl = BASE_URL + `/order/${customerId}`;
     const token = await AsyncStorage.getItem("access_token");
     
     if (!token) {

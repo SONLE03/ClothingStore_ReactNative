@@ -6,13 +6,11 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Modal,
   Alert,
 } from 'react-native';
 import {
   RouteProp,
   useRoute,
-  useNavigation,
   useFocusEffect,
 } from '@react-navigation/native';
 import {Button, Checkbox, Dialog} from 'react-native-paper';
@@ -24,7 +22,6 @@ import {GetVNPayUrl} from '../../api/order/VNPay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Picker} from '@react-native-picker/picker';
 import HeaderBar from '../../components/customUIs/Headerbar';
-import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {DeleteProductInCart} from '../../api/cart/DeleteProductInCart';
 
@@ -37,7 +34,6 @@ const OrderScreen = ({navigation}: any) => {
   const route = useRoute<OrderScreenRouteProp>();
   //const navigation = useNavigation();
   const {orderItems, amount} = route.params;
-
   const [selectedCoupon, setSelectedCoupon] = useState<string | null>(null);
   const [coupons, setCoupons] = useState<ExistedCoupon[]>([]);
   const [addresses, setAddresses] = useState<AddressInfo[]>([]);
@@ -48,6 +44,8 @@ const OrderScreen = ({navigation}: any) => {
   const [totalAmount, setTotalAmount] = useState<number>(amount);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
 
   const hideDialog = () => setVisible(false);
   console.log(selectedAddress);
@@ -124,14 +122,18 @@ const OrderScreen = ({navigation}: any) => {
     const ParseCustomerId = JSON.parse(customerId);
 
     const newOrder = {
-      coupon: selectedCoupon || '', // Ensure coupon is a string
-      customerId: ParseCustomerId,
-      addressId: selectedAddress,
-      paymentMethod: paymentMethod,
-      orderItemRequestList: orderItems.map(item => ({
-        productItemId: item.productItemId,
-        quantity: item.quantity,
-      })),
+      PhoneNumber: phoneNumber,
+      Email: email,
+      PaymentMethod: paymentMethod,
+      ShippingFee: 0,
+      Note: '',
+      CouponId: selectedCoupon || undefined,
+      UserId: ParseCustomerId,
+      AddressId: selectedAddress,
+      TaxFee: 0,
+      SubTotal: totalAmount,
+      Total: totalAmount + 0,
+      OrderItems: orderItems.map(item => item.Id),
     };
 
     setLoading(true);
@@ -236,22 +238,22 @@ const OrderScreen = ({navigation}: any) => {
             onPress={handleSetSelectedAddress}>
             <Text style={styles.selectedAddress}>
               Selected Address:{' '}
-              {addresses.find(address => address.id === selectedAddress)?.phone}{' '}
+              {addresses.find(address => address.Id === selectedAddress)?.Id}{' '}
               -
               {
-                addresses.find(address => address.id === selectedAddress)
-                  ?.province
+                addresses.find(address => address.Id === selectedAddress)
+                  ?.Province
               }{' '}
               -
               {
-                addresses.find(address => address.id === selectedAddress)
-                  ?.district
+                addresses.find(address => address.Id === selectedAddress)
+                  ?.District
               }{' '}
-              -{addresses.find(address => address.id === selectedAddress)?.ward}{' '}
+              -{addresses.find(address => address.Id === selectedAddress)?.Ward}{' '}
               -
               {
-                addresses.find(address => address.id === selectedAddress)
-                  ?.specificAddress
+                addresses.find(address => address.Id === selectedAddress)
+                  ?.SpecificAddress
               }
             </Text>
           </TouchableOpacity>

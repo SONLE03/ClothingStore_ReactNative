@@ -49,20 +49,11 @@ const LoginScreen = ({navigation}: any) => {
         Alert.alert('Wrong user name or password, pls try again!');
       } else {
         try {
-          await AsyncStorage.setItem(
-            'access_token',
-            JSON.stringify(data.access_token),
-          );
-          await AsyncStorage.setItem(
-            'refresh_token',
-            JSON.stringify(data.refresh_token),
-          );
-          await AsyncStorage.setItem('user_id', JSON.stringify(data.id));
-          await AsyncStorage.setItem('role', JSON.stringify(data.role));
-          await AsyncStorage.setItem('email', JSON.stringify(username));
-          console.log(AsyncStorage.getItem('email'));
-          //console.log(AsyncStorage.getItem('access_token'));
-
+          Alert.alert('Login successful');
+          await AsyncStorage.setItem('access_token', JSON.stringify(data.data.AccessToken));
+          await AsyncStorage.setItem('refresh_token', JSON.stringify(data.data.RefreshToken));
+          await AsyncStorage.setItem('user_id', JSON.stringify(data.data.UserId));
+          await AsyncStorage.setItem('role', JSON.stringify(data.data.Role));
           authEmitter.emit('loginStatusChanged');
           //navigation.navigate('HomeScreen' as never);
           Alert.alert('Login successful');

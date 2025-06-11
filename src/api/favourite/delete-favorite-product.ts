@@ -2,9 +2,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../config';
 
-export const AddProductToFavourite = async (customerId: string, productIds: string[]) => {
-  const AddCartUrl = BASE_URL + `/favorites/${customerId}`;
-
+export const DeleteProductInFavourite = async (customerId: string, productIds: string) => {
+  const DeleteCartUrl = `${BASE_URL}/favorite/${customerId}/${productIds}`;
   const accessToken = await AsyncStorage.getItem('access_token');
 
   if (!accessToken) {
@@ -12,8 +11,9 @@ export const AddProductToFavourite = async (customerId: string, productIds: stri
   }
 
   const parseToken = JSON.parse(accessToken);
-  try{
-    const response = await axios.post(AddCartUrl, JSON.stringify({productIds}), {
+
+  try {
+    const response = await axios.delete(DeleteCartUrl, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${parseToken}`,
@@ -21,11 +21,9 @@ export const AddProductToFavourite = async (customerId: string, productIds: stri
     });
 
     return response.data;
-    
-  }
-  catch (error)
-  {
-    console.log(error);
-    return false;
+
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 };

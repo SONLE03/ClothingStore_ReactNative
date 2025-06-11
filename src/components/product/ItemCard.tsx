@@ -17,10 +17,9 @@ interface ClothesCardProps {
   id: string;
   product_Name: string;
   description: string;
-  price: number;
+  price: string;
   category: string;
   branch: string;
-  productStatus: string;
   images: string[];
   buttonPressHandler: (product: any) => void;
 }
@@ -32,7 +31,6 @@ const ClothesCard: React.FC<ClothesCardProps> = ({
   price,
   category,
   branch,
-  productStatus,
   images,
   buttonPressHandler,
 }) => {
@@ -64,7 +62,7 @@ const ClothesCard: React.FC<ClothesCardProps> = ({
           source={{uri: images[0]}}
           style={{width: CARD_WIDTH, height: CARD_WIDTH}}
           resizeMode="cover"
-          className="rounded-lg mb-4 overflow-hidden">
+          className="rounded-lg mb-2 overflow-hidden">
           <View className="w-full flex justify-end items-center bg-red-100">
             <View className="flex-row border border-red-500 bg-opacity-5 items-start justify-start h-10 gap-2 p-1 absolute top-0 left-0 rounded-br-xl rounded-tl-lg">
               <Animated.View style={{transform: [{rotate: spin}]}}>
@@ -84,9 +82,9 @@ const ClothesCard: React.FC<ClothesCardProps> = ({
         {product_Name}
       </Text>
       <Text className="text-black text-xs font-light truncate">{category}</Text>
-      <View className="flex flex-row items-center mb-2">
+      <View className="flex flex-row items-center mb-1">
         <Text className="text-black text-lg font-semibold mb-2">4.5</Text>
-        <View className="flex flex-row items-center mb-2">
+        <View className="flex flex-row items-center mb-1">
           <Ionicons name="star" size={20} color="#FFD700" />
           <Text className="ml-2 text-gray-600">(4 reviews)</Text>
         </View>
@@ -125,7 +123,6 @@ const ClothesCard: React.FC<ClothesCardProps> = ({
               price,
               category,
               branch,
-              productStatus,
               images,
             });
           }}>

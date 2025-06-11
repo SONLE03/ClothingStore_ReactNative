@@ -1,92 +1,104 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-  Alert,
-} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, TouchableOpacity, Modal, Alert} from 'react-native';
 import {Avatar, IconButton} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImagePicker from 'react-native-image-crop-picker';
 import {Fumi} from 'react-native-textinput-effects';
-
-import {GetMe} from '../../api/auth/GetMe';
-import {EditUser} from '../../api/auth/ChangeProfile';
-import logoutUser from '../../api/auth/Logout';
+import {GetMe} from '../../api/auth/get-me';
+import {EditUser} from '../../api/auth/change-profile';
+import { EditUserAvatar } from '../../api/auth/change-avatar';
+import logoutUser from '../../api/auth/logout';
 import HeaderBar from '../../components/customUIs/Headerbar';
-import {ExistedCoupon, UserPropsDetail} from '../../types';
+import { UserPropsDetail } from '../../types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useAuth} from '../../util/AuthContext';
-import { GetAllCoupons } from '../../api/coupon/GetAllCoupons';
-import { GetAllOrderByCustomer } from '../../api/order/GetAllOrderByCustomer';
-
-const ProfileScreen = ({navigation}: any) => {
+import DateTimePicker from '@react-native-community/datetimepicker';
+const ProfileScreen = ({navigation}: {navigation: any}) => {
   const [user, setUser] = useState<UserPropsDetail | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [image, setImage] = useState<{
     uri: string;
     type: string;
     name: string;
   } | null>(null);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
-  const {authEmitter} = useAuth();
+  const [dateOfBirth, setDateOfBirth] = useState('');
 
-  const [orders, setOrders] = useState<any[]>([]);
-  const [coupons, setCoupons] = useState<ExistedCoupon[]>([]);
-  console.log('Orders:', orders);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // Calculate total spend from ALL orders, each order has total field and status COMPLETED
-  const totalSpend = orders.reduce((total, order) => {
-    if (order.status === 'COMPLETED') {
-      return total + order.total;
-    }
-    return total;
-  }, 0).toLocaleString();
-  const fetchOrders = useCallback(async () => {
-    const userId = await AsyncStorage.getItem('user_id');
-    if (userId) {
-      const ParseCustomerId = JSON.parse(userId);
-      console.log(ParseCustomerId);
-      const orders = await GetAllOrderByCustomer(ParseCustomerId);
-      setOrders(orders);
-      console.log(orders);
-    }
-  }, []);
-
-  const fetchCoupons = async () => {
-    const response = await GetAllCoupons();
-    if (!response) return;
-    setCoupons(response);
+  // Format date to display string (DD/MM/YYYY)
+  const formatDate = (date: Date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
+  // Handle date selection
+  const onDateChange = (event: any, date?: Date) => {
+    setShowDatePicker(false);
+    if (event.type === 'set' && date) {
+      // User selected a date
+      setSelectedDate(date);
+      setDateOfBirth(formatDate(date));
+    }
+    // If event.type === 'dismissed', user cancelled - do nothing
+  };
 
-  useEffect(() => {
-    fetchOrders();
-    fetchCoupons();
-  }, [fetchOrders]);
+  // Open date picker
+  const openDatePicker = () => {
+    setShowDatePicker(true);
+  };
 
+  // Calculate maximum date (today - for reasonable age limit)
+  const getMaxDate = () => {
+    return new Date(); // Today
+  };
+
+  // Calculate minimum date (100 years ago - reasonable limit)
+  const getMinDate = () => {
+    const today = new Date();
+    const minDate = new Date(
+      today.getFullYear() - 100,
+      today.getMonth(),
+      today.getDate(),
+    );
+    return minDate;
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await GetMe();
-      setUser(userData);
-      setFullName(userData.fullName);
-      setPhone(userData.phone);
-      console.log(fullName, phone);
+      const userId = await AsyncStorage.getItem('user_id');
+      if (!userId) {
+        Alert.alert('User not found', 'Please log in again.');
+        navigation.navigate('LoginScreen');
+        return;
+      }
+      const userData = await GetMe(userId);
+      if (userData != null) {
+        setUser(userData.data);
+        setFullName(userData.data.FullName || '');
+        setPhoneNumber(userData.data.PhoneNumber || '');
+      }
     };
     fetchUser();
   }, []);
 
   const handleEditProfile = async () => {
     if (user) {
-      await EditUser(user.id, phone, fullName, image || undefined);
-      const updatedUser = await GetMe();
+      await EditUser(
+        user.Id,
+        phoneNumber,
+        fullName,
+        '2000-06-09T16:09:18.637Z',
+      );
+      if (image) {
+        await EditUserAvatar(user.Id, image);
+      }
+      const updatedUser = await GetMe(user.Id);
       setUser(updatedUser);
       setModalVisible(false);
     }
@@ -113,8 +125,8 @@ const ProfileScreen = ({navigation}: any) => {
 
   const handleLogout = async () => {
     await logoutUser();
+    navigation.navigate('LoginScreen'); // Redirect to login screen
     AsyncStorage.clear();
-    authEmitter.emit('loginStatusChanged');
   };
 
   return (
@@ -124,115 +136,47 @@ const ProfileScreen = ({navigation}: any) => {
         <View className="flex-row justify-between items-center mb-4 p-3 bg-white">
           <View className="flex-row items-center">
             <View className="relative h-20 w-20">
-              <Avatar.Image
-                size={65}
-                source={
-                  user.image
-                    ? {uri: user.image}
-                    : require('../../assets/app_images/avatar.png')
+                  <Avatar.Image
+                    size={65}
+                    source={
+                      user.ImageSource
+                        ? {uri: user.ImageSource}
+                        : {uri: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}
                 }
               />
               <IconButton
                 icon="pencil"
                 size={15}
                 onPress={pickImage}
-                className="absolute bottom-0 right-0 bg-yellow-500 text-white"
+                className="absolute bottom-0 right-0 bg-orange-500 text-white"
               />
             </View>
 
             <View className="flex flex-col ml-2">
-              <Text className=" font-semibold text-xl text-black bg-white mb-4">
+              <Text className=" font-semibold text-lg text-black bg-white mb-4">
                 {fullName}
               </Text>
-              <Text className=" text-sm p-1 rounded-2xl border border-yellow-500  text-ellipsis text-orange-700">
-                {user.email}
+              <Text className=" text-sm p-1 rounded-2xl border border-orange-500  text-ellipsis text-orange-700">
+                {user.Email || 'No email provided'}
               </Text>
             </View>
           </View>
           <TouchableOpacity
-            className="flex flex-row border border-gray-500 rounded-xl p-2 items-center focus:border-yellow-500"
+            className="flex flex-row border border-gray-500 rounded-xl p-2 items-center focus:border-orange-500"
             onPress={() => setModalVisible(true)}>
             <MaterialCommunityIcons
               name="account-edit"
               size={24}
               color="gray"
             />
-            <Text className="font-semibold text-gray-400">Edit</Text>
+            <Text className="font-semibold text-gray-600">Edit</Text>
           </TouchableOpacity>
         </View>
       )}
 
-       <View className="flex-row justify-between bg-white items-center mx-4 my-2 p-4 rounded-lg shadow-md">
-              {/* TOTAL ORDER */}
-              <View className="flex w-[27%]">
-                <View className="flex-row items-center">
-                  <MaterialCommunityIcons
-                    name="clipboard-text"
-                    size={20}
-                    color="#FF9100"
-                  />
-                  <Text className="text-gray-500 text-sm ml-2">Orders</Text>
-                </View>
-                <Text className="text-yellow-500 text-lg font-bold">{orders?.length}</Text>
-              </View>
-              {/* Vertical Line */}
-              <View
-                className="w-px bg-gray-300 mx-2"
-                style={{height: '100%'}}
-              ></View>
-              {/* TOTAL SPEND */}
-              <View className="flex w-[33%]">
-              <View className="flex-row items-center">
-                  <MaterialCommunityIcons
-                    name="cash-multiple"
-                    size={20}
-                    color="#FF9100"
-                  />
-                  <Text className="text-gray-500 text-sm ml-2">Total Spend</Text>
-                </View>
-                <Text className="text-yellow-500 text-lg font-bold">{totalSpend}</Text>
-              </View>
-              {/* Vertical Line */}
-              <View
-                className="w-px bg-gray-300 mx-2"
-                style={{height: '100%'}}
-              ></View>
-              {/* TOTAL COUPON */}
-              <View className="flex-1">
-              <View className="flex-row items-center">
-                  <MaterialCommunityIcons
-                    name="ticket"
-                    size={20}
-                    color="#FF9100"
-                  />
-                  <Text className="text-gray-500 text-sm ml-2">Coupon</Text>
-                </View>
-                <Text className="text-yellow-500 text-lg font-bold">{coupons?.length}</Text>
-              </View>
-            </View>
-      
-
-      <TouchableOpacity
-        className=" flex flex-row mb-4 p-4 border border-gray-400 rounded space-x-2 bg-white mt-8"
-        onPress={() => navigation.navigate('History')}>
-        <Ionicons className="mr-4" name="calendar" size={30} color="#dd6b20" />
-        <Text className="text-lg font-semibold text-orange-600">
-          Order History
-        </Text>
-      </TouchableOpacity>
-
       <TouchableOpacity
         className="flex flex-row mb-4 p-4 border border-gray-400 rounded space-x-2 bg-white mt-4"
-        onPress={() => navigation.navigate('ChooseAddress')}>
-        <Ionicons className="mr-4" name="location" size={30} color="#dd6b20" />
-        <Text className="text-lg font-semibold text-orange-600">
-          My Delivery Addresses
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        className="flex flex-row mb-4 p-4 border border-gray-400 rounded space-x-2 bg-white mt-4"
-        onPress={() => navigation.navigate('ChangePassword')}>
+        onPress={() => navigation.navigate('ChangePasswordScreen')}>
         <Ionicons name="key" size={30} color="#dd6b20" />
         <Text className="text-lg font-semibold text-orange-600">
           Change Password
@@ -261,16 +205,16 @@ const ProfileScreen = ({navigation}: any) => {
         <View className="p-4 flex-1 justify-center">
           <View className="flex-row justify-center items-center w-full mb-4">
             <TouchableOpacity
-              className="border border-yellow-500 rounded-full h-28 w-28"
+              className="border border-orange-500 rounded-full h-28 w-28"
               onPress={pickImage}>
               <Avatar.Image
                 size={110}
                 source={
                   image
                     ? {uri: image.uri}
-                    : user && user.image
-                    ? {uri: user.image}
-                    : require('../../assets/app_images/avatar.png')
+                    : user && user.ImageSource
+                    ? {uri: user.ImageSource}
+                    : {uri: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}
                 }
               />
               <IconButton
@@ -278,7 +222,7 @@ const ProfileScreen = ({navigation}: any) => {
                 size={15}
                 iconColor="white"
                 //onPress={pickImage}
-                className="absolute bottom-0 right-0 bg-yellow-500 text-white"
+                className="absolute bottom-0 right-0 bg-orange-500 text-white"
               />
             </TouchableOpacity>
           </View>
@@ -291,10 +235,11 @@ const ProfileScreen = ({navigation}: any) => {
             iconColor={'#f95a25'}
             iconSize={25}
             inputPadding={18}
-            keyboardType="number-pad"
+            keyboardType="default"
             value={fullName}
             onChangeText={setFullName}
           />
+
           <Fumi
             className="border border-gray-500 rounded-xl mt-4"
             label={'Phone number'}
@@ -302,24 +247,54 @@ const ProfileScreen = ({navigation}: any) => {
             iconName={'logo-whatsapp'}
             iconColor={'#f95a25'}
             iconSize={25}
-            onChangeText={setPhone}
+            onChangeText={setPhoneNumber}
             inputPadding={18}
+            inputMode="numeric"
             keyboardType="number-pad"
-            value={phone}
+            value={phoneNumber}
           />
-          <View className="flex-row justify-center items-center p-2 h-12 w-full mb-4 mt-8">
+
+          <TouchableOpacity
+            className="border border-gray-500 rounded-xl mt-4 px-5 py-4 flex-row items-center justify-start space-x-2"
+            onPress={openDatePicker}>
+            <Ionicons
+              name="calendar"
+              size={24}
+              color="#f95a25"
+              className="ml-4"
+            />
+            {/* Divider */}
+            <View className="h-8 w-px bg-gray-300 mx-2" />
+            <Text className="text-lg text-gray-700">
+              {dateOfBirth || 'Select Date of Birth'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Android Date Picker */}
+          {showDatePicker && (
+            <DateTimePicker
+              value={selectedDate}
+              mode="date"
+              display="default" // Android default date picker
+              onChange={onDateChange}
+              maximumDate={getMaxDate()}
+              minimumDate={getMinDate()}
+            />
+          )}
+
+          <View className="flex-row justify-center items-center p-2 h-12 w-full mb-4 mt-12 space-x-4">
             <TouchableOpacity
-              className="flex justify-center items-center bg-yellow-500 rounded-xl w-1/2 h-12"
-              onPress={handleEditProfile}>
-              <Text className="text-lg font-semibold text-white">
-                Save Changes
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="flex justify-center items-center border border-yellow-500 rounded-xl w-1/2 h-12 ml-4"
+              className="flex justify-center items-center border border-orange-500 rounded-xl w-1/2 h-12 mt-4"
               onPress={() => setModalVisible(false)}>
               <Text className="text-lg font-semibold text-orange-600">
                 Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="flex justify-center items-center bg-orange-500 rounded-xl w-1/2 h-12 mt-4"
+              onPress={handleEditProfile}>
+              <Text className="text-lg font-semibold text-white">
+                Save Changes
               </Text>
             </TouchableOpacity>
           </View>
@@ -346,20 +321,20 @@ const ProfileScreen = ({navigation}: any) => {
               shadowRadius: 3.84,
               elevation: 5,
             }}>
-            <Text className="text-lg mb-4 text-center p-1 text-black">
+            <Text className="text-lg mb-4 text-center p-1 text-gray-800">
               <Ionicons name="warning" size={30} color="#dd6b20" /> Are you sure
-              you want to log out?
+              want to log out?
             </Text>
             <View className="flex-row w-full justify-center items-center space-x-4 mt-4">
               <TouchableOpacity
-                className="flex justify-center items-center border border-yellow-500 rounded-xl w-1/2 h-12"
+                className="flex justify-center items-center border border-orange-500 rounded-xl w-1/2 h-12"
                 onPress={() => setLogoutModalVisible(false)}>
                 <Text className="text-lg font-semibold text-orange-600">
                   Cancel
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="flex justify-center items-center bg-yellow-500 rounded-xl w-1/2 h-12"
+                className="flex justify-center items-center bg-orange-500 rounded-xl w-1/2 h-12"
                 onPress={handleLogout}>
                 <Text className="text-lg font-semibold text-white">OK</Text>
               </TouchableOpacity>

@@ -6,7 +6,6 @@ import { GetProvinces, GetDistrictsByProvince, GetWardsByDistrict } from '../api
 import { Province, District, Ward, AddressRequest } from '../types';
 import { CreateCustomerAddress } from '../api/address/CreateCustomerAddress';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 const backgroundImages = [

@@ -12,13 +12,11 @@ import {COLORS, SPACING} from '../../theme/theme';
 import HeaderBar from '../../components/customUIs/Headerbar';
 import EmptyListAnimation from '../../components/animation/EmptyListAnimation';
 import FavouriteItemCard from '../../components/favourite/FavoritesItemCard';
-import {GetFavouriteList} from '../../api/favourite/GetFavouriteList';
-import {DeleteProductInFavourite} from '../../api/favourite/DeleteProductInFavourite';
+import {GetFavouriteList} from '../../api/favourite/get-favorite-list';
+import {DeleteProductInFavourite} from '../../api/favourite/delete-favorite-product';
 import {FavouriteItems, Product} from '../../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ParseJSON} from '../../api/auth/parseJSON';
-import {Button} from 'react-native-paper';
-import CheckBox from '@react-native-community/checkbox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const FavoritesScreen = ({navigation, route}: any) => {
@@ -39,7 +37,8 @@ const FavoritesScreen = ({navigation, route}: any) => {
       const ParseCustomerId = ParseJSON(customerId);
       const response = await GetFavouriteList(ParseCustomerId);
       console.log(response);
-      setFavoriteList(response);
+      setFavoriteList(response.data);
+      console.log(FavoriteList);
     }
   };
 
@@ -61,7 +60,7 @@ const FavoritesScreen = ({navigation, route}: any) => {
 
   const handleCheckAll = (isChecked: boolean) => {
     if (isChecked) {
-      setSelectedItems(new Set(FavoriteList.map(item => item.id)));
+      setSelectedItems(new Set(FavoriteList.map(item => item.Id)));
     } else {
       setSelectedItems(new Set());
     }
@@ -72,11 +71,11 @@ const FavoritesScreen = ({navigation, route}: any) => {
     const customerId = await AsyncStorage.getItem('user_id');
     if (customerId) {
       const ParseCustomerId = ParseJSON(customerId);
-      const itemToDelete = FavoriteList.find(item => item.id === productIds);
+      const itemToDelete = FavoriteList.find(item => item.Id === productIds);
       if (itemToDelete) {
-        await DeleteProductInFavourite(ParseCustomerId, [productIds]);
+        await DeleteProductInFavourite(ParseCustomerId, productIds);
         const updatedFavoriteList = FavoriteList.filter(
-          item => item.id !== productIds,
+          item => item.Id !== productIds,
         );
         setFavoriteList(updatedFavoriteList);
         setSelectedItems(prev => {
@@ -95,10 +94,12 @@ const FavoritesScreen = ({navigation, route}: any) => {
       const itemsToDelete = Array.from(selectedItems).map(
         productIds => productIds,
       );
-      console.log(itemsToDelete);
-      await DeleteProductInFavourite(ParseCustomerId, itemsToDelete);
+      itemsToDelete.forEach(async (itemId: string) => {
+        await DeleteProductInFavourite(ParseCustomerId, itemId);
+      });
+      //await DeleteProductInFavourite(ParseCustomerId, itemsToDelete);
       const updatedCartList = FavoriteList.filter(
-        item => !selectedItems.has(item.id),
+        item => !selectedItems.has(item.Id),
       );
       setFavoriteList(updatedCartList);
       setSelectedItems(new Set());
@@ -127,7 +128,7 @@ const FavoritesScreen = ({navigation, route}: any) => {
               <TouchableOpacity style={styles.ListItemContainer}>
                 {FavoriteList?.map((data: any) => (
                   <FavouriteItemCard
-                    key={data.productItemId}
+                    key={data.productItemId || data.Id}
                     item={data}
                     isChecked={selectedItems.has(data.productItemId)}
                     onCheck={handleCheckItem}

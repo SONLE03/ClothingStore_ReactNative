@@ -1,10 +1,11 @@
-import axios from "axios";
+import axios, { AxiosResponse } from 'axios';
 import { BASE_URL } from "../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ParseJSON } from "../auth/parseJSON";
+import { Product } from '../../types';
 
-export const GetFavouriteList = async (user_id: string) => {
-    const GetCartUrl = BASE_URL + `/favorites/${user_id}`;
+export const GetFavouriteList = async (user_id: string) : Promise<AxiosResponse<Product[]>> => {
+    const GetCartUrl = BASE_URL + `/favorite/${user_id}`;
     const accessToken = await AsyncStorage.getItem('access_token');
     if (!accessToken) {
         throw new Error('No access token found');
@@ -23,9 +24,10 @@ export const GetFavouriteList = async (user_id: string) => {
 
     try {
         const response = await axios.request(config);
+        console.log(response)
         return response.data;
     } catch (error) {
         console.log(error);
-        return false;
+        throw new Error('Get Favorite List failed');
     }
 }
