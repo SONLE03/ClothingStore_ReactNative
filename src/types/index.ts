@@ -58,12 +58,14 @@ export interface CartItems {
 }
 
 export interface ProductItemInCart {
-    ProductVariantId: string;
+    ProductId: string;
     ColorName: string;
     Quantity: number;
     Price: number;
     ProductName: string;
     Image: string;
+    Dimension: string;
+    Id: string;
 }
 
 //Favourite

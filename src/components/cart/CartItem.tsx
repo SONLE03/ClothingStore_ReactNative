@@ -22,11 +22,11 @@ const CartItem: React.FC<{
   onUpdateQuantity: (productItemId: string, quantity: number) => void;
   onDelete: (productItemId: string) => void;
 }> = ({item, isChecked, onCheck, onUpdateQuantity, onDelete}) => {
-  const [quantity, setQuantity] = useState<number>(item.quantity);
+  const [quantity, setQuantity] = useState<number>(item.Quantity);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      onUpdateQuantity(item.productItemId, quantity);
+      onUpdateQuantity(item.ProductId, quantity);
     }, 1000);
 
     return () => clearTimeout(timer);
@@ -41,15 +41,15 @@ const CartItem: React.FC<{
       <View className="flex-row justify-start items-center p-1 ">
         <CheckBox
           value={isChecked}
-          onValueChange={newValue => onCheck(item.productItemId, newValue)}
+          onValueChange={newValue => onCheck(item.ProductId, newValue)}
           //style={{borderWidth: 10, borderColor: "orange" }}
           className=" absolute top-0 left-0 border border-black"
           tintColors={{true: '#F15927', false: 'black'}}
         />
 
-        {item.image ? (
+        {item.Image ? (
           <ImageBackground
-            source={{uri: item.image}}
+            source={{uri: item.Image}}
             resizeMode="cover"
             className="rounded-lg mb-4 overflow-hidden w-24 h-24 ml-1 mr-4"
           />
@@ -59,16 +59,16 @@ const CartItem: React.FC<{
 
         <View className="flex-col">
           <Text className="text-black text-lg font-medium truncate text-ellipsis overflow-hidden">
-            {item.product_Name}
+            {item.ProductName}
           </Text>
           <Text className="text-black text-sm font-light truncate">
             Quantity: {quantity}
           </Text>
           <Text className="text-black text-sm font-light truncate">
-            Size: {item.sizeName}
+            Dimension: {item.Dimension}
           </Text>
           <Text className="text-black text-sm font-light truncate">
-            Color: {item.colorName}
+            Color: {item.ColorName}
           </Text>
         </View>
       </View>
@@ -77,7 +77,7 @@ const CartItem: React.FC<{
         <Text className="text-yellow-500 text-lg font-semibold">
           đ
           <Text className="text-black font-semibold">
-            {item.price.toLocaleString()}
+            {item.Price.toLocaleString()}
           </Text>
         </Text>
         <View className="flex-row items-center">
@@ -106,7 +106,7 @@ const CartItem: React.FC<{
 
           <TouchableOpacity
             className="ml-4"
-            onPress={() => onDelete(item.productItemId)}>
+            onPress={() => onDelete(item.ProductId)}>
             <MaterialCommunityIcons name="trash-can" size={24} color="red" />
           </TouchableOpacity>
         </View>

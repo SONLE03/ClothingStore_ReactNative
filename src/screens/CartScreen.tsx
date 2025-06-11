@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
 } from 'react-native';
 //import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {COLORS, SPACING} from '../theme/theme';
@@ -47,7 +45,7 @@ const CartScreen = ({navigation, route}: any) => {
 
   const calculateTotalPrice = () => {
     return CartList?.reduce((total, item) => {
-      if (selectedItems.has(item.ProductVariantId)) {
+      if (selectedItems.has(item.ProductId)) {
         return total + item.Price * item.Quantity;
       }
       return total;
@@ -68,7 +66,7 @@ const CartScreen = ({navigation, route}: any) => {
 
   const handleCheckAll = (isChecked: boolean) => {
     if (isChecked) {
-      setSelectedItems(new Set(CartList.map(item => item.ProductVariantId)));
+      setSelectedItems(new Set(CartList.map(item => item.ProductId)));
     } else {
       setSelectedItems(new Set());
     }
@@ -84,7 +82,7 @@ const CartScreen = ({navigation, route}: any) => {
       const ParseCustomerId = ParseJSON(customerId);
       await EditProductInCart(ParseCustomerId, productItemId, quantity);
       const updatedCartList = CartList.map(item => {
-        if (item.ProductVariantId === productItemId) {
+        if (item.ProductId === productItemId) {
           return {...item, Quantity: quantity};
         }
         return item;
@@ -98,12 +96,12 @@ const CartScreen = ({navigation, route}: any) => {
     if (customerId) {
       const ParseCustomerId = ParseJSON(customerId);
       const itemToDelete = CartList.find(
-        item => item.ProductVariantId === productItemId,
+        item => item.Id === productItemId,
       );
       if (itemToDelete) {
-        await DeleteProductInCart(itemToDelete.ProductVariantId);
+        await DeleteProductInCart(itemToDelete.Id);
         const updatedCartList = CartList.filter(
-          item => item.ProductVariantId !== productItemId,
+          item => item.Id !== productItemId,
         );
         setCartList(updatedCartList);
         setSelectedItems(prev => {
@@ -121,16 +119,18 @@ const CartScreen = ({navigation, route}: any) => {
       const ParseCustomerId = ParseJSON(customerId);
       const itemsToDelete = Array.from(selectedItems).map(productItemId => {
         const item = CartList.find(
-          item => item.ProductVariantId === productItemId,
+          item => item.Id === productItemId,
         );
         return {
-          productItemId,
-          quantity: item ? item.Quantity : 1,
+          Id: item ? item.Id : '',
+          Quantity: item ? item.Quantity : 1,
         };
       });
-      await DeleteProductInCart(ParseCustomerId, itemsToDelete);
-      const updatedCartList = CartList.filter(
-        item => !selectedItems.has(item.ProductVariantId),
+      itemsToDelete.forEach(async item => {
+        await DeleteProductInCart(item.Id);
+      });
+      const updatedCartList = CartList.filter(  
+        item => !selectedItems.has(item.Id),
       );
       setCartList(updatedCartList);
       setSelectedItems(new Set());
@@ -142,7 +142,7 @@ const CartScreen = ({navigation, route}: any) => {
 
   const buttonPressHandler = () => {
     const selectedCartItems = CartList.filter(item =>
-      selectedItems.has(item.ProductVariantId),
+      selectedItems.has(item.ProductId),
     );
     const totalPrice = calculateTotalPrice();
     navigation.push('OrderScreen', {
