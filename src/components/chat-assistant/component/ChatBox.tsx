@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ChatMessage, ChatService } from '../service/chat-service';
+import {ChatMessage, ChatService} from '../service/chat-service';
 
 interface ChatBoxProps {
   isVisible: boolean;
@@ -29,6 +29,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({isVisible, onClose}) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const slideAnim = useRef(new Animated.Value(height)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
+
+  console.log('messages', messages);
 
   useEffect(() => {
     if (isVisible) {
@@ -64,8 +66,15 @@ const ChatBox: React.FC<ChatBoxProps> = ({isVisible, onClose}) => {
   const loadChatHistory = async () => {
     try {
       const history = await AsyncStorage.getItem('furniture_chat_history');
+      console.log('history', history);
       if (history) {
-        setMessages(JSON.parse(history));
+        const parsedMessages = JSON.parse(history);
+        // Convert timestamp strings back to Date objects
+        const messagesWithDates = parsedMessages.map((message: any) => ({
+          ...message,
+          timestamp: new Date(message.timestamp),
+        }));
+        setMessages(messagesWithDates);
       } else {
         // Add welcome message
         const welcomeMessage: ChatMessage = {
@@ -78,6 +87,13 @@ const ChatBox: React.FC<ChatBoxProps> = ({isVisible, onClose}) => {
       }
     } catch (error) {
       console.error('Error loading chat history:', error);
+      const welcomeMessage: ChatMessage = {
+        id: Date.now().toString(),
+        text: "Hi! I'm your furniture store assistant. I'm here to help you with product information, sizing, care instructions, and more. How can I assist you today?",
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages([welcomeMessage]);
     }
   };
 
@@ -109,7 +125,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({isVisible, onClose}) => {
 
     try {
       const response = await ChatService.sendMessage(inputText.trim());
-      
+
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         text: response,
@@ -139,10 +155,34 @@ const ChatBox: React.FC<ChatBoxProps> = ({isVisible, onClose}) => {
   const clearHistory = async () => {
     try {
       await AsyncStorage.removeItem('furniture_chat_history');
-      setMessages([]);
-      loadChatHistory();
+      // Reset to welcome message
+      const welcomeMessage: ChatMessage = {
+        id: Date.now().toString(),
+        text: "Hi! I'm your furniture store assistant. I'm here to help you with product information, sizing, care instructions, and more. How can I assist you today?",
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages([welcomeMessage]);
     } catch (error) {
       console.error('Error clearing chat history:', error);
+    }
+  };
+
+  const formatTimestamp = (timestamp: Date | string | undefined) => {
+    if (!timestamp) return '';
+    
+    try {
+      const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+      // Check if date is valid
+      if (isNaN(date.getTime())) return '';
+      
+      return date.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch (error) {
+      console.error('Error formatting timestamp:', error);
+      return '';
     }
   };
 
@@ -158,16 +198,13 @@ const ChatBox: React.FC<ChatBoxProps> = ({isVisible, onClose}) => {
         }`}>
         <Text
           className={`text-sm ${
-            message.isUser ? 'text-white' : 'text-gray-800'
+            message?.isUser ? 'text-white' : 'text-gray-800'
           }`}>
-          {message.text}
+          {message?.text}
         </Text>
       </View>
       <Text className="text-xs text-gray-500 mt-1 px-2">
-        {message.timestamp.toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        })}
+        {formatTimestamp(message?.timestamp)}
       </Text>
     </View>
   );
@@ -181,8 +218,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({isVisible, onClose}) => {
         top: 0,
         left: 0,
         right: 0,
-        bottom: 0,
-        zIndex: 999,
+        bottom: 80,
+        zIndex: 500,
         opacity: opacityAnim,
       }}>
       <TouchableOpacity
@@ -197,14 +234,16 @@ const ChatBox: React.FC<ChatBoxProps> = ({isVisible, onClose}) => {
               transform: [{translateY: slideAnim}],
               height: height * 0.7,
             }}
-            className="absolute bottom-0 left-4 right-4 bg-white rounded-t-3xl shadow-2xl"
-            >
-            
+            className="absolute bottom-0 left-4 right-4 bg-white rounded-t-3xl shadow-2xl">
             {/* Header */}
             <View className="flex-row items-center justify-between p-4 border-b border-gray-200">
               <View className="flex-row items-center">
                 <View className="w-10 h-10 bg-gradient-to-r from-orange-400 to-yellow-500 rounded-full items-center justify-center mr-3">
-                  <MaterialCommunityIcons name="robot" size={20} color="white" />
+                  <MaterialCommunityIcons
+                    name="robot"
+                    size={20}
+                    color="white"
+                  />
                 </View>
                 <View>
                   <Text className="text-lg font-bold text-gray-800">
@@ -214,9 +253,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({isVisible, onClose}) => {
                 </View>
               </View>
               <View className="flex-row">
-                <TouchableOpacity
-                  onPress={clearHistory}
-                  className="mr-3 p-2">
+                <TouchableOpacity onPress={clearHistory} className="mr-3 p-2">
                   <MaterialCommunityIcons
                     name="delete-outline"
                     size={20}
@@ -281,11 +318,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({isVisible, onClose}) => {
                     ? 'bg-orange-500'
                     : 'bg-gray-300'
                 }`}>
-                <MaterialCommunityIcons
-                  name="send"
-                  size={20}
-                  color="white"
-                />
+                <MaterialCommunityIcons name="send" size={20} color="white" />
               </TouchableOpacity>
             </View>
           </Animated.View>
