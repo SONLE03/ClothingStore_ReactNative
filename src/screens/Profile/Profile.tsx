@@ -124,7 +124,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
   };
 
   const handleLogout = async () => {
-    await logoutUser();
+    logoutUser();
     navigation.navigate('LoginScreen'); // Redirect to login screen
     AsyncStorage.clear();
   };

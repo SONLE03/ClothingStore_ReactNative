@@ -3,10 +3,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../config';
 import { CartItems } from '../../types';
 
-export const DeleteProductInCart = async (customerId: string, cartItem: CartItems[]): Promise<CartItems[]> => {
-  const DeleteCartUrl = BASE_URL + `/carts/${customerId}`;
+export const DeleteProductInCart = async (cartId : string): Promise<CartItems[]> => {
+  // Remove quotes from cartId if they exist
+  const cleanCartId = cartId.replace(/['"]/g, '');
+  const DeleteCartUrl = BASE_URL + `/carts/${cleanCartId}`;
   const accessToken = await AsyncStorage.getItem('access_token');
-  const data = JSON.stringify(cartItem);
   if (!accessToken) {
     throw new Error('No access token found');
     //return [];
@@ -27,7 +28,6 @@ export const DeleteProductInCart = async (customerId: string, cartItem: CartItem
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${parseToken}`,
       },    
-      data: data
     });
 
     return response.data;

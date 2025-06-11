@@ -40,13 +40,15 @@ export interface Category {
 
 //Order 
 export interface OrderItem {
-    productItemId: string;
-    sizeName: string;
-    colorName: string;
-    quantity: number;
-    price: number;
-    product_Name: string;
-    image: string;
+    Id: string;
+    ProductId: string;
+    ProductName: string | null;
+    Dimension: string;
+    ColorId: string;
+    ColorName: string | null;
+    Price: number;
+    Quantity: number;
+    SubTotal: number;
 }
 
 //Cart 
@@ -56,13 +58,12 @@ export interface CartItems {
 }
 
 export interface ProductItemInCart {
-    productItemId: string;
-    sizeName: string;
-    colorName: string;
-    quantity: number;
-    price: number;
-    product_Name: string;
-    image: string;   
+    ProductVariantId: string;
+    ColorName: string;
+    Quantity: number;
+    Price: number;
+    ProductName: string;
+    Image: string;
 }
 
 //Favourite

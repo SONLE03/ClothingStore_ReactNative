@@ -1,7 +1,5 @@
 import axios from 'axios';
 import {BASE_URL} from '../config';
-//import Cookies from 'js-cookie';
-import {ProductItem} from '../../types';
 import {ParseJSON} from '../auth/parseJSON';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

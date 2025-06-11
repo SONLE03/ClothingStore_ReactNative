@@ -14,7 +14,7 @@ import {
   useFocusEffect,
 } from '@react-navigation/native';
 import {Button, Checkbox, Dialog} from 'react-native-paper';
-import {OrderItem, ExistedCoupon, AddressInfo} from '../../types';
+import {OrderItem, ExistedCoupon, AddressInfo, Product} from '../../types';
 import {GetAllCoupons} from '../../api/coupon/GetAllCoupons';
 import {GetAllAdressByCustomer} from '../../api/address/GetAllAdressByCustomer';
 import {CreateOrder} from '../../api/order/CreateOrder';
@@ -46,6 +46,10 @@ const OrderScreen = ({navigation}: any) => {
   const [visible, setVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+  const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+
+  console.log("orderItems:", orderItems);
+  console.log("amount:", amount);
 
   const hideDialog = () => setVisible(false);
   console.log(selectedAddress);
@@ -125,14 +129,14 @@ const OrderScreen = ({navigation}: any) => {
       PhoneNumber: phoneNumber,
       Email: email,
       PaymentMethod: paymentMethod,
-      ShippingFee: 0,
+      ShippingFee: 30000,
       Note: '',
       CouponId: selectedCoupon || undefined,
       UserId: ParseCustomerId,
       AddressId: selectedAddress,
-      TaxFee: 0,
+      TaxFee: 8,
       SubTotal: totalAmount,
-      Total: totalAmount + 0,
+      Total: (totalAmount + 30000) * 8 / 100 + totalAmount + 30000,
       OrderItems: orderItems.map(item => item.Id),
     };
 
@@ -155,16 +159,14 @@ const OrderScreen = ({navigation}: any) => {
 
           navigation.navigate('VNPayScreen', {vnpayUrl});
           const deleteCart = await DeleteProductInCart(
-            ParseCustomerId,
-            orderItems,
+            orderItems[0].Id,
           );
           console.log(deleteCart);
         } else {
           Alert.alert('Order created successfully!');
 
           const deleteCart = await DeleteProductInCart(
-            ParseCustomerId,
-            orderItems,
+            orderItems[0].Id,
           );
           console.log(deleteCart);
           // setTimeout(() => {
@@ -180,8 +182,7 @@ const OrderScreen = ({navigation}: any) => {
           navigation.navigate('Home');
         }, 2000);
         const deleteCart = await DeleteProductInCart(
-          ParseCustomerId,
-          orderItems,
+          orderItems[0].Id,
         );
         console.log(deleteCart);
       }
@@ -277,15 +278,15 @@ const OrderScreen = ({navigation}: any) => {
         <Text className="text-lg font-bold my-2 text-black">Order Items</Text>
         {orderItems?.map(item => (
           <View
-            key={item.productItemId}
+            key={item.Id}
             className="flex-row items-center mb-2 border border-yellow-500 rounded-lg p-2 bg-white">
-            <Image source={{uri: item.image}} className="w-32 h-32 mr-4" />
+            <Image source={{uri: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}} className="w-32 h-32 mr-4" />
             <View className="flex-col justify-center space-y-3">
-              <Text className="text-lg text-black">{item.product_Name}</Text>
+              <Text className="text-lg text-black">{item.ProductName}</Text>
               <Text style={styles.itemPrice}>
-                Price: {item.price.toLocaleString()}đ
+                Price: {item.Price.toLocaleString()}đ
               </Text>
-              <Text style={styles.itemQuantity}>Quantity: {item.quantity}</Text>
+              <Text style={styles.itemQuantity}>Quantity: {item.Quantity}</Text>
             </View>
           </View>
         ))}

@@ -36,7 +36,8 @@ const CartScreen = ({navigation, route}: any) => {
     if (customerId !== null) {
       const ParseCustomerId = ParseJSON(customerId);
       const response = await GetCartInfo(ParseCustomerId);
-      setCartList(response);
+      console.log("response cart", response);
+      setCartList(response.data);
     }
   };
 
@@ -46,8 +47,8 @@ const CartScreen = ({navigation, route}: any) => {
 
   const calculateTotalPrice = () => {
     return CartList?.reduce((total, item) => {
-      if (selectedItems.has(item.productItemId)) {
-        return total + item.price * item.quantity;
+      if (selectedItems.has(item.ProductVariantId)) {
+        return total + item.Price * item.Quantity;
       }
       return total;
     }, 0);
@@ -67,7 +68,7 @@ const CartScreen = ({navigation, route}: any) => {
 
   const handleCheckAll = (isChecked: boolean) => {
     if (isChecked) {
-      setSelectedItems(new Set(CartList.map(item => item.productItemId)));
+      setSelectedItems(new Set(CartList.map(item => item.ProductVariantId)));
     } else {
       setSelectedItems(new Set());
     }
@@ -83,8 +84,8 @@ const CartScreen = ({navigation, route}: any) => {
       const ParseCustomerId = ParseJSON(customerId);
       await EditProductInCart(ParseCustomerId, productItemId, quantity);
       const updatedCartList = CartList.map(item => {
-        if (item.productItemId === productItemId) {
-          return {...item, quantity};
+        if (item.ProductVariantId === productItemId) {
+          return {...item, Quantity: quantity};
         }
         return item;
       });
@@ -97,14 +98,12 @@ const CartScreen = ({navigation, route}: any) => {
     if (customerId) {
       const ParseCustomerId = ParseJSON(customerId);
       const itemToDelete = CartList.find(
-        item => item.productItemId === productItemId,
+        item => item.ProductVariantId === productItemId,
       );
       if (itemToDelete) {
-        await DeleteProductInCart(ParseCustomerId, [
-          {productItemId, quantity: itemToDelete.quantity},
-        ]);
+        await DeleteProductInCart(itemToDelete.ProductVariantId);
         const updatedCartList = CartList.filter(
-          item => item.productItemId !== productItemId,
+          item => item.ProductVariantId !== productItemId,
         );
         setCartList(updatedCartList);
         setSelectedItems(prev => {
@@ -122,16 +121,16 @@ const CartScreen = ({navigation, route}: any) => {
       const ParseCustomerId = ParseJSON(customerId);
       const itemsToDelete = Array.from(selectedItems).map(productItemId => {
         const item = CartList.find(
-          item => item.productItemId === productItemId,
+          item => item.ProductVariantId === productItemId,
         );
         return {
           productItemId,
-          quantity: item ? item.quantity : 1,
+          quantity: item ? item.Quantity : 1,
         };
       });
       await DeleteProductInCart(ParseCustomerId, itemsToDelete);
       const updatedCartList = CartList.filter(
-        item => !selectedItems.has(item.productItemId),
+        item => !selectedItems.has(item.ProductVariantId),
       );
       setCartList(updatedCartList);
       setSelectedItems(new Set());
@@ -143,7 +142,7 @@ const CartScreen = ({navigation, route}: any) => {
 
   const buttonPressHandler = () => {
     const selectedCartItems = CartList.filter(item =>
-      selectedItems.has(item.productItemId),
+      selectedItems.has(item.ProductVariantId),
     );
     const totalPrice = calculateTotalPrice();
     navigation.push('OrderScreen', {

@@ -18,7 +18,6 @@ import {Category, ExistedCoupon, Product} from '../types';
 import {GetAllProducts} from '../api/product/get-product';
 import HeaderBar from '../components/customUIs/Headerbar';
 import ClothesCard from '../components/product/ItemCard';
-import {Input} from 'react-native-elements';
 import {LogBox} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GetAllOrderByCustomer} from '../api/order/GetAllOrderByCustomer';

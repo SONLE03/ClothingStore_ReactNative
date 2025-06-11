@@ -191,9 +191,7 @@ const ProductDetailsScreen = ({navigation}: any) => {
     }
   }; console.log('QUANTITY', quantity);
 
-  const handleBuyNow = () => {
-    if (!selectedSize || !selectedColor || !product) return;
-
+  const handleBuyNow = async () => {
     const selectedProductItem = productItems.find(
       item =>
         item.ColorName === selectedColor,
@@ -210,10 +208,28 @@ const ProductDetailsScreen = ({navigation}: any) => {
         product_Name: product?.ProductName,
         image: product?.ImageSource,
       };
+      const customerId = await AsyncStorage.getItem('user_id');
+      console.log('customerId', customerId);
+      if (customerId !== null) {
+        const ParseCustomerId = ParseJSON(customerId);
+
+        console.log(ParseCustomerId);
+
+        const response = await AddProductToCart(
+          ParseCustomerId,
+          {
+            productId: product?.Id || '',
+            dimension: selectedProductItem.DisplayDimension,
+            colorId: selectedProductItem.ColorId,
+            quantity: quantity,
+          }
+        );
+      console.log('AddProductToCart response:', response.data);
       navigation.navigate('OrderScreen', {
-        orderItems: [orderItem],
+        orderItems: [response.data],
         amount: quantity * selectedProductItem.Price,
       });
+      }
     }
   };
 
